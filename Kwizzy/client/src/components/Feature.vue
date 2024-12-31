@@ -36,6 +36,27 @@ onUnmounted(() => {
     class="relative px-5 py-10 text-center border border-white/30 rounded-xl sm:flex-1"
   >
     <div
+      v-motion
+      :initial="{
+        opacity: 0,
+        y: 50,
+      }"
+      :visible-once="{
+        opacity: 1,
+        y: 0,
+      }"
+      :leave="{
+        y: -100,
+        opacity: 0,
+        transition: {
+          duration: 1000,
+        },
+      }"
+      :focused="{
+        scale: 1.1,
+      }"
+      :delay="200"
+      :duration="600"
       class="absolute inset-[-1px] border-2 border-[#ef0] rounded-xl"
       ref="border"
       :style="{ WebkitMaskImage: maskImage, maskImage: maskImage }"
@@ -46,7 +67,7 @@ onUnmounted(() => {
         opacity: 0,
         y: 50,
       }"
-      :visible="{
+      :visible-once="{
         opacity: 1,
         y: 0,
       }"
@@ -72,7 +93,7 @@ onUnmounted(() => {
         opacity: 0,
         y: 50,
       }"
-      :visible="{
+      :visible-once="{
         opacity: 1,
         y: 0,
       }"
@@ -98,7 +119,7 @@ onUnmounted(() => {
         opacity: 0,
         y: 50,
       }"
-      :visible="{
+      :visible-once="{
         opacity: 1,
         y: 0,
       }"

@@ -8,9 +8,9 @@ const items = [
     answer: "Yes! Unless you count your time and effort.",
   },
   {
-    question: "Can I cheat?",
+    question: "How do I become an admin?",
     answer:
-      "Well, Kwizzy doesn’t judge… but remember, cheaters never prosper. Plus, the only person you’re fooling is your own ego. We recommend winning with your brains, not your browser tabs! 😉",
+      "Nice try, students. But seriously, only verified teachers get the magic wand.",
   },
   {
     question: "What if I forget my password?",
@@ -32,6 +32,11 @@ const items = [
     answer:
       "Absolutely! Just casually mention your latest quiz score and watch the sparks fly. Or not. We can’t guarantee anything.",
   },
+  {
+    question: "Can I cheat?",
+    answer:
+      "Well, Kwizzy doesn’t judge… but remember, cheaters never prosper. Plus, the only person you’re fooling is your own ego. We recommend winning with your brains, not your browser tabs!",
+  },
 ];
 
 // Track which item is open
@@ -45,7 +50,7 @@ const toggleItem = (index) => {
 <template>
   <div
     id="faqs"
-    class="text-white bg-black py-[72px] sm:py-24 bg-gradient-to-b from-[#21034d] to-black"
+    class="text-white bg-black py-[72px] sm:py-24 bg-gradient-to-t from-[#21034d] to-black"
   >
     <div class="container">
       <h2 class="text-5xl font-bold tracking-tighter text-center sm:text-6xl">
@@ -63,7 +68,7 @@ const toggleItem = (index) => {
           class="border-b py-7 border-white/30 cursor-pointer"
           @click="toggleItem(index)"
         >
-          <div class="flex items-center justify-between mt-10">
+          <div class="flex items-center justify-between mt-4">
             <h3 class="text-lg font-bold">{{ item.question }}</h3>
             <ion-icon
               :name="openItemIndex === index ? 'remove-sharp' : 'add-sharp'"
@@ -71,8 +76,8 @@ const toggleItem = (index) => {
           </div>
           <transition
             name="accordion"
-            enter-active-class="transition-all duration-300"
-            leave-active-class="transition-all duration-300"
+            enter-active-class="transition-all duration-500 ease-out"
+            leave-active-class="transition-all duration-500 ease-out"
           >
             <div
               v-show="openItemIndex === index"
@@ -88,6 +93,10 @@ const toggleItem = (index) => {
 </template>
 
 <style scoped>
+#faqs {
+  font-family: Inter;
+}
+
 .accordion-enter-from,
 .accordion-leave-to {
   height: 0;

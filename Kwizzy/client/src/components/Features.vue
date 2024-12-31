@@ -34,7 +34,7 @@ const features = [
           opacity: 0,
           y: 50,
         }"
-        :visible="{
+        :visible-once="{
           opacity: 1,
           y: 0,
         }"
@@ -58,7 +58,7 @@ const features = [
             opacity: 0,
             y: 50,
           }"
-          :visible="{
+          :visible-once="{
             opacity: 1,
             y: 0,
           }"

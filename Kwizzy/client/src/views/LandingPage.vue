@@ -1,10 +1,40 @@
 <script setup>
+import { onMounted, onUnmounted } from "vue";
+import Lenis from "lenis";
 import batman from "../assets/images/landing-page/batman logo.jpg";
 import dc from "../assets/images/landing-page/dc logo.png";
 import superman from "../assets/images/landing-page/superman logo.png";
 import Features from "../components/Features.vue";
 import Product from "../components/ProductShowcase.vue";
 import FAQs from "../components/FAQs.vue";
+import Testimonials from "../components/Testimonials.vue";
+import Pricing from "../components/Pricing.vue";
+import Footer from "@/components/Footer.vue";
+import logo from "../assets/images/landing-page/logo.png";
+
+onMounted(() => {
+  const lenis = new Lenis({
+    duration: 3.2,
+    smooth: true,
+    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
+    axis: "vertical",
+    direction: "vertical",
+    gestureDirection: "vertical",
+    gesture: true,
+    scrollDirection: "vertical",
+  });
+
+  function raf(time) {
+    lenis.raf(time);
+    requestAnimationFrame(raf);
+  }
+
+  requestAnimationFrame(raf);
+
+  onUnmounted(() => {
+    lenis.destroy();
+  });
+});
 </script>
 
 <template>
@@ -32,11 +62,11 @@ import FAQs from "../components/FAQs.vue";
       <div class="flex items-center justify-between py-1">
         <div class="relative">
           <div>
-            <!-- <img
-              src="{logo}"
+            <img
+              :src="logo"
               alt="logo"
               class="rounded-full w-[5rem] mix-blend-exclusion"
-            /> -->
+            />
           </div>
         </div>
         <div
@@ -102,7 +132,7 @@ import FAQs from "../components/FAQs.vue";
         </a>
       </div>
       <div class="hero-content">
-        <h1 class="mt-6 font-bold text-center sm:text-9xl text-7xl">
+        <h1 class="mt-6 font-bold text-center sm:text-[120px] text-7xl">
           Prep Smart<br />Stand Apart
         </h1>
         <p class="mt-8 text-lg text-center">
@@ -134,13 +164,38 @@ import FAQs from "../components/FAQs.vue";
   </div>
   <Features />
   <Product />
+  <Pricing />
+  <Testimonials />
   <FAQs />
+  <div class="call-to-action py-[72px] text-white text-center">
+    <div class="container">
+      <h2 class="text-4xl font-bold">Ready to Crush Quizzes Like a Pro?</h2>
+      <p class="mt-4 text-lg">
+        Dive into Kwizzy – your ultimate quiz companion! <br />
+        <span class="text-white/70 text-sm"
+          >You’ve made it this far, so you clearly like us. Why not see what all
+          the fuss is about?</span
+        >
+      </p>
+
+      <div class="mt-8">
+        <RouterLink to="/dashboard">
+          <button class="px-4 py-2 bg-white text-black rounded-lg">
+            Start Your Journey Now
+          </button>
+        </RouterLink>
+      </div>
+    </div>
+  </div>
+  <div
+    class="text-white bg-black py-[72px] sm:py-24 relative overflow-clip footer-hero"
+  >
+    <div
+      class="absolute h-[375px] w-[750px] rounded-[100%] bg-black left-1/2 -translate-x-1/2 border-[#000000] top-[calc(100%-96px)] sm:w-[3000px] sm:h-[720px] sm:top-[calc(100%-180px)] footer-ellipse"
+    ></div>
+  </div>
+  <Footer />
 </template>
-
-
-
-
-
 
 <style scoped>
 .banner {
@@ -205,7 +260,7 @@ a:hover ion-icon {
 
 .hero-content h1 {
   font-family: Golos Text;
-  letter-spacing: -9px;
+  letter-spacing: -6px;
 }
 
 .hero {
@@ -218,6 +273,22 @@ a:hover ion-icon {
   );
   background-size: 100% 110%;
   animation: gradientScroll 10s ease infinite;
+}
+
+.footer-hero {
+  background: linear-gradient(
+    to bottom,
+    #000,
+    #2f006f 34%,
+    #41029a 65%,
+    #4a00b0 82%
+  );
+  background-size: 100% 110%;
+  animation: gradientScroll 10s ease infinite;
+}
+
+.call-to-action {
+  background: linear-gradient(to bottom, #21034d 0%, #000000 100%);
 }
 
 @keyframes gradientScroll {
@@ -236,7 +307,11 @@ a:hover ion-icon {
 }
 
 .ellipse {
-  background: radial-gradient(closest-side, #000 80%, #ddff00);
+  background: radial-gradient(closest-side, #000 82%, #ddff00);
+}
+
+.footer-ellipse {
+  background: radial-gradient(closest-side, #000 82%, #350080);
 }
 
 .trusted-by h2 {

@@ -40,11 +40,11 @@ onUnmounted(() => {
 <template>
   <div
     id="product"
-    class="text-white bg-black py-[72px] bg-gradient-to-b from-black to-[#21034d] overflow-hidden"
+    class="text-white bg-black py-[72px] bg-gradient-to-b from-black to-[#000000] overflow-hidden"
   >
     <div class="container">
       <h2
-        class="text-5xl font-bold tracking-tighter text-center"
+        class="text-6xl font-bold tracking-tighter text-center"
         v-motion
         :initial="{ opacity: 0 }"
         :enter="{ opacity: 1 }"
@@ -54,7 +54,7 @@ onUnmounted(() => {
       </h2>
       <div class="max-w-xl mx-auto">
         <p
-          class="mt-5 text-base text-center text-white"
+          class="mt-5 text-sm text-center text-white/70"
           v-motion
           :initial="{ opacity: 0, y: 50 }"
           :enter="{ opacity: 1, y: 0 }"
