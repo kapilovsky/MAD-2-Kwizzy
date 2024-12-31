@@ -1,6 +1,6 @@
 <script setup>
 const currentYear = new Date().getFullYear();
-import logo from "../assets/images/landing-page/logo.png";
+import logo from "../../assets/images/landing-page/logo.png";
 
 import { ref } from "vue";
 

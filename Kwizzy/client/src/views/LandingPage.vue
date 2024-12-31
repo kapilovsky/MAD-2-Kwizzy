@@ -1,23 +1,21 @@
 <script setup>
 import { onMounted, onUnmounted } from "vue";
-import { useScroll } from "@vueuse/core";
 import Lenis from "lenis";
 import batman from "../assets/images/landing-page/batman logo.jpg";
 import dc from "../assets/images/landing-page/dc logo.png";
 import superman from "../assets/images/landing-page/superman logo.png";
-import Features from "../components/Features.vue";
-import Product from "../components/ProductShowcase.vue";
-import FAQs from "../components/FAQs.vue";
-import Testimonials from "../components/Testimonials.vue";
-import Pricing from "../components/Pricing.vue";
-import Footer from "@/components/Footer.vue";
-import logo from "../assets/images/landing-page/logo.png";
+import Features from "@/components/LandingPage/Features.vue";
+import Product from "@/components/LandingPage/ProductShowcase.vue";
+import FAQs from "@/components/LandingPage/FAQs.vue";
+import Testimonials from "@/components/LandingPage/Testimonials.vue";
+import Pricing from "@/components/LandingPage/Pricing.vue";
+import Footer from "@/components/LandingPage/Footer.vue";
+import logo from "@/assets/images/landing-page/logo.png";
 
 onMounted(() => {
   const lenis = new Lenis({
-    duration: 3.2,
+    duration: 1.2,
     smooth: true,
-    easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
     axis: "vertical",
     direction: "vertical",
     gestureDirection: "vertical",
@@ -166,12 +164,10 @@ const handleScroll = (sectionId) => {
           </div>
         </div>
       </div>
-      <div className="text-white bg-black py-[20px] ">
-        <div className="container trusted-by">
-          <h2 className="text-xl text-center">Trusted By</h2>
-          <div
-            className="flex flex-wrap items-center justify-center gap-16 images"
-          >
+      <div class="text-white bg-black py-[20px]">
+        <div class="container trusted-by">
+          <h2 class="text-xl text-center">Trusted By</h2>
+          <div class="flex flex-wrap items-center justify-center gap-16 images">
             <img class="w-[150px]" :src="batman" alt="batman logo" />
             <img class="w-[80px]" :src="dc" alt="dc logo" />
             <img class="w-[150px]" :src="superman" alt="superman logo" />
@@ -262,19 +258,19 @@ a:hover ion-icon {
 .rainbow-text {
   background-image: linear-gradient(
     to right,
-    #f97aff,
-    #2fd8fe,
-    #fffc3e,
+    #857aff,
+    #52dfff,
+    #fffc55,
     #92ff6a,
-    #2fd8fe,
-    #f97aff
+    #52dfff,
+    #857aff
   );
   background-size: 300%;
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-family: consolas;
-  font-weight: 600;
+  font-family: Golos Text;
+  /* font-weight: 600; */
   padding: 0px 8px;
 }
 

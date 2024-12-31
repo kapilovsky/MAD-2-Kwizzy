@@ -2,7 +2,7 @@
 import { ref, computed, onMounted, onUnmounted } from "vue";
 import { useScroll } from "@vueuse/core";
 import { useMotion } from "@vueuse/motion";
-import AppScreenshot from "../assets/images/landing-page/app.jpg";
+import AppScreenshot from "../../assets/images/landing-page/app.jpg";
 
 const appScreenshot = ref(null);
 const scrollProgress = ref(0);

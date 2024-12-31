@@ -1,5 +1,5 @@
 <script setup>
-import bg from "../assets/images/landing-page/bg.png";
+import bg from "../../assets/images/landing-page/bg.png";
 const Testimonials = [
   {
     name: "Kapil ",
