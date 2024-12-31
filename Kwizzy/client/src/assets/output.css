@@ -721,6 +721,10 @@ video {
   margin-bottom: 3.5rem;
 }
 
+.block {
+  display: block;
+}
+
 .flex {
   display: flex;
 }
@@ -803,6 +807,15 @@ video {
 
 .max-w-xl {
   max-width: 36rem;
+}
+
+.max-w-fit {
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+}
+
+.max-w-full {
+  max-width: 100%;
 }
 
 .grow {
@@ -1244,6 +1257,10 @@ video {
 
 .text-opacity-60 {
   --tw-text-opacity: 0.6;
+}
+
+.text-opacity-100 {
+  --tw-text-opacity: 1;
 }
 
 .underline {

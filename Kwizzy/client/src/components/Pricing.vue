@@ -127,6 +127,17 @@ const plans = [
   font-family: Inter;
 }
 
+.container {
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 0.5rem;
+  }
+}
+
 .pricing-card {
   transition: transform 0.3s ease;
 }

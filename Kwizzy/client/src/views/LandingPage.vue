@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, onUnmounted } from "vue";
+import { useScroll } from "@vueuse/core";
 import Lenis from "lenis";
 import batman from "../assets/images/landing-page/batman logo.jpg";
 import dc from "../assets/images/landing-page/dc logo.png";
@@ -35,169 +36,200 @@ onMounted(() => {
     lenis.destroy();
   });
 });
+
+import { ref } from "vue";
+
+const sections = [
+  { name: "Features", id: "features" },
+  { name: "Product", id: "product" },
+  { name: "Pricing", id: "pricing" },
+  { name: "Testimonials", id: "testimonials" },
+  { name: "FAQs", id: "faqs" },
+];
+
+const activeSection = ref("");
+
+const handleScroll = (sectionId) => {
+  const element = document.getElementById(sectionId);
+  if (element) {
+    const offset = element.offsetTop - 20;
+    window.scrollTo({
+      top: offset,
+      behavior: "smooth",
+    });
+    activeSection.value = sectionId;
+  }
+};
 </script>
 
 <template>
-  <div>
-    <div class="py-2 text-center banner">
-      <div class="container">
-        <p class="font-medium flex justify-center items-center gap-2">
-          <span class="hidden sm:inline">
-            Ready to ace your exams? Dive into Kwizzy – your ultimate quiz
-            companion!
-          </span>
-          <a
-            href="#"
-            class="font-medium text-black underline underline-offset-4 flex items-center gap-1 justify-center"
-          >
-            Start Your Journey Now
-            <ion-icon name="arrow-forward-sharp"></ion-icon>
-          </a>
-        </p>
-      </div>
-    </div>
-  </div>
-  <div class="bg-black">
-    <div class="px-4">
-      <div class="flex items-center justify-between py-1">
-        <div class="relative">
-          <div>
-            <img
-              :src="logo"
-              alt="logo"
-              class="rounded-full w-[5rem] mix-blend-exclusion"
-            />
+  <main class="max-w-full mx-auto">
+    <div class="container">
+      <div>
+        <div class="py-2 text-center banner">
+          <div class="container">
+            <p class="font-medium flex justify-center items-center gap-2">
+              <span class="hidden sm:inline">
+                Ready to ace your exams? Dive into Kwizzy – your ultimate quiz
+                companion!
+              </span>
+              <a
+                href="#"
+                class="font-bold text-black underline underline-offset-4 flex items-center justify-center"
+              >
+                Start Your Journey Now
+                <ion-icon name="arrow-forward-sharp"></ion-icon>
+              </a>
+            </p>
           </div>
         </div>
-        <div
-          class="flex items-center justify-between w-10 h-10 cursor-pointer sm:hidden hamburger"
-        >
-          <ion-icon name="menu-sharp"></ion-icon>
-        </div>
-        <nav class="items-center hidden gap-6 sm:flex">
-          <ScrollLink
-            to="features"
-            spy="{true}"
-            smooth="{true}"
-            duration="{1000}"
-            class="text-white transition cursor-pointer text-opacity-60 hover:text-opacity-100"
-          >
-            Features
-          </ScrollLink>
-
-          <ScrollLink
-            to="product"
-            spy="{true}"
-            smooth="{true}"
-            duration="{1000}"
-            class="text-white transition cursor-pointer text-opacity-60 hover:text-opacity-100"
-          >
-            Product
-          </ScrollLink>
-          <ScrollLink
-            to="faqs"
-            spy="{true}"
-            smooth="{true}"
-            duration="{1000}"
-            class="text-white transition cursor-pointer text-opacity-60 hover:text-opacity-100"
-          >
-            FAQs
-          </ScrollLink>
-
-          <RouterLink to="/dashboard">
-            <button class="px-4 py-2 bg-white rounded-lg">Get Started</button>
-          </RouterLink>
-        </nav>
       </div>
-    </div>
-  </div>
-  <div
-    class="text-white bg-black py-[72px] sm:py-24 relative overflow-clip hero"
-  >
-    <div
-      class="absolute h-[375px] w-[750px] rounded-[100%] bg-black left-1/2 -translate-x-1/2 border-[#b48cde] top-[calc(100%-96px)] sm:w-[3000px] sm:h-[720px] sm:top-[calc(100%-120px)] ellipse"
-    ></div>
-    <div class="container relative">
-      <div class="flex items-center justify-center">
-        <a
-          href="#"
-          class="inline-flex gap-4 px-2 py-1 border rounded-lg border-white/70"
-        >
-          <span class="rainbow-text animated-gradient">
-            Because Traditional Studying is so 2010
-          </span>
-          <!-- <span class="inline-flex items-center gap-1">
+      <div class="bg-black">
+        <div class="px-4">
+          <div class="flex items-center justify-between py-1">
+            <div class="relative">
+              <div>
+                <img
+                  :src="logo"
+                  alt="logo"
+                  class="rounded-full w-[5rem] mix-blend-exclusion"
+                />
+              </div>
+            </div>
+            <div
+              class="flex items-center justify-between w-10 h-10 cursor-pointer sm:hidden hamburger"
+            >
+              <ion-icon name="menu-sharp"></ion-icon>
+            </div>
+            <nav class="items-center hidden gap-6 sm:flex">
+              <button
+                v-for="section in sections"
+                :key="section.id"
+                @click="handleScroll(section.id)"
+                class="text-white transition cursor-pointer text-opacity-60 hover:text-opacity-100"
+              >
+                {{ section.name }}
+              </button>
+              <button
+                class="px-4 py-2 font-medium text-black bg-white rounded-lg"
+              >
+                Log In
+              </button>
+              <button
+                class="px-4 py-2 font-medium text-black bg-white rounded-lg"
+              >
+                Sign Up
+              </button>
+            </nav>
+          </div>
+        </div>
+      </div>
+      <div
+        class="text-white bg-black py-[72px] sm:py-24 relative overflow-clip hero"
+      >
+        <div
+          class="absolute h-[375px] w-[750px] rounded-[100%] bg-black left-1/2 -translate-x-1/2 border-[#b48cde] top-[calc(100%-96px)] sm:w-[3000px] sm:h-[720px] sm:top-[calc(100%-120px)] ellipse"
+        ></div>
+        <div class="container relative">
+          <div class="flex items-center justify-center">
+            <a
+              href="#"
+              class="inline-flex gap-4 px-2 py-1 border rounded-lg border-white/70"
+            >
+              <span class="rainbow-text animated-gradient">
+                Because Traditional Studying is so 2010
+              </span>
+              <!-- <span class="inline-flex items-center gap-1">
             Read More <ion-icon name="arrow-forward-sharp"></ion-icon>
           </span> -->
-        </a>
-      </div>
-      <div class="hero-content">
-        <h1 class="mt-6 font-bold text-center sm:text-[120px] text-7xl">
-          Prep Smart<br />Stand Apart
-        </h1>
-        <p class="mt-8 text-lg text-center">
-          From conquering chapters to crushing quizzes, we’ve got you covered.
-          <br />
-          Perfect for students, procrastinators, and that one overachiever in
-          your class.
-        </p>
-      </div>
+            </a>
+          </div>
+          <div class="hero-content">
+            <h1 class="mt-6 font-bold text-center sm:text-[120px] text-7xl">
+              Prep Smart<br />Stand Apart
+            </h1>
+            <p class="mt-8 text-lg text-center">
+              From conquering chapters to crushing quizzes, we’ve got you
+              covered.
+              <br />
+              Perfect for students, procrastinators, and that one overachiever
+              in your class.
+            </p>
+          </div>
 
-      <div class="flex justify-center mt-8">
-        <RouterLink to="/dashboard">
-          <button class="px-4 py-2 font-medium text-black bg-white rounded-lg">
-            Get Started
-          </button>
-        </RouterLink>
+          <div class="flex justify-center mt-8">
+            <button
+              class="px-4 py-2 font-medium text-black bg-white rounded-lg"
+            >
+              Get Started
+            </button>
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <div className="text-white bg-black py-[20px] ">
-    <div className="container trusted-by">
-      <h2 className="text-xl text-center">Trusted By</h2>
-      <div className="flex flex-wrap items-center justify-center gap-16 images">
-        <img class="w-[150px]" :src="batman" alt="batman logo" />
-        <img class="w-[80px]" :src="dc" alt="dc logo" />
-        <img class="w-[150px]" :src="superman" alt="superman logo" />
+      <div className="text-white bg-black py-[20px] ">
+        <div className="container trusted-by">
+          <h2 className="text-xl text-center">Trusted By</h2>
+          <div
+            className="flex flex-wrap items-center justify-center gap-16 images"
+          >
+            <img class="w-[150px]" :src="batman" alt="batman logo" />
+            <img class="w-[80px]" :src="dc" alt="dc logo" />
+            <img class="w-[150px]" :src="superman" alt="superman logo" />
+          </div>
+        </div>
       </div>
-    </div>
-  </div>
-  <Features />
-  <Product />
-  <Pricing />
-  <Testimonials />
-  <FAQs />
-  <div class="call-to-action py-[72px] text-white text-center">
-    <div class="container">
-      <h2 class="text-4xl font-bold">Ready to Crush Quizzes Like a Pro?</h2>
-      <p class="mt-4 text-lg">
-        Dive into Kwizzy – your ultimate quiz companion! <br />
-        <span class="text-white/70 text-sm"
-          >You’ve made it this far, so you clearly like us. Why not see what all
-          the fuss is about?</span
-        >
-      </p>
+      <Features />
+      <Product />
+      <Pricing />
+      <Testimonials />
+      <FAQs />
+      <div
+        id="call-to-action"
+        class="call-to-action py-[72px] text-white text-center"
+      >
+        <div class="container">
+          <h2 class="text-4xl font-bold">Ready to Crush Quizzes Like a Pro?</h2>
+          <p class="mt-4 text-lg">
+            Dive into Kwizzy – your ultimate quiz companion! <br />
+            <span class="text-white/70 text-sm"
+              >You’ve made it this far, so you clearly like us. Why not see what
+              all the fuss is about?</span
+            >
+          </p>
 
-      <div class="mt-8">
-        <RouterLink to="/dashboard">
-          <button class="px-4 py-2 bg-white text-black rounded-lg">
-            Start Your Journey Now
-          </button>
-        </RouterLink>
+          <div class="mt-8">
+            <RouterLink to="/dashboard">
+              <button class="px-4 py-2 bg-white text-black rounded-lg">
+                Start Your Journey Now
+              </button>
+            </RouterLink>
+          </div>
+        </div>
       </div>
+      <div
+        class="text-white bg-black py-[72px] sm:py-24 relative overflow-clip footer-hero"
+      >
+        <div
+          class="absolute h-[375px] w-[750px] rounded-[100%] bg-black left-1/2 -translate-x-1/2 border-[#000000] top-[calc(100%-96px)] sm:w-[3000px] sm:h-[720px] sm:top-[calc(100%-180px)] footer-ellipse"
+        ></div>
+      </div>
+      <Footer />
     </div>
-  </div>
-  <div
-    class="text-white bg-black py-[72px] sm:py-24 relative overflow-clip footer-hero"
-  >
-    <div
-      class="absolute h-[375px] w-[750px] rounded-[100%] bg-black left-1/2 -translate-x-1/2 border-[#000000] top-[calc(100%-96px)] sm:w-[3000px] sm:h-[720px] sm:top-[calc(100%-180px)] footer-ellipse"
-    ></div>
-  </div>
-  <Footer />
+  </main>
 </template>
 
 <style scoped>
+.container {
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 0.5rem;
+  }
+}
+
 .banner {
   background: linear-gradient(
     to right,
@@ -210,15 +242,16 @@ onMounted(() => {
 }
 
 ion-icon {
-  margin-top: 2.5px;
+  /* margin-top: 2px; */
   font-size: 20px;
   opacity: 0;
+  transform: translateX(2px);
   transition: all 0.3s ease;
 }
 
 a:hover ion-icon {
   opacity: 1;
-  transform: translateX(10px);
+  transform: translateX(8px);
 }
 
 .hamburger ion-icon {

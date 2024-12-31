@@ -87,12 +87,23 @@ onUnmounted(() => {
 
 <style scoped>
 .transform-gpu {
-  will-change: transform;
+  will-change: transform, opacity;
   transform-style: preserve-3d;
+  backface-visibility: hidden;
 }
 
-/* Optional: Add smooth scrolling to the page */
-html {
-  scroll-behavior: smooth;
+img {
+  transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+}
+
+.container {
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 0.5rem;
+  }
 }
 </style>

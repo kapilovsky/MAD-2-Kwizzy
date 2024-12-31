@@ -30,17 +30,9 @@ const features = [
       <h2
         class="text-5xl font-bold tracking-tighter text-center sm:text-4xl"
         v-motion
-        :initial="{
-          opacity: 0,
-          y: 50,
-        }"
         :visible-once="{
           opacity: 1,
           y: 0,
-        }"
-        :leave="{
-          y: -100,
-          opacity: 0,
         }"
         :focused="{
           scale: 1.1,
@@ -54,17 +46,9 @@ const features = [
         <p
           class="mt-5 text-xl text-center text-white/70"
           v-motion
-          :initial="{
-            opacity: 0,
-            y: 50,
-          }"
           :visible-once="{
             opacity: 1,
             y: 0,
-          }"
-          :leave="{
-            y: -100,
-            opacity: 0,
           }"
           :focused="{
             scale: 1.1,
@@ -90,5 +74,14 @@ const features = [
 </template>
 
 <style scoped>
-/* Add any custom styles for the Features section here */
+.container {
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 0.5rem;
+  }
+}
 </style>

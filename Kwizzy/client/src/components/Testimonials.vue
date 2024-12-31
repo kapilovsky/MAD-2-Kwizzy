@@ -100,7 +100,14 @@ const Testimonials = [
 
 <style scoped>
 .container {
-  font-family: Inter;
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 0.5rem;
+  }
 }
 .container h2 span {
   font-family: "Instrument Serif";
