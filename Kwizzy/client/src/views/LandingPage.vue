@@ -1,5 +1,6 @@
 <script setup>
 import { onMounted, onUnmounted } from "vue";
+import { RouterLink } from "vue-router";
 import Lenis from "lenis";
 import batman from "../assets/images/landing-page/batman logo.jpg";
 import dc from "../assets/images/landing-page/dc logo.png";
@@ -108,16 +109,20 @@ const handleScroll = (sectionId) => {
               >
                 {{ section.name }}
               </button>
-              <button
-                class="px-4 py-2 font-medium text-black bg-white rounded-lg"
-              >
-                Log In
-              </button>
-              <button
-                class="px-4 py-2 font-medium text-black bg-white rounded-lg"
-              >
-                Sign Up
-              </button>
+              <RouterLink to="/login">
+                <button
+                  class="px-4 py-2 font-medium text-black bg-white rounded-lg"
+                >
+                  Log In
+                </button>
+              </RouterLink>
+              <RouterLink to="/signup">
+                <button
+                  class="px-4 py-2 font-medium text-black bg-white rounded-lg"
+                >
+                  Sign Up
+                </button>
+              </RouterLink>
             </nav>
           </div>
         </div>

@@ -1,0 +1,141 @@
+<script setup>
+import login from "../assets/images/login-signup/Login.jpg";
+import { RouterLink } from "vue-router";
+
+import { ref } from "vue";
+
+const email = ref("");
+const password = ref("");
+const rememberMe = ref(false);
+
+const handleLogin = () => {
+  // Basic validation
+  if (!email.value || !password.value) {
+    alert("Please fill out all fields!");
+    return;
+  }
+
+  // Make an API call to authenticate
+  console.log({
+    email: email.value,
+    password: password.value,
+    rememberMe: rememberMe.value,
+  });
+
+  alert("Login attempt submitted! Replace with actual logic.");
+};
+</script>
+
+<template>
+  <div class="container flex items-center justify-between h-screen px-24">
+    <div
+      class="login flex flex-col justify-start gap-6 h-full py-24 max-w-sm ml-12"
+    >
+      <h1 class="text-4xl">Welcome Back 👋</h1>
+      <p class="font-[Inter] text-black/70 text-lg">
+        Please login to access you account
+      </p>
+
+      <form @submit.prevent="handleLogin" class="flex flex-col gap-4">
+        <div class="flex flex-col gap-2">
+          <label for="email">Email</label>
+          <input
+            type="email"
+            name="email"
+            id="email"
+            placeholder="Example@email.com"
+          />
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label for="password">Password</label>
+          <input
+            type="password"
+            name="password"
+            id="password"
+            placeholder="At least 8 characters"
+          />
+        </div>
+
+        <a href="#" class="text-sm text-blue-600 hover:underline text-right"
+          >Forgot password?</a
+        >
+
+        <p>
+          No account?
+          <RouterLink to="/signup"
+            ><span class="text-blue-700 hover:underline signup"
+              >Sign up</span
+            ></RouterLink
+          >
+        </p>
+
+        <button
+          class="py-[10px] font-medium text-white bg-black rounded-lg hover:bg-black/90 transition-all ease-linear active:scale-95 flex items-center justify-center gap-2"
+          type="submit"
+        >
+          Login <ion-icon name="arrow-forward-sharp"></ion-icon>
+        </button>
+      </form>
+
+      <footer class="mt-24">
+        <p>
+          By logging in, you agree to our
+          <span class="text-blue-600">Terms of Service</span> and
+          <span class="text-blue-600">Privacy Policy</span>.
+        </p>
+      </footer>
+    </div>
+    <div class="login-image">
+      <div class="img-wrapper w-[720px]">
+        <img class="rounded-2xl" :src="login" alt="" />
+      </div>
+      <div></div>
+    </div>
+  </div>
+</template>
+
+<style scoped>
+.container {
+  max-width: 1800px;
+  margin: 0 auto;
+}
+
+.login h1 {
+  font-family: Inter;
+  font-weight: 700;
+  letter-spacing: -1.25px;
+}
+
+form input {
+  padding: 0.5rem 0.75rem;
+  border: 1px solid #ccc;
+  border-radius: 0.25rem;
+  border-radius: 6px;
+}
+
+.signup {
+  font-family: Instrument Serif;
+  font-weight: 600;
+  font-style: italic;
+  font-size: 17px;
+}
+
+button[type="submit"] ion-icon {
+  font-size: 18px;
+  transform: translateX(-4px);
+  opacity: 0;
+  transition: all 0.2s ease;
+}
+
+button[type="submit"]:hover ion-icon {
+  opacity: 1;
+  transform: translateX(4px);
+}
+
+@media (max-width: 768px) {
+  .container {
+    padding: 0 0.5rem;
+  }
+}
+</style>
