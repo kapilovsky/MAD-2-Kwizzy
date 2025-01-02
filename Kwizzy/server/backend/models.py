@@ -15,6 +15,7 @@ from . import db
 
 
 class User(db.Model, UserMixin):
+    __tablename__ = "users"
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(50), nullable=False, unique=True)
     email = Column(String(50), nullable=False, unique=True)
@@ -25,17 +26,20 @@ class User(db.Model, UserMixin):
     password = Column(String(30), nullable=False)
 
     quiz_results = relationship(
-        "QuizResult", backref="user", cascade="all, delete-orphan"
+        "QuizResult", back_populates="user", cascade="all, delete-orphan"
     )
 
 
 class Subject(db.Model):
+    __tablename__ = "subjects"
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(50), nullable=False, unique=True)
     description = Column(String(255), nullable=False)
     subject_image = Column(String(255), nullable=True)
 
-    chapters = relationship("Chapter", backref="subject", cascade="all, delete-orphan")
+    chapters = relationship(
+        "Chapter", back_populates="subject", cascade="all, delete-orphan"
+    )
 
 
 class Chapter(db.Model):
@@ -47,8 +51,10 @@ class Chapter(db.Model):
     )
     description = Column(String(255), nullable=False)
 
-    quizzes = relationship("Quiz", backref="chapter", cascade="all, delete-orphan")
-    subject = relationship("Subject", backref="chapters")
+    quizzes = relationship(
+        "Quiz", back_populates="chapter", cascade="all, delete-orphan"
+    )
+    subject = relationship("Subject", back_populates="chapters")
 
 
 class Quiz(db.Model):
@@ -56,16 +62,19 @@ class Quiz(db.Model):
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(50), nullable=False)
     description = Column(String(255), nullable=False)
+    price = Column(Integer, nullable=False, default=0)
     chapter_id = Column(
         Integer, ForeignKey("chapters.id", ondelete="CASCADE"), nullable=False
     )
-    time_duration = Column(Integer, nullable=False, default=0)  # Timer in seconds
+    time_duration = Column(Integer, nullable=False, default=0)
 
-    questions = relationship("Question", backref="quiz", cascade="all, delete-orphan")
-    quiz_results = relationship(
-        "QuizResult", backref="quiz", cascade="all, delete-orphan"
+    questions = relationship(
+        "Question", back_populates="quiz", cascade="all, delete-orphan"
     )
-    chapter = relationship("Chapter", backref="quizzes")
+    quiz_results = relationship(
+        "QuizResult", back_populates="quiz", cascade="all, delete-orphan"
+    )
+    chapter = relationship("Chapter", back_populates="quizzes")
 
 
 class Question(db.Model):
@@ -77,8 +86,10 @@ class Question(db.Model):
     title = Column(String(100), nullable=True)
     text = Column(Text, nullable=False)
 
-    options = relationship("Option", backref="question", cascade="all, delete-orphan")
-    quiz = relationship("Quiz", backref="questions")
+    options = relationship(
+        "Option", back_populates="question", cascade="all, delete-orphan"
+    )
+    quiz = relationship("Quiz", back_populates="questions")
 
 
 class Option(db.Model):
@@ -90,7 +101,7 @@ class Option(db.Model):
     text = Column(Text, nullable=False)
     is_correct = Column(Boolean, default=False)
 
-    question = relationship("Question", backref="options")
+    question = relationship("Question", back_populates="options")
 
 
 # ||----------------------User Answer Model----------------------||#
@@ -108,7 +119,7 @@ class UserAnswer(db.Model):
     )
     is_correct = Column(Boolean, default=False)
 
-    quiz_result = relationship("QuizResult", backref="user_answers")
+    quiz_result = relationship("QuizResult", back_populates="user_answers")
 
 
 # ||----------------------Quiz Result Model----------------------||#
@@ -125,8 +136,8 @@ class QuizResult(db.Model):
     total_marks = Column(Integer, nullable=True)
     completed_at = Column(DateTime, default=func.now())
 
-    user = relationship("User", backref="quiz_results")
-    quiz = relationship("Quiz", backref="quiz_results")
+    user = relationship("User", back_populates="quiz_results")
+    quiz = relationship("Quiz", back_populates="quiz_results")
     user_answers = relationship(
-        "UserAnswer", backref="quiz_result", cascade="all, delete"
+        "UserAnswer", back_populates="quiz_result", cascade="all, delete"
     )

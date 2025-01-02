@@ -1,9 +1,7 @@
 from flask import Flask
-from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
-from flask_restful import Api
+from flask_restful import Api, Resource
 from flask_migrate import Migrate
-from .models import User
 from os import path
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
@@ -18,9 +16,10 @@ cache = Cache()
 
 DB_NAME = "database.db"
 
-def create_app(config):
+
+def create_app():
     app = Flask(__name__)
-    app.config.from_object(config)
+    app.config.from_object("backend.config.Config")
     api = Api(app)
     db.init_app(app)
     migrate.init_app(app, db)
@@ -28,27 +27,27 @@ def create_app(config):
     jwt.init_app(app)
     cache.init_app(app)
 
-    CORS(app, resources={r"/*": {"origins": app.config.get('FRONTEND_URL'), "supports_credentials": True}})
+    CORS(
+        app,
+        resources={
+            r"/*": {
+                "origins": "*",
+                "supports_credentials": True,
+            }
+        },
+    )
 
-    from .auth import auth
-    from .student import student
-    from .admin import admin
+    from .api.auth import Login, Register
+    from .api.student import Student
+    from .api.admin import Admin
 
-    app.register_blueprint(auth, url_prefix="/")
-    app.register_blueprint(student, url_prefix="/student")
-    app.register_blueprint(admin, url_prefix="/admin")
+    api.add_resource(Student, "/api/student")
+    api.add_resource(Login, "/api/login")
+    api.add_resource(Register, "/api/register")
+    api.add_resource(Admin, "/api/admin")
 
     with app.app_context():
-        db.create_all()  # Create all tables
-
-    login_manager = LoginManager()
-    login_manager.login_view = "auth.login"
-    login_manager.init_app(app)
-
-    @login_manager.user_loader
-    def load_user(id):
-        return User.query.get(int(id))
-
+        db.create_all()
     return app
 
 
