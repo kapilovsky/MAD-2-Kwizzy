@@ -1,28 +1,56 @@
 <script setup>
 import signup from "../assets/images/login-signup/Signup.jpg";
-import { RouterLink } from "vue-router";
-
+import { RouterLink, useRouter } from "vue-router";
+import axios from "axios";
 import { ref } from "vue";
 
+const name = ref("");
 const email = ref("");
+const dob = ref("");
+const qualification = ref("");
 const password = ref("");
-const rememberMe = ref(false);
+const API_URL = import.meta.env.VITE_API_URL;
 
-const handleLogin = () => {
+const router = useRouter();
+
+const submit = async () => {
   // Basic validation
-  if (!email.value || !password.value) {
+  if (
+    !name.value ||
+    !email.value ||
+    !dob.value ||
+    !qualification.value ||
+    !password.value
+  ) {
     alert("Please fill out all fields!");
     return;
   }
 
-  // Make an API call to authenticate
-  console.log({
-    email: email.value,
-    password: password.value,
-    rememberMe: rememberMe.value,
-  });
+  console.log(
+    name.value,
+    email.value,
+    dob.value,
+    qualification.value,
+    password.value
+  );
 
-  alert("Login attempt submitted! Replace with actual logic.");
+  // Make an API call to authenticate
+  try {
+    const response = await axios.post(`${API_URL}/register`, {
+      name: name.value,
+      email: email.value,
+      dob: dob.value,
+      qualification: qualification.value,
+      password: password.value,
+    });
+    if (response.data) {
+      console.log("Registration successful:", response.data);
+      router.push("/login");
+    }
+  } catch (error) {
+    console.error("Error signing up:", error.response?.data || error);
+    alert(error.response?.data?.message || "Error during registration");
+  }
 };
 </script>
 
@@ -33,30 +61,44 @@ const handleLogin = () => {
     >
       <h1 class="text-4xl">Ready to Crush Quizzes Like a Pro?</h1>
 
-      <form @submit.prevent="handleLogin" class="flex flex-col gap-4">
+      <form @submit.prevent="submit" class="flex flex-col gap-4">
         <div class="flex flex-col gap-1">
           <label for="name">Name</label>
-          <input type="text" name="name" id="name" placeholder="Your Name" />
+          <input
+            v-model="name"
+            type="text"
+            name="name"
+            id="name"
+            placeholder="Your Name"
+            required
+          />
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="email">Email</label>
           <input
+            v-model="email"
             type="email"
             name="email"
             id="email"
             placeholder="Example@email.com"
+            required
           />
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="email">Date of Birth</label>
-          <input type="date" name="dob" id="dob" />
+          <input v-model="dob" type="date" name="dob" id="dob" required />
         </div>
 
         <div class="flex flex-col gap-1">
           <label for="qualification"> Qualification</label>
-          <select name="qualification" id="qualification">
+          <select
+            v-model="qualification"
+            name="qualification"
+            id="qualification"
+            required
+          >
             <option value="">Select Your Qualification</option>
             <option value="school">High School</option>
             <option value="undergrad">Undergraduate</option>
@@ -69,10 +111,12 @@ const handleLogin = () => {
         <div class="flex flex-col gap-1">
           <label for="password">Password</label>
           <input
+            v-model="password"
             type="password"
             name="password"
             id="password"
             placeholder="At least 8 characters"
+            required
           />
         </div>
 

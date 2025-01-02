@@ -1,14 +1,15 @@
 <script setup>
 import login from "../assets/images/login-signup/Login.jpg";
-import { RouterLink } from "vue-router";
-
+import { RouterLink, useRouter } from "vue-router";
+import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
 import { ref } from "vue";
+const router = useRouter();
 
 const email = ref("");
 const password = ref("");
-const rememberMe = ref(false);
 
-const handleLogin = () => {
+const handleLogin = async () => {
   // Basic validation
   if (!email.value || !password.value) {
     alert("Please fill out all fields!");
@@ -16,13 +17,25 @@ const handleLogin = () => {
   }
 
   // Make an API call to authenticate
-  console.log({
-    email: email.value,
-    password: password.value,
-    rememberMe: rememberMe.value,
-  });
+  try {
+    const response = await axios.post(`${API_URL}/login`, {
+      email: email.value,
+      password: password.value,
+    });
+    const { access_token, refresh_token, user_role, message } = response.data;
+    localStorage.setItem("access_token", access_token);
+    localStorage.setItem("refresh_token", refresh_token);
 
-  alert("Login attempt submitted! Replace with actual logic.");
+    if (user_role == "admin") {
+      router.push("/admin");
+    } else if (user_role === "student") {
+      router.push("/student");
+    }
+    console.log(message);
+  } catch (error) {
+    console.error("Error logging in:", error);
+    alert(error.response?.data?.message || "Error during login");
+  }
 };
 </script>
 
@@ -44,6 +57,7 @@ const handleLogin = () => {
             name="email"
             id="email"
             placeholder="Example@email.com"
+            v-model="email"
           />
         </div>
 
@@ -54,6 +68,7 @@ const handleLogin = () => {
             name="password"
             id="password"
             placeholder="At least 8 characters"
+            v-model="password"
           />
         </div>
 

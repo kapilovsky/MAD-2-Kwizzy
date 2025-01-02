@@ -12,8 +12,10 @@
   "dependencies": {
     "@vueuse/core": "^12.2.0",
     "@vueuse/motion": "^2.2.6",
+    "axios": "^1.7.9",
     "lenis": "^1.1.18",
     "pinia": "^2.3.0",
+    "primeicons": "^7.0.0",
     "vue": "^3.5.13",
     "vue-router": "^4.5.0"
   },
