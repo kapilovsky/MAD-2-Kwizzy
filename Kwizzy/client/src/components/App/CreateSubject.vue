@@ -4,11 +4,39 @@ import { ref } from "vue";
 const props = defineProps({ isOpen: Boolean });
 const emit = defineEmits(["close", "create"]);
 const modalRef = ref(null);
+import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
 const subjectData = ref({ name: "", description: "", image: null });
-const handleSubmit = () => {
-  emit("create", subjectData.value);
-  subjectData.value = { name: "", description: "", image: null };
+
+const handleSubmit = async () => {
+  const formData = new FormData();
+  formData.append("name", subjectData.value.name);
+  formData.append("description", subjectData.value.description);
+  formData.append("image", subjectData.value.image);
+
+  try {
+    const token = localStorage.getItem("access_token"); // Make sure to get the token from local storage or wherever you're storing it
+
+    if (!token) {
+      throw new Error("No access token available");
+    }
+
+    const response = await axios.post(`${API_URL}/subject`, formData, {
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${token}`, // Include the JWT token in the Authorization header
+      },
+    });
+
+    emit("create");
+    console.log("Response:", response);
+    emit("close");
+  } catch (error) {
+    console.error("Error creating subject:", error);
+    alert(error.response?.data?.message || "Error during creation");
+  }
 };
+
 const handleImageUpload = (event) => {
   const file = event.target.files[0];
   if (file) {
