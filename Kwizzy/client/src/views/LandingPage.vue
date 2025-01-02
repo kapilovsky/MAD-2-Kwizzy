@@ -345,8 +345,8 @@ a:hover ion-icon {
   background-clip: text;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
-  font-family: Golos Text;
-  /* font-weight: 600; */
+  font-family: consolas;
+  font-weight: 600;
   padding: 0px 8px;
 }
 
