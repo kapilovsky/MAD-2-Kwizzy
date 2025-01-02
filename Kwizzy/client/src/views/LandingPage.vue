@@ -1,5 +1,5 @@
 <script setup>
-import { onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import { RouterLink } from "vue-router";
 import Lenis from "lenis";
 import batman from "../assets/images/landing-page/batman logo.jpg";
@@ -12,6 +12,12 @@ import Testimonials from "@/components/LandingPage/Testimonials.vue";
 import Pricing from "@/components/LandingPage/Pricing.vue";
 import Footer from "@/components/LandingPage/Footer.vue";
 import logo from "@/assets/images/landing-page/logo.png";
+
+const isMenuOpen = ref(false);
+
+const toggleMenu = () => {
+  isMenuOpen.value = !isMenuOpen.value;
+};
 
 onMounted(() => {
   const lenis = new Lenis({
@@ -35,8 +41,6 @@ onMounted(() => {
     lenis.destroy();
   });
 });
-
-import { ref } from "vue";
 
 const sections = [
   { name: "Features", id: "features" },
@@ -95,11 +99,6 @@ const handleScroll = (sectionId) => {
                 />
               </div>
             </div>
-            <div
-              class="flex items-center justify-between w-10 h-10 cursor-pointer sm:hidden hamburger"
-            >
-              <ion-icon name="menu-sharp"></ion-icon>
-            </div>
             <nav class="items-center hidden gap-6 sm:flex">
               <button
                 v-for="section in sections"
@@ -124,9 +123,78 @@ const handleScroll = (sectionId) => {
                 </button>
               </RouterLink>
             </nav>
+            <!-- Hamburger Icon -->
+            <div class="flex sm:hidden">
+              <button
+                @click="toggleMenu"
+                class="text-white text-xl"
+                aria-label="Toggle Menu"
+              >
+                ☰
+              </button>
+            </div>
           </div>
         </div>
+
+        <!-- Mobile Menu -->
+        <transition
+          name="mobile-menu"
+          enter-active-class="mobile-menu-enter-active"
+          leave-active-class="mobile-menu-leave-active"
+          enter-from-class="mobile-menu-enter-from"
+          leave-to-class="mobile-menu-leave-to"
+        >
+          <div
+            v-if="isMenuOpen"
+            class="absolute top-0 left-0 z-50 w-full h-screen bg-[linear-gradient(rgba(0,0,0),rgba(0,0,0,0.5))] text-white transition-transform duration-500 ease-in-out backdrop-blur-xl"
+          >
+            <div class="flex justify-between p-4">
+              <img
+                :src="logo"
+                alt="Logo"
+                class="w-12 h-12 mix-blend-exclusion"
+              />
+              <button
+                @click="toggleMenu"
+                class="text-white focus:outline-none"
+                aria-label="Close Menu"
+              >
+                X
+              </button>
+            </div>
+            <nav class="flex flex-col items-center mt-10 gap-6">
+              <button
+                v-for="section in sections"
+                :key="section.id"
+                @click="
+                  () => {
+                    handleScroll(section.id);
+                    toggleMenu();
+                  }
+                "
+                class="text-xl text-white"
+              >
+                {{ section.name }}
+              </button>
+              <RouterLink to="/login">
+                <button
+                  class="px-4 py-2 font-medium text-black bg-white rounded-lg"
+                >
+                  Log In
+                </button>
+              </RouterLink>
+              <RouterLink to="/signup">
+                <button
+                  class="px-4 py-2 font-medium text-black bg-white rounded-lg"
+                >
+                  Sign Up
+                </button>
+              </RouterLink>
+            </nav>
+          </div>
+        </transition>
       </div>
+
       <div
         class="text-white bg-black py-[72px] sm:py-24 relative overflow-clip hero"
       >
@@ -170,7 +238,7 @@ const handleScroll = (sectionId) => {
         </div>
       </div>
       <div class="text-white bg-black py-[20px]">
-        <div class="container trusted-by">
+        <div class="container trusted-by overflow-hidden">
           <h2 class="text-xl text-center">Trusted By</h2>
           <div class="flex flex-wrap items-center justify-center gap-16 images">
             <img class="w-[150px]" :src="batman" alt="batman logo" />
@@ -220,15 +288,18 @@ const handleScroll = (sectionId) => {
 </template>
 
 <style scoped>
+.mobile-menu-enter-active,
+.mobile-menu-leave-active {
+  transition: transform 0.3s ease;
+}
+.mobile-menu-enter-from,
+.mobile-menu-leave-to {
+  transform: translateX(100%);
+}
+
 .container {
   max-width: 1800px;
   margin: 0 auto;
-}
-
-@media (max-width: 768px) {
-  .container {
-    padding: 0 0.5rem;
-  }
 }
 
 .banner {
@@ -367,7 +438,7 @@ a:hover ion-icon {
   position: absolute;
   height: 100%;
   width: 80px;
-  background: linear-gradient(to right, #000, #0000);
+  background: linear-gradient(to right, #000000, #0000);
   left: 30%;
   top: 0;
   z-index: 20;
@@ -378,7 +449,7 @@ a:hover ion-icon {
   position: absolute;
   height: 100%;
   width: 80px;
-  background: linear-gradient(to left, #000, #0000);
+  background: linear-gradient(to left, #000000, #0000);
   right: 34%;
   top: 0;
 }
@@ -400,11 +471,11 @@ a:hover ion-icon {
   }
 
   .images::before {
-    left: 15%;
+    left: -5%;
   }
 
   .images::after {
-    right: 15%;
+    right: -5%;
   }
 }
 </style>

@@ -58,7 +58,7 @@ const plans = [
       </div>
 
       <!-- Pricing Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-16 mt-16 px-24">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-16 mt-16 sm:px-24 px-10">
         <div
           v-for="(plan, index) in plans"
           :key="index"

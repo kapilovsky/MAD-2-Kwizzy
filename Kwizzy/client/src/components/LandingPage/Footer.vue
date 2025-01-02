@@ -52,16 +52,22 @@ const footerLinks = {
       <!-- Main Footer Content -->
       <div class="relative container pb-10 px-16">
         <!-- Links Section -->
-        <div class="flex justify-between gap-8 py-2 pb-10">
+        <div
+          class="flex sm:flex-row flex-col justify-between items-center gap-8 py-2 pb-10"
+        >
           <div>
-            <img class="w-[300px] mix-blend-exclusion" :src="logo" alt="" />
+            <img
+              class="w-[200px] sm:w-[300px] mix-blend-exclusion"
+              :src="logo"
+              alt=""
+            />
           </div>
 
-          <div class="flex justify-between w-[30%]">
+          <div class="flex justify-between sm:w-[30%]">
             <div
               v-for="(section, key) in footerLinks"
               :key="key"
-              class="space-y-6"
+              class="space-y-6 px-2"
             >
               <h4 class="font-bold text-lg">{{ section.title }}</h4>
               <ul class="space-y-4">
@@ -88,7 +94,7 @@ const footerLinks = {
           class="pt-8 flex flex-col md:flex-row justify-start items-center gap-4"
         >
           <div class="gradient-text">Kwizzy</div>
-          <div class="flex items-center gap-2 mb-14">
+          <div class="flex items-center gap-2 sm:mb-14 mb-32">
             <span class="text-white"
               >© {{ currentYear }}. All rights reserved. I mean the right to
               brag about this project.</span
@@ -98,7 +104,7 @@ const footerLinks = {
 
         <!-- Easter Egg -->
         <div
-          class="absolute bottom-4 text-white/50 text-sm hover:text-[#ddff00] transition-colors cursor-help easter"
+          class="absolute bottom-16 sm:bottom-4 text-white/50 text-sm text-center hover:text-[#ddff00] transition-colors cursor-help easter"
         >
           Made with chai-tea and questionable life choices. <br />
           *No textbooks were harmed in the making of this platform.
@@ -123,11 +129,6 @@ const footerLinks = {
   margin: 0 auto;
 }
 
-@media (max-width: 768px) {
-  .container {
-    padding: 0 0.5rem;
-  }
-}
 img {
   user-select: none;
   pointer-events: none;
@@ -144,6 +145,22 @@ img {
   bottom: -140px;
   user-select: none;
   pointer-events: none;
+}
+
+@media (max-width: 768px) {
+  .gradient-text {
+    font-size: 145px;
+    left: 0px;
+    bottom: -150px;
+  }
+
+  footer {
+    padding-bottom: 120px;
+  }
+
+  .easter {
+    right: 2px;
+  }
 }
 
 /* Hover Effects */
