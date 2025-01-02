@@ -147,7 +147,7 @@ onUnmounted(() => {
         v-for="subject in subjects"
         :key="subject.id"
         @click="openModal(subject)"
-        class="group cursor-pointer bg-[#fafafa] rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1"
+        class="group cursor-pointer bg-[#fafafa] rounded-xl overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 border-2 border-[#e5e7ebd6]"
       >
         <div class="relative">
           <img
@@ -156,7 +156,7 @@ onUnmounted(() => {
             class="w-full h-52 object-cover transition-transform duration-300 group-hover:scale-105"
           />
           <div
-            class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent opacity-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
+            class="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
           ></div>
         </div>
 

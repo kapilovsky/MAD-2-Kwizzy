@@ -2,7 +2,7 @@
 import Sidebar from "@/components/App/Sidebar.vue";
 import SubjectCard from "@/components/App/SubjectCard.vue";
 import { ref } from "vue";
-import CreateSubjectModal from "@/components/App/CreateSubjectModal.vue";
+import CreateSubject from "@/components/App/CreateSubject.vue";
 const isCreateModalOpen = ref(false);
 
 const handleCreateSubject = (newSubject) => {
@@ -23,7 +23,7 @@ const subjects = ref([
     id: 2,
     name: "Physics",
     description: "Study of matter, energy, and their interactions",
-    image: "src/assets/images/landing-page/app.jpg",
+    image: "src/assets/images/landing-page/bg.png",
     studentCount: 120,
     quizCount: 8,
   },
@@ -38,7 +38,7 @@ const subjects = ref([
       <p>Manage and organize the subjects</p>
     </div>
     <SubjectCard :subjects="subjects" />
-    <CreateSubjectModal
+    <CreateSubject
       :is-open="isCreateModalOpen"
       @close="isCreateModalOpen = false"
       @create="handleCreateSubject"
@@ -46,7 +46,7 @@ const subjects = ref([
     <!-- Floating Add Subject Button -->
     <button
       @click="isCreateModalOpen = true"
-      class="fixed bottom-6 right-6 z-30 flex items-center gap-2 px-4 py-3 bg-transparent hover:bg-black text-black hover:text-white font-semibold border-2 border-black rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
+      class="fixed bottom-6 sm:right-6 right-[calc(50%-80px)] z-30 flex items-center gap-2 px-4 py-3 bg-white hover:bg-black text-black hover:text-white font-semibold border-2 border-black rounded-full shadow-lg hover:shadow-xl transform hover:-translate-y-1 transition-all duration-300"
     >
       <svg
         class="w-5 h-5"
