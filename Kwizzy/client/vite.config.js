@@ -1,9 +1,10 @@
-import { fileURLToPath, URL } from 'node:url'
+import { fileURLToPath, URL } from "node:url";
 
-import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
-import vueJsx from '@vitejs/plugin-vue-jsx'
-import vueDevTools from 'vite-plugin-vue-devtools'
+import { defineConfig } from "vite";
+import vue from "@vitejs/plugin-vue";
+import vueJsx from "@vitejs/plugin-vue-jsx";
+import vueDevTools from "vite-plugin-vue-devtools";
+import svgLoader from "vite-svg-loader";
 
 // https://vite.dev/config/
 export default defineConfig({
@@ -11,10 +12,18 @@ export default defineConfig({
     vue(),
     vueJsx(),
     vueDevTools(),
+    svgLoader({
+      defaultImport: "component",
+    }),
   ],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      "@": fileURLToPath(new URL("./src", import.meta.url)),
     },
   },
-})
+  svg: {
+    // Allow to use SVG as Vue component
+    component: true,
+    //
+  },
+});

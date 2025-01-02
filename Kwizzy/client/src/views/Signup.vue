@@ -9,6 +9,7 @@ const email = ref("");
 const dob = ref("");
 const qualification = ref("");
 const password = ref("");
+// const role = ref("");
 const API_URL = import.meta.env.VITE_API_URL;
 
 const router = useRouter();
@@ -26,14 +27,6 @@ const submit = async () => {
     return;
   }
 
-  console.log(
-    name.value,
-    email.value,
-    dob.value,
-    qualification.value,
-    password.value
-  );
-
   // Make an API call to authenticate
   try {
     const response = await axios.post(`${API_URL}/register`, {
@@ -41,6 +34,7 @@ const submit = async () => {
       email: email.value,
       dob: dob.value,
       qualification: qualification.value,
+      // role: role.value,
       password: password.value,
     });
     if (response.data) {
@@ -87,9 +81,14 @@ const submit = async () => {
         </div>
 
         <div class="flex flex-col gap-1">
-          <label for="email">Date of Birth</label>
+          <label for="dob">Date of Birth</label>
           <input v-model="dob" type="date" name="dob" id="dob" required />
         </div>
+
+        <!-- <div class="flex flex-col gap-1">
+          <label for="role">Role</label>
+          <input v-model="role" type="text" name="role" id="role" required />
+        </div> -->
 
         <div class="flex flex-col gap-1">
           <label for="qualification"> Qualification</label>
