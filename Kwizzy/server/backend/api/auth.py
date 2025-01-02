@@ -78,9 +78,15 @@ class Login(Resource):
         if not user or not check_password_hash(user.password, password):
             return {"message": "Invalid credentials"}, 401
 
+        additional_claims = {"role": user.role}
+
         # Create JWT tokens (access and refresh)
-        access_token = create_access_token(identity=user.id)
-        refresh_token = create_refresh_token(identity=user.id)
+        access_token = create_access_token(
+            identity=str(user.id), additional_claims=additional_claims
+        )
+        refresh_token = create_refresh_token(
+            identity=str(user.id), additional_claims=additional_claims
+        )
 
         return {
             "message": "Login successful",

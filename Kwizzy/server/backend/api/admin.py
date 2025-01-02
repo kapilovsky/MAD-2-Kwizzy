@@ -5,5 +5,3 @@ class Admin(Resource):
     def get(self):
         return {"admin": "admin"}
     
-
-

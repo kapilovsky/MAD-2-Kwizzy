@@ -40,11 +40,15 @@ def create_app():
     from .api.auth import Login, Register
     from .api.student import Student
     from .api.admin import Admin
+    from .api.subject import SubjectApi
+    from .api.chapter import ChapterApi
 
     api.add_resource(Student, "/api/student")
     api.add_resource(Login, "/api/login")
     api.add_resource(Register, "/api/register")
     api.add_resource(Admin, "/api/admin")
+    api.add_resource(SubjectApi, "/api/subject")
+    api.add_resource(ChapterApi, "/api/chapter")
 
     with app.app_context():
         db.create_all()

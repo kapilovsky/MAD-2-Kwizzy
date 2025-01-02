@@ -37,6 +37,14 @@ class Subject(db.Model):
     description = Column(String(255), nullable=False)
     subject_image = Column(String(255), nullable=True)
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "subject_image": self.subject_image,
+        }
+
     chapters = relationship(
         "Chapter", back_populates="subject", cascade="all, delete-orphan"
     )
@@ -46,10 +54,19 @@ class Chapter(db.Model):
     __tablename__ = "chapters"
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(50), nullable=False)
+
     subject_id = Column(
         Integer, ForeignKey("subjects.id", ondelete="CASCADE"), nullable=False
     )
     description = Column(String(255), nullable=False)
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "name": self.name,
+            "description": self.description,
+            "subject_id": self.subject_id,
+        }
 
     quizzes = relationship(
         "Quiz", back_populates="chapter", cascade="all, delete-orphan"
