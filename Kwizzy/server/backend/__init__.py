@@ -40,12 +40,24 @@ def create_app():
     CORS(
         app,
         resources={
-            r"/*": {
-                "origins": "*",
+            r"/api/*": {
+                "origins": ["http://localhost:5173"],  # Your Vue.js development server
+                "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+                "allow_headers": ["Content-Type", "Authorization"],
+                "expose_headers": ["Content-Range", "X-Content-Range"],
                 "supports_credentials": True,
             }
         },
     )
+
+    @app.after_request
+    def apply_cors(response):
+        response.headers["Access-Control-Allow-Origin"] = "*"
+        response.headers["Access-Control-Allow-Methods"] = (
+            "GET, POST, PUT, DELETE, OPTIONS"
+        )
+        response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
+        return response
 
     from .api.auth import Login, Register
     from .api.student import Student
@@ -54,7 +66,7 @@ def create_app():
     from .api.chapter import ChapterApi
     from .api.quiz import QuizApi
     from .api.question import QuestionApi
-    from .api.options import OptionsApi
+    from .api.options import OptionApi
     from .api.options import OptionsBulkApi
     from .api.serve_file import FileApi
 
@@ -71,7 +83,7 @@ def create_app():
         "/api/quizzes/<int:quiz_id>/questions/<int:question_id>",
     )
     api.add_resource(
-        OptionsApi,
+        OptionApi,
         "/api/questions/<int:question_id>/options",
         "/api/options/<int:option_id>",
     )

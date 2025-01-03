@@ -12,17 +12,13 @@ from werkzeug.utils import secure_filename
 class SubjectApi(Resource):
     @jwt_required()
     @role_required("admin")
-    def get(self):
-        search_query = request.args.get("search_query", "").strip()
-        if search_query:
-            subject_list = Subject.query.filter(
-                Subject.name.ilike(f"%{search_query}%")
-            ).all()
-        else:
-            subject_list = Subject.query.all()
+    def get(self, subject_id=None):
+        if subject_id:
+            subject = Subject.query.get_or_404(subject_id)
+            return subject.to_dict(), 200
+        subject_list = Subject.query.all()
         return {
             "subjects": list(map(lambda subject: subject.to_dict(), subject_list)),
-            "search_query": search_query,
         }
 
     @jwt_required()

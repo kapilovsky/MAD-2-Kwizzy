@@ -4,7 +4,7 @@ import SubjectCard from "@/components/Admin/SubjectCard.vue";
 import { ref, onMounted } from "vue";
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
-import CreateSubject from "@/components/Admin/CreateSubject.vue";
+import CreateSubject from "@/components/Admin/AddSubject.vue";
 const isCreateModalOpen = ref(false);
 
 const handleCreateSubject = (newSubject) => {
