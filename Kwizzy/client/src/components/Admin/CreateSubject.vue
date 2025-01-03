@@ -12,27 +12,32 @@ const handleSubmit = async () => {
   const formData = new FormData();
   formData.append("name", subjectData.value.name);
   formData.append("description", subjectData.value.description);
-  formData.append("image", subjectData.value.image);
+  if (subjectData.value.image) {
+    formData.append("image", subjectData.value.image); // Append image file
+  }
 
   try {
-    const token = localStorage.getItem("access_token"); // Make sure to get the token from local storage or wherever you're storing it
-
+    const token = localStorage.getItem("access_token");
     if (!token) {
       throw new Error("No access token available");
     }
+    console.log("FormData entries:");
+    formData.forEach((value, key) => {
+      console.log(key, value);
+    });
 
     const response = await axios.post(`${API_URL}/subject`, formData, {
       headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${token}`, // Include the JWT token in the Authorization header
+        "Content-Type": "multipart/form-data",
+        Authorization: `Bearer ${token}`,
       },
     });
 
     emit("create");
-    console.log("Response:", response);
+    console.log("Response:", response.data);
     emit("close");
   } catch (error) {
-    console.error("Error creating subject:", error);
+    console.error("Server response data:", error.response?.data);
     alert(error.response?.data?.message || "Error during creation");
   }
 };
@@ -49,10 +54,7 @@ const handleImageUpload = (event) => {
     <div v-if="isOpen" class="fixed inset-0 z-50">
       <!-- Backdrop with its own transition -->
       <Transition name="backdrop">
-        <div
-          class="absolute inset-0 bg-black/20 backdrop-blur-sm"
-          @click="$emit('close')"
-        ></div>
+        <div class="absolute inset-0 bg-black/20" @click="$emit('close')"></div>
       </Transition>
 
       <!-- Modal with its own transition -->
@@ -136,7 +138,7 @@ const handleImageUpload = (event) => {
 /* Backdrop transitions */
 .backdrop-enter-active,
 .backdrop-leave-active {
-  transition: all 0.3s ease-out;
+  transition: all 0.22s ease;
 }
 
 .backdrop-enter-from,
@@ -154,23 +156,33 @@ const handleImageUpload = (event) => {
 /* Modal content transitions */
 .modal-content-enter-active,
 .modal-content-leave-active {
-  transition: all 0.3s ease-out;
+  transition: all 0.22s ease;
 }
 
 .modal-content-enter-from {
   opacity: 0;
-  transform: scale(0.95) translateY(-10px);
+  transform: scale(0.8); /* Start slightly smaller */
+}
+
+.modal-content-enter-to {
+  opacity: 1;
+  transform: scale(1); /* Scale to full size */
+}
+
+.modal-content-leave-from {
+  opacity: 1;
+  transform: scale(1); /* Full size */
 }
 
 .modal-content-leave-to {
   opacity: 0;
-  transform: scale(0.95) translateY(10px);
+  transform: scale(0.8); /* Shrink slightly when exiting */
 }
 
 /* Overall modal container transition */
 .modal-enter-active,
 .modal-leave-active {
-  transition: opacity 0.3s ease;
+  transition: opacity 0.22s ease;
 }
 
 .modal-enter-from,

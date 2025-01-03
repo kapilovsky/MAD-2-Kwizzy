@@ -4,9 +4,10 @@ SQLAlchemy==2.0.36
 Flask-SQLAlchemy==3.1.1
 Flask-Migrate==4.0.7
 Flask-Cors==5.0.0
-python-dotenv==1.0.1
 Flask-Mail==0.10.0
 Flask-Caching==2.3.0
-celery==5.4.0
 Flask-JWT-Extended==4.7.1
 Flask-RESTful==0.3.10
+Flask-Uploads==0.2.1
+python-dotenv==1.0.1
+celery==5.4.0

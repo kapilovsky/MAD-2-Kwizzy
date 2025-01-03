@@ -1,12 +1,18 @@
-from flask import Flask
+from flask import Flask, send_from_directory
+from werkzeug.utils import safe_join
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
+import os
 from os import path
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
 from flask_mail import Mail
 from flask_caching import Cache
+from dotenv import load_dotenv
+
+load_dotenv()
+
 
 db = SQLAlchemy()
 jwt = JWTManager()
@@ -20,6 +26,10 @@ DB_NAME = "database.db"
 def create_app():
     app = Flask(__name__)
     app.config.from_object("backend.config.Config")
+    app.config["ALLOWED_EXTENSIONS"] = set(
+        os.getenv("ALLOWED_EXTENSIONS", "").split(",")
+    )
+    app.config["UPLOAD_FOLDER"] = os.getenv("UPLOAD_FOLDER")
     api = Api(app)
     db.init_app(app)
     migrate.init_app(app, db)
@@ -42,6 +52,7 @@ def create_app():
     from .api.admin import Admin
     from .api.subject import SubjectApi
     from .api.chapter import ChapterApi
+    from .api.serve_file import FileApi
 
     api.add_resource(Student, "/api/student")
     api.add_resource(Login, "/api/login")
@@ -49,6 +60,7 @@ def create_app():
     api.add_resource(Admin, "/api/admin")
     api.add_resource(SubjectApi, "/api/subject")
     api.add_resource(ChapterApi, "/api/chapter")
+    api.add_resource(FileApi, "/api/uploads/subjects/<path:filename>")
 
     with app.app_context():
         db.create_all()

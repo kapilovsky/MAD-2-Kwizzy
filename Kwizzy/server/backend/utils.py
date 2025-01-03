@@ -1,6 +1,7 @@
 from flask import jsonify
 from functools import wraps
 from flask_jwt_extended import get_jwt
+from flask import current_app as app
 
 
 def role_required(role):
@@ -19,3 +20,10 @@ def role_required(role):
         return decorator
 
     return wrapper
+
+
+def allowed_file(filename):
+    return (
+        "." in filename
+        and filename.rsplit(".", 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
+    )

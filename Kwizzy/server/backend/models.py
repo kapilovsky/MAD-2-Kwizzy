@@ -38,11 +38,23 @@ class Subject(db.Model):
     subject_image = Column(String(255), nullable=True)
 
     def to_dict(self):
+        quiz_count = sum(len(chapter.quizzes) for chapter in self.chapters)
+        # Counting the number of distinct students who have attempted quizzes
+        # We join QuizResults with Quizzes, which are linked to Chapters
+        student_attempted_count = (
+            db.session.query(func.count(func.distinct(QuizResult.user_id)))
+            .join(Quiz, Quiz.id == QuizResult.quiz_id)
+            .join(Chapter, Chapter.id == Quiz.chapter_id)
+            .filter(Chapter.subject_id == self.id)
+            .scalar()
+        )
         return {
             "id": self.id,
             "name": self.name,
             "description": self.description,
             "subject_image": self.subject_image,
+            "quiz_count": quiz_count,
+            "students": student_attempted_count,
         }
 
     chapters = relationship(

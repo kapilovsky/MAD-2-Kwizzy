@@ -1,9 +1,12 @@
 from flask_restful import Resource
 from ..models import Subject
 from flask_jwt_extended import jwt_required
-from ..utils import role_required
+from ..utils import role_required, allowed_file
 from flask import request
 from .. import db
+import os
+from flask import current_app as app
+from werkzeug.utils import secure_filename
 
 
 class SubjectApi(Resource):
@@ -26,11 +29,10 @@ class SubjectApi(Resource):
     @role_required("admin")
     def post(self):
         try:
-            data = request.get_json()
-            print("Received data:", data)  # Debug print
-
-            if not data:
-                return {"message": "No input data provided"}, 400
+            name = request.form.get("name")
+            description = request.form.get("description")
+            image = request.files.get("image")
+            data = request.form
 
             required_fields = ["name", "description"]
             for field in required_fields:
@@ -42,11 +44,21 @@ class SubjectApi(Resource):
             if existing_subject:
                 return {"message": "A subject with this name already exists"}, 400
 
+            if image and allowed_file(image.filename):
+                upload_folder = app.config["UPLOAD_FOLDER"]
+                if not os.path.exists(upload_folder):
+                    os.makedirs(upload_folder)
+                filename = secure_filename(image.filename)
+                filepath = os.path.join(upload_folder, filename)
+                image.save(filepath)
+            else:
+                return {"message": "Invalid file type or no file uploaded"}, 400
+
             # Create new subject
             new_subject = Subject(
-                name=data.get("name"),
-                description=data.get("description"),
-                subject_image=data.get("subject_image"),
+                name=name,
+                description=description,
+                subject_image=filename,
             )
 
             print("Creating subject:", new_subject.to_dict())  # Debug print

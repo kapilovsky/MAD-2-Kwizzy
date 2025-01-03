@@ -104,13 +104,13 @@ onUnmounted(() => {
               <div class="text-center p-3 border-2 border-black rounded-lg">
                 <p class="text-sm text-gray-900">Students</p>
                 <p class="text-lg font-semibold text-gray-900">
-                  {{ activeSubject.studentCount }}
+                  {{ activeSubject.students }}
                 </p>
               </div>
               <div class="text-center p-3 border-2 border-black rounded-lg">
                 <p class="text-sm text-gray-900">Quizzes</p>
                 <p class="text-lg font-semibold text-gray-900">
-                  {{ activeSubject.quizCount }}
+                  {{ activeSubject.quiz_count }}
                 </p>
               </div>
             </div>
@@ -163,10 +163,10 @@ onUnmounted(() => {
           </p>
 
           <div class="mt-4 flex justify-between text-sm">
+            <span class="text-gray-600"> {{ subject.students }} Students </span>
             <span class="text-gray-600">
-              {{ subject.studentCount }} Students
+              {{ subject.quiz_count }} Quizzes
             </span>
-            <span class="text-gray-600"> {{ subject.quizCount }} Quizzes </span>
           </div>
         </div>
       </div>

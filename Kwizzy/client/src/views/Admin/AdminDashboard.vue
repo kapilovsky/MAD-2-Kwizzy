@@ -1,34 +1,48 @@
 <script setup>
 import Sidebar from "@/components/Admin/Sidebar.vue";
 import SubjectCard from "@/components/Admin/SubjectCard.vue";
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
+import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
 import CreateSubject from "@/components/Admin/CreateSubject.vue";
 const isCreateModalOpen = ref(false);
 
 const handleCreateSubject = (newSubject) => {
-  // Handle subject creation logic
-  console.log("New subject:", newSubject);
+  fetchSubjects(); // Refresh subjects after creation
   isCreateModalOpen.value = false;
 };
-const subjects = ref([
-  {
-    id: 1,
-    name: "Mathematics",
-    description: "Advanced mathematical concepts and problem-solving",
-    image: "src/assets/images/landing-page/app.jpg",
-    studentCount: 150,
-    quizCount: 12,
-  },
-  {
-    id: 2,
-    name: "Physics",
-    description: "Study of matter, energy, and their interactions",
-    image: "src/assets/images/landing-page/bg.png",
-    studentCount: 120,
-    quizCount: 8,
-  },
-  // Add more subjects...
-]);
+
+const subjects = ref([]);
+
+const fetchSubjects = async () => {
+  try {
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      throw new Error("No access token available");
+    }
+
+    const response = await axios.get(`${API_URL}/subject`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+
+    subjects.value = response.data.subjects.map((subject) => ({
+      ...subject,
+      image: `${API_URL}/uploads/subjects/${subject.subject_image}`,
+    }));
+    console.log("Fetched subjects:", subjects.value, subjects.value[0].image);
+  } catch (error) {
+    console.error(
+      "Error fetching subjects:",
+      error.response?.data || error.message
+    );
+  }
+};
+
+onMounted(() => {
+  fetchSubjects();
+});
 </script>
 
 <template>
