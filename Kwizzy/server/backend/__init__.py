@@ -52,6 +52,10 @@ def create_app():
     from .api.admin import Admin
     from .api.subject import SubjectApi
     from .api.chapter import ChapterApi
+    from .api.quiz import QuizApi
+    from .api.question import QuestionApi
+    from .api.options import OptionsApi
+    from .api.options import OptionsBulkApi
     from .api.serve_file import FileApi
 
     api.add_resource(Student, "/api/student")
@@ -60,6 +64,18 @@ def create_app():
     api.add_resource(Admin, "/api/admin")
     api.add_resource(SubjectApi, "/api/subject", "/api/subject/<int:subject_id>")
     api.add_resource(ChapterApi, "/api/chapter", "/api/chapter/<int:chapter_id>")
+    api.add_resource(QuizApi, "/api/quizzes", "/api/quizzes/<int:quiz_id>")
+    api.add_resource(
+        QuestionApi,
+        "/api/quizzes/<int:quiz_id>/questions",
+        "/api/quizzes/<int:quiz_id>/questions/<int:question_id>",
+    )
+    api.add_resource(
+        OptionsApi,
+        "/api/questions/<int:question_id>/options",
+        "/api/options/<int:option_id>",
+    )
+    api.add_resource(OptionsBulkApi, "/api/questions/<int:question_id>/options/bulk")
     api.add_resource(FileApi, "/api/uploads/subjects/<path:filename>")
 
     with app.app_context():
