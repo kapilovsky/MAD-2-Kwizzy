@@ -19,12 +19,6 @@ const handleKeyDown = (event) => {
   }
 };
 
-const handleClickOutside = (event) => {
-  if (modalRef.value && !modalRef.value.contains(event.target)) {
-    closeModal();
-  }
-};
-
 const closeModal = () => {
   activeSubject.value = null;
   isModalOpen.value = false;
@@ -93,7 +87,7 @@ onUnmounted(() => {
           <img
             :src="activeSubject.image"
             :alt="activeSubject.name"
-            class="w-full h-60 object-cover"
+            class="w-full h-80 object-cover"
           />
 
           <!-- Content -->

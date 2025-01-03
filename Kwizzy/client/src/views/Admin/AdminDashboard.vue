@@ -1,8 +1,8 @@
 <script setup>
-import Sidebar from "@/components/App/Sidebar.vue";
-import SubjectCard from "@/components/App/SubjectCard.vue";
+import Sidebar from "@/components/Admin/Sidebar.vue";
+import SubjectCard from "@/components/Admin/SubjectCard.vue";
 import { ref } from "vue";
-import CreateSubject from "@/components/App/CreateSubject.vue";
+import CreateSubject from "@/components/Admin/CreateSubject.vue";
 const isCreateModalOpen = ref(false);
 
 const handleCreateSubject = (newSubject) => {
