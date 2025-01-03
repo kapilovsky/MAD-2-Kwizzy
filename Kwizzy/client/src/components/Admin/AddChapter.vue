@@ -1,6 +1,8 @@
-<!-- AddChapter.vue -->
 <script setup>
 import { ref } from "vue";
+import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
+
 const props = defineProps({
   isOpen: Boolean,
   subjectId: {
@@ -20,17 +22,13 @@ const handleSubmit = async () => {
     const token = localStorage.getItem("access_token");
     if (!token) throw new Error("No access token available");
 
-    const response = await axios.post(
-      `${API_URL}/chapters`,
-      chapterData.value,
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }
-    );
-
-    emit("create", response.data);
+    const response = await axios.post(`${API_URL}/chapter`, chapterData.value, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    console.log("Response:", response.data.chapter);
+    emit("create", response.data.chapter);
     emit("close");
   } catch (error) {
     console.error("Error creating chapter:", error);
@@ -53,7 +51,7 @@ const handleSubmit = async () => {
       <div class="flex items-center justify-center min-h-screen pb-24">
         <div
           ref="modalRef"
-          class="bg-white shadow-2xl rounded-xl w-full max-w-[750px] p-3 px-4 relative z-10"
+          class="bg-white shadow-2xl rounded-xl w-full max-w-[700px] p-3 px-4 relative z-10"
           @click.stop
         >
           <form @submit.prevent="handleSubmit">
@@ -82,18 +80,19 @@ const handleSubmit = async () => {
             <div>
               <input type="text" v-model="chapterData.subject_id" hidden />
             </div>
+            <hr />
             <!-- Buttons -->
-            <div class="flex justify-end gap-3 mt-6">
+            <div class="flex justify-end gap-3 mt-3">
               <button
                 type="button"
                 @click="$emit('close')"
-                class="px-4 py-1 rounded-lg text-[12px] border-2 border-black text-black transition-colors duration-200 font-semibold"
+                class="px-4 py-2 rounded-lg text-[14px] border-2 border-black text-black transition-colors duration-200 font-semibold"
               >
                 Cancel
               </button>
               <button
                 type="submit"
-                class="px-4 py-1 rounded-lg text-[12px] bg-black text-white border-2 border-black font-semibold transition-colors duration-200"
+                class="px-4 py-1 rounded-lg text-[14px] bg-black text-white border-2 border-black font-semibold transition-colors duration-200"
               >
                 Create Chapter
               </button>

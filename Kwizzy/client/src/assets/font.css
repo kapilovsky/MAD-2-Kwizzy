@@ -1,0 +1,9 @@
+@font-face {
+  font-family: sohne;
+  src: url(./fonts/TestSohne-Buch-BF663d89cd32e6a.otf);
+}
+
+@font-face {
+  font-family: sohne-mono;
+  src: url(./fonts/TestSohneMono-Buch-BF663d89cbcec64.otf);
+}

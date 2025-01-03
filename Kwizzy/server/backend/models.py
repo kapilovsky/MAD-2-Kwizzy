@@ -48,6 +48,7 @@ class Subject(db.Model):
             .filter(Chapter.subject_id == self.id)
             .scalar()
         )
+        chapter_count = len(self.chapters)
         return {
             "id": self.id,
             "name": self.name,
@@ -55,6 +56,7 @@ class Subject(db.Model):
             "subject_image": self.subject_image,
             "quiz_count": quiz_count,
             "students": student_attempted_count,
+            "chapters": chapter_count,
         }
 
     chapters = relationship(

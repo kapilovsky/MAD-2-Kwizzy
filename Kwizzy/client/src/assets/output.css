@@ -798,6 +798,10 @@ video {
   margin-top: 2rem;
 }
 
+.mt-3 {
+  margin-top: 0.75rem;
+}
+
 .block {
   display: block;
 }
@@ -880,6 +884,10 @@ video {
 
 .h-screen {
   height: 100vh;
+}
+
+.h-\[150px\] {
+  height: 150px;
 }
 
 .min-h-screen {
@@ -984,6 +992,14 @@ video {
 
 .max-w-xl {
   max-width: 36rem;
+}
+
+.max-w-\[700px\] {
+  max-width: 700px;
+}
+
+.max-w-\[70px\] {
+  max-width: 70px;
 }
 
 .flex-1 {
@@ -1164,6 +1180,10 @@ video {
 
 .border-b {
   border-bottom-width: 1px;
+}
+
+.border-b-2 {
+  border-bottom-width: 2px;
 }
 
 .border-dashed {
@@ -1471,10 +1491,6 @@ video {
   padding-bottom: 6rem;
 }
 
-.pb-3 {
-  padding-bottom: 0.75rem;
-}
-
 .pl-10 {
   padding-left: 2.5rem;
 }
@@ -1547,6 +1563,10 @@ video {
   line-height: 1.75rem;
 }
 
+.text-\[14px\] {
+  font-size: 14px;
+}
+
 .font-bold {
   font-weight: 700;
 }
@@ -1563,6 +1583,10 @@ video {
   font-weight: 600;
 }
 
+.uppercase {
+  text-transform: uppercase;
+}
+
 .italic {
   font-style: italic;
 }
@@ -1573,6 +1597,22 @@ video {
 
 .tracking-tighter {
   letter-spacing: -0.05em;
+}
+
+.tracking-\[\] {
+  letter-spacing: ;
+}
+
+.tracking-\[-0\.6px\] {
+  letter-spacing: -0.6px;
+}
+
+.tracking-\[-1\.6px\] {
+  letter-spacing: -1.6px;
+}
+
+.tracking-\[-2px\] {
+  letter-spacing: -2px;
 }
 
 .text-\[\#acacac\] {
@@ -1828,10 +1868,6 @@ video {
 ::-moz-selection {
   background-color: #151515;
   color: #eeeeee;
-}
-
-.last\:border-b-0:last-child {
-  border-bottom-width: 0px;
 }
 
 .hover\:-translate-y-1:hover {

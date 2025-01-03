@@ -1,6 +1,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import "../../assets/font.css";
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 import Sidebar from "@/components/Admin/Sidebar.vue";
@@ -13,7 +14,6 @@ const subject = ref(null);
 const chapters = ref([]);
 const isAddChapterModalOpen = ref(false);
 
-// Fetch subject and its chapters
 const fetchSubjectDetails = async () => {
   try {
     const token = localStorage.getItem("access_token");
@@ -29,7 +29,7 @@ const fetchSubjectDetails = async () => {
       ...response.data,
       image: `${API_URL}/uploads/subjects/${response.data.subject_image}`,
     };
-
+    console.log("Fetched subject details:", subject.value);
     chapters.value = response.data.chapters || [];
   } catch (error) {
     console.error("Error fetching subject details:", error);
@@ -55,6 +55,11 @@ const fetchChapters = async () => {
   }
 };
 
+const handleChapterCreated = (chapter) => {
+  chapters.value.push(chapter);
+  isAddChapterModalOpen.value = false;
+};
+
 onMounted(() => {
   fetchSubjectDetails();
   fetchChapters();
@@ -65,11 +70,14 @@ onMounted(() => {
   <Sidebar>
     <!-- Breadcrumbs -->
     <div class="flex items-center gap-2 text-sm mb-6">
-      <router-link to="/admin" class="text-gray-500 hover:text-black">
+      <router-link
+        to="/admin"
+        class="text-gray-500 hover:text-black sohne-mono"
+      >
         Subjects
       </router-link>
       <span class="text-gray-500">/</span>
-      <span class="font-medium">{{ subject?.name }}</span>
+      <span class="font-medium sohne-mono">{{ subject?.name }}</span>
     </div>
 
     <!-- Subject Header -->
@@ -77,11 +85,12 @@ onMounted(() => {
       <img
         :src="subject?.image"
         :alt="subject?.name"
-        class="w-32 h-32 rounded-xl object-cover"
+        class="w-[150px] h-[150px] rounded-xl object-cover"
       />
       <div>
         <h1 class="text-4xl font-bold mb-2">{{ subject?.name }}</h1>
-        <p class="text-gray-600 mb-4">{{ subject?.description }}</p>
+        <p class="text-gray-600">{{ subject?.description }}</p>
+        <p class="text-gray-600 mb-4">{{ subject?.chapters }} Chapters</p>
         <button
           @click="isAddChapterModalOpen = true"
           class="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
@@ -103,39 +112,40 @@ onMounted(() => {
         </button>
       </div>
     </div>
-
     <!-- Chapters Table -->
-    <div class="bg-white rounded-xl shadow-sm border">
-      <div class="p-4 border-b">
-        <h2 class="text-xl font-semibold">Chapters</h2>
+    <div>
+      <div>
+        <h2 class="text-6xl font-semibold sohne tracking-[-2px] mb-4">
+          Chapters
+        </h2>
       </div>
-      <div class="p-4">
+      <div class="px-2">
         <table class="w-full">
           <thead>
-            <tr class="text-left border-b">
-              <th class="pb-3 font-semibold">Chapter Name</th>
-              <th class="pb-3 font-semibold">Questions</th>
-              <th class="pb-3 font-semibold">Created At</th>
-              <th class="pb-3 font-semibold">Actions</th>
+            <tr class="text-left text-sm border-b-2 border-black">
+              <th>Chapter Name</th>
+              <th>Description</th>
+              <th>Quizzes</th>
+              <th>Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr v-if="chapters.length === 0">
-              <td colspan="4" class="py-4 text-center text-gray-500">
+              <td colspan="4" class="py-4 text-center sohne text-gray-500">
                 No chapters found. Add your first chapter!
               </td>
             </tr>
             <tr
               v-for="chapter in chapters"
               :key="chapter.id"
-              class="border-b last:border-b-0"
+              class="border-b border-black"
             >
-              <td class="py-3">{{ chapter.name }}</td>
-              <td class="py-3">{{ chapter.questions_count || 0 }}</td>
-              <td class="py-3">
-                {{ new Date(chapter.created_at).toLocaleDateString() }}
+              <td class="py-2">{{ chapter.name }}</td>
+              <td class="py-2">{{ chapter.description }}</td>
+              <td class="py-2">
+                {{ chapter.quizzes || 0 }}
               </td>
-              <td class="py-3">
+              <td class="py-2">
                 <div class="flex items-center gap-2">
                   <button
                     @click="editChapter(chapter)"
@@ -193,5 +203,30 @@ onMounted(() => {
 </template>
 
 <style scoped>
-/* Add any specific styles here */
+.sohne {
+  font-family: sohne;
+}
+
+.sohne-mono {
+  font-family: sohne-mono;
+  text-transform: uppercase;
+}
+
+table th {
+  font-family: sohne-mono;
+  text-transform: uppercase;
+}
+table td {
+  font-family: sohne-mono;
+  font-size: 18px;
+  letter-spacing: -0.6px;
+}
+
+tbody tr {
+  transition: all 0.2s ease;
+}
+
+tbody tr:hover {
+  background-color: #f0f0ff;
+}
 </style>
