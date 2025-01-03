@@ -1,11 +1,12 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 const props = defineProps({ isOpen: Boolean });
 const emit = defineEmits(["close", "create"]);
 const modalRef = ref(null);
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 const subjectData = ref({ name: "", description: "", image: null });
+import CloseIcon from "../../assets/images/icons/close.svg";
 
 const handleSubmit = async () => {
   const formData = new FormData();
@@ -62,6 +63,20 @@ const removeImage = (event) => {
     fileInput.value = "";
   }
 };
+
+const handleEscKey = (event) => {
+  if (event.key === "Escape" && props.isOpen) {
+    emit("close");
+  }
+};
+
+onMounted(() => {
+  window.addEventListener("keydown", handleEscKey);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("keydown", handleEscKey);
+});
 </script>
 <template>
   <Transition name="fade">
@@ -80,6 +95,20 @@ const removeImage = (event) => {
           class="bg-white shadow-2xl rounded-xl w-full max-w-[750px] p-3 px-4 relative z-10"
           @click.stop
         >
+          <div class="flex justify-between items-center mb-4">
+            <p class="sohne-mono">
+              <span class="text-gray-500"> Admin / </span>Add Subject
+            </p>
+            <button
+              @click="$emit('close')"
+              class="p-1 text-black bg-[#f0f0f0] hover:bg-[#f0f0ff] rounded-md transition-colors duration-200 ease-linear flex items-center gap-1"
+            >
+              <component :is="CloseIcon" class="w-6 h-6" />[<span
+                class="sohne-mono"
+                >ESC</span
+              >]
+            </button>
+          </div>
           <form @submit.prevent="handleSubmit">
             <!-- Your existing form content -->
             <div>
@@ -170,13 +199,13 @@ const removeImage = (event) => {
                 <button
                   type="button"
                   @click="$emit('close')"
-                  class="px-4 py-1 rounded-lg text-[12px] border-2 border-black text-black transition-colors duration-200 font-semibold"
+                  class="px-4 py-1 rounded-lg text-[12px] border-2 border-black text-black transition-colors duration-200 font-semibold button"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  class="px-4 py-1 rounded-lg text-[12px] bg-black text-white border-2 border-black font-semibold transition-colors duration-200"
+                  class="px-4 py-1 rounded-lg text-[12px] bg-black text-white border-2 border-black font-semibold transition-colors duration-200 button"
                 >
                   Create Subject
                 </button>
@@ -190,6 +219,10 @@ const removeImage = (event) => {
 </template>
 
 <style scoped>
+.sohne-mono {
+  font-family: sohne-mono;
+  text-transform: uppercase;
+}
 /* Overall modal container transition */
 .modal-enter-active,
 .modal-leave-active {
@@ -256,16 +289,16 @@ textarea::-webkit-scrollbar-thumb {
   background: #888;
 }
 
-button {
+.button {
   transition: all 0.2s ease-in-out;
 }
 
-button:hover {
+.button:hover {
   transform: translateY(-1px);
   box-shadow: 0 5px 6px rgba(0, 0, 0, 0.1);
 }
 
-button:active {
+.button:active {
   transform: translateY(0);
 }
 </style>

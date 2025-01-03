@@ -1,10 +1,15 @@
 <script setup>
 import { ref, onMounted, onUnmounted } from "vue";
 import { RouterLink } from "vue-router";
+import Loader from "../Loader.vue";
 
 const props = defineProps({
   subjects: {
     type: Array,
+    required: true,
+  },
+  loading: {
+    type: Boolean,
     required: true,
   },
 });
@@ -12,8 +17,10 @@ const props = defineProps({
 
 <template>
   <div class="relative">
+    <Loader class="mt-44" v-if="loading" />
     <!-- Subject Grid -->
     <div
+      v-else
       class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
     >
       <div

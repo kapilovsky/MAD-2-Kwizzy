@@ -1,5 +1,5 @@
-const AdminDashboard = () => import("@/views/Admin/AdminDashboard.vue");
-const SubjectDetails = () => import("@/views/Admin/SubjectDetails.vue");
+import AdminDashboard from "@/views/Admin/AdminDashboard.vue";
+import SubjectDetails from "@/views/Admin/SubjectDetails.vue";
 
 const AdminRoutes = [
   {

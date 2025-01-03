@@ -9,6 +9,10 @@
   font-family: Inter;
 }
 
+button:focus {
+  outline: none;
+}
+
 ::selection {
   background-color: #151515;
   color: #eeeeee;

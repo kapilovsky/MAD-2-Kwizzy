@@ -1,6 +1,7 @@
-const Login = () => import("../views/Login.vue");
-const Signup = () => import("../views/Signup.vue");
-const LandingPage = () => import("../views/LandingPage.vue");
+import LandingPage from "../views/LandingPage.vue";
+import Login from "../views/Login.vue";
+import Signup from "../views/Signup.vue";
+const PageNotFound = () => import("../views/404.vue");
 
 const AuthRoutes = [
   {
@@ -17,6 +18,11 @@ const AuthRoutes = [
     path: "/signup",
     name: "Signup",
     component: Signup,
+  },
+  {
+    path: "/:catchAll(.*)",
+    name: "Page Not Found",
+    component: PageNotFound,
   },
 ];
 

@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, onUnmounted } from "vue";
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 import CloseIcon from "../../assets/images/icons/close.svg";
@@ -19,6 +19,13 @@ const props = defineProps({
     required: true,
   },
 });
+
+const handleEscKey = (event) => {
+  if (event.key === "Escape" && props.isOpen) {
+    emit("close");
+  }
+};
+
 const emit = defineEmits(["close", "create"]);
 const chapterData = ref({
   name: "",
@@ -36,6 +43,12 @@ onMounted(() => {
       subject_id: props.chapter.subject_id,
     };
   }
+
+  window.addEventListener("keydown", handleEscKey);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("keydown", handleEscKey);
 });
 
 const handleSubmit = async () => {
@@ -87,9 +100,12 @@ const handleSubmit = async () => {
             </p>
             <button
               @click="$emit('close')"
-              class="p-1 text-gray-700 hover:bg-[#f0f0ff] rounded-md transition-colors duration-200 ease-linear"
+              class="p-1 text-black bg-[#f0f0f0] hover:bg-[#f0f0ff] rounded-md transition-colors duration-200 ease-linear flex items-center gap-1"
             >
-              <component :is="CloseIcon" class="w-6 h-6" />
+              <component :is="CloseIcon" class="w-6 h-6" />[<span
+                class="sohne-mono"
+                >ESC</span
+              >]
             </button>
           </div>
 

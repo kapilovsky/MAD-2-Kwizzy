@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, watch } from "vue";
+import { ref, onMounted, watch, onUnmounted } from "vue";
 const props = defineProps({
   isOpen: Boolean,
   subject: {
@@ -27,6 +27,12 @@ const initializeForm = (subject) => {
   if (subject.subject_image) {
     // Assuming the image URL is constructed the same way as in your SubjectCard
     preview.value = `${API_URL}/uploads/subjects/${subject.subject_image}`;
+  }
+};
+
+const handleEscKey = (event) => {
+  if (event.key === "Escape" && props.isOpen) {
+    emit("close");
   }
 };
 
@@ -95,14 +101,12 @@ const removeImage = (event) => {
   }
 };
 
-// Optional: Debug logs
 onMounted(() => {
-  console.log("Subject prop:", props.subject);
-  console.log(
-    "Image URL:",
-    `${API_URL}/uploads/subjects/${props.subject.subject_image}`
-  );
-  console.log("Preview:", preview.value);
+  window.addEventListener("keydown", handleEscKey);
+});
+
+onUnmounted(() => {
+  window.removeEventListener("keydown", handleEscKey);
 });
 </script>
 

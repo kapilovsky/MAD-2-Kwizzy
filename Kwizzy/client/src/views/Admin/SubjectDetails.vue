@@ -10,6 +10,7 @@ import EditSubject from "@/components/Admin/EditSubject.vue";
 import AddChapter from "@/components/Admin/AddChapter.vue";
 import EditChapter from "@/components/Admin/EditChapter.vue";
 import SearchBar from "@/components/Admin/SearchBar.vue";
+import Loader from "@/components/Loader.vue";
 
 const route = useRoute();
 const router = useRouter();
@@ -22,9 +23,11 @@ const selectedChapter = ref(null);
 const isAddChapterModalOpen = ref(false);
 const isEditChapterModalOpen = ref(false);
 const isEditSubjectModalOpen = ref(false);
+const isLoading = ref(true);
 
 const fetchSubjectDetails = async () => {
   try {
+    isLoading.value = true;
     const token = localStorage.getItem("access_token");
     if (!token) throw new Error("No access token available");
 
@@ -41,11 +44,14 @@ const fetchSubjectDetails = async () => {
     chapters.value = response.data.chapters || [];
   } catch (error) {
     console.error("Error fetching subject details:", error);
+  } finally {
+    isLoading.value = false;
   }
 };
 
 const fetchChapters = async () => {
   try {
+    isLoading.value = true;
     const token = localStorage.getItem("access_token");
     if (!token) throw new Error("No access token available");
 
@@ -58,6 +64,8 @@ const fetchChapters = async () => {
     chapters.value = response.data.chapters || [];
   } catch (error) {
     console.error("Error fetching subject details:", error);
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -154,7 +162,8 @@ const handleSearch = (query) => {
 </script>
 
 <template>
-  <Sidebar>
+  <Loader v-if="isLoading" />
+  <Sidebar v-else>
     <header class="h-16 bg-white flex items-center justify-between gap-6 mb-2">
       <div class="flex items-center flex-1">
         <div class="flex-1 max-w-lg">
@@ -225,7 +234,7 @@ const handleSearch = (query) => {
       <div class="flex items-start gap-[80px]">
         <button
           @click="editSubject(subject)"
-          class="px-4 py-2 text-sm text-black rounded-lg hover:text-[#0000ff] transition-colors sohne-mono"
+          class="px-4 py-2 text-sm text-black rounded-lg hover:text-[#0000ff] transition-colors sohne-mono focus:outline-none"
         >
           <span class="relative">
             <sup class="absolute text-[12px] left-[-8px] sohne-mono">+</sup>

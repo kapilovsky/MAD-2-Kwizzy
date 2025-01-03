@@ -10,6 +10,7 @@ import logo from "../../assets/images/landing-page/white logo.png";
 
 const allSubjects = ref([]); // Store all subjects
 const searchQuery = ref(""); // Store search query
+const isLoading = ref(true);
 const isCreateModalOpen = ref(false);
 
 // Computed property for filtered subjects
@@ -34,6 +35,7 @@ const handleCreateSubject = (newSubject) => {
 
 const fetchSubjects = async () => {
   try {
+    isLoading.value = true;
     const token = localStorage.getItem("access_token");
     if (!token) {
       throw new Error("No access token available");
@@ -55,6 +57,8 @@ const fetchSubjects = async () => {
       "Error fetching subjects:",
       error.response?.data || error.message
     );
+  } finally {
+    isLoading.value = false;
   }
 };
 
@@ -93,7 +97,7 @@ onMounted(() => {
       <h1 class="text-4xl font-bold">Subjects</h1>
       <p>Manage and organize the subjects</p>
     </div>
-    <SubjectCard :subjects="filteredSubjects" />
+    <SubjectCard :subjects="filteredSubjects" :loading="isLoading" />
     <CreateSubject
       :is-open="isCreateModalOpen"
       @close="isCreateModalOpen = false"
