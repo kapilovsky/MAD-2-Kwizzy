@@ -1,21 +1,27 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import "../../assets/font.css";
+import logo from "../../assets/images/landing-page/white logo.png";
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 import Sidebar from "@/components/Admin/Sidebar.vue";
+import EditSubject from "@/components/Admin/EditSubject.vue";
 import AddChapter from "@/components/Admin/AddChapter.vue";
 import EditChapter from "@/components/Admin/EditChapter.vue";
+import SearchBar from "@/components/Admin/SearchBar.vue";
 
 const route = useRoute();
 const router = useRouter();
 const subjectId = route.params.id;
 const subject = ref(null);
 const chapters = ref([]);
+const searchQuery = ref("");
+
 const selectedChapter = ref(null);
 const isAddChapterModalOpen = ref(false);
 const isEditChapterModalOpen = ref(false);
+const isEditSubjectModalOpen = ref(false);
 
 const fetchSubjectDetails = async () => {
   try {
@@ -32,7 +38,6 @@ const fetchSubjectDetails = async () => {
       ...response.data,
       image: `${API_URL}/uploads/subjects/${response.data.subject_image}`,
     };
-    console.log("Fetched subject details:", subject.value);
     chapters.value = response.data.chapters || [];
   } catch (error) {
     console.error("Error fetching subject details:", error);
@@ -50,8 +55,6 @@ const fetchChapters = async () => {
       },
       params: { subject_id: subjectId },
     });
-
-    console.log("Full response data:", response.data);
     chapters.value = response.data.chapters || [];
   } catch (error) {
     console.error("Error fetching subject details:", error);
@@ -73,6 +76,15 @@ const handleChapterUpdated = (updatedChapter) => {
   isEditChapterModalOpen.value = false; // Close the edit modal
 };
 
+const handleSubjectUpdated = (updatedSubject) => {
+  subject.value = {
+    ...updatedSubject,
+    image: `${API_URL}/uploads/subjects/${updatedSubject.subject_image}`,
+  };
+  console.log("Updated subject:", subject.value);
+  isEditSubjectModalOpen.value = false;
+};
+
 onMounted(() => {
   fetchSubjectDetails();
   fetchChapters();
@@ -81,6 +93,26 @@ onMounted(() => {
 const openEditModal = (chapter) => {
   selectedChapter.value = chapter;
   isEditChapterModalOpen.value = true;
+};
+
+const editSubject = (subject) => {
+  isEditSubjectModalOpen.value = true;
+};
+
+const deleteSubject = async () => {
+  try {
+    const token = localStorage.getItem("access_token");
+    if (!token) throw new Error("No access token available");
+
+    await axios.delete(`${API_URL}/subject/${subjectId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    router.push("/admin/dashboard");
+  } catch (error) {
+    console.error("Error deleting subject:", error);
+  }
 };
 
 const deleteChapter = async (chapterId) => {
@@ -98,10 +130,55 @@ const deleteChapter = async (chapterId) => {
     console.error("Error deleting chapter:", error);
   }
 };
+
+const filteredChapters = computed(() => {
+  if (!searchQuery.value) {
+    return chapters.value;
+  }
+
+  return chapters.value.filter(
+    (chapter) =>
+      chapter.name.toLowerCase().includes(searchQuery.value.toLowerCase()) ||
+      chapter.description
+        .toLowerCase()
+        .includes(searchQuery.value.toLowerCase())
+  );
+});
+
+const handleSearch = (query) => {
+  searchQuery.value = query;
+  if (!query) {
+    fetchChapters();
+  }
+};
 </script>
 
 <template>
   <Sidebar>
+    <header class="h-16 bg-white flex items-center justify-between gap-6 mb-2">
+      <div class="flex items-center flex-1">
+        <div class="flex-1 max-w-lg">
+          <div class="relative">
+            <SearchBar
+              @search="handleSearch"
+              placeholder="Search chapters..."
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side Icons -->
+      <div class="flex items-center">
+        <div class="flex items-center gap-4">
+          <img
+            :src="logo"
+            alt="User avatar"
+            class="w-8 h-8 rounded-full mix-blend-difference"
+          />
+          <span class="text-sm font-medium text-gray-700">Admin</span>
+        </div>
+      </div>
+    </header>
     <!-- Breadcrumbs -->
     <div class="flex items-center gap-2 text-sm mb-6">
       <router-link
@@ -115,7 +192,7 @@ const deleteChapter = async (chapterId) => {
     </div>
 
     <!-- Subject Header -->
-    <div class="flex items-start gap-6 mb-8">
+    <div class="flex items-start gap-8 mb-8">
       <img
         :src="subject?.image"
         :alt="subject?.name"
@@ -145,6 +222,30 @@ const deleteChapter = async (chapterId) => {
           Add Chapter
         </button>
       </div>
+      <div class="flex items-start gap-[80px]">
+        <button
+          @click="editSubject(subject)"
+          class="px-4 py-2 text-sm text-black rounded-lg hover:text-[#0000ff] transition-colors sohne-mono"
+        >
+          <span class="relative">
+            <sup class="absolute text-[12px] left-[-8px] sohne-mono">+</sup>
+            Edit
+            <sup class="absolute text-[10px] font-mono"> [Subject] </sup>
+          </span>
+        </button>
+        <button
+          @click="deleteSubject"
+          class="px-4 py-2 text-sm text-black rounded-lg hover:text-[#ff0a0a] transition-colors sohne-mono"
+        >
+          <span class="relative">
+            Delete
+            <sup class="absolute text-[10px] font-mono"> [Subject]</sup>
+            <sup class="absolute text-[12px] top-[20px] right-[-8px] sohne-mono"
+              >+</sup
+            >
+          </span>
+        </button>
+      </div>
     </div>
     <!-- Chapters Table -->
     <div>
@@ -170,7 +271,7 @@ const deleteChapter = async (chapterId) => {
               </td>
             </tr>
             <tr
-              v-for="chapter in chapters"
+              v-for="chapter in filteredChapters"
               :key="chapter.id"
               class="border-b border-black"
             >
@@ -200,6 +301,18 @@ const deleteChapter = async (chapterId) => {
         </table>
       </div>
     </div>
+
+    <!-- Edit Subject Modal (create a separate component for this) -->
+    <EditSubject
+      v-if="isEditSubjectModalOpen"
+      :is-open="isEditSubjectModalOpen"
+      :subject="{
+        ...subject,
+        subject_image: subject.subject_image,
+      }"
+      @close="isEditSubjectModalOpen = false"
+      @update="handleSubjectUpdated"
+    />
 
     <!-- Add Chapter Modal (create a separate component for this) -->
     <AddChapter
@@ -245,7 +358,7 @@ table td {
 }
 
 tbody tr {
-  transition: all 0.2s ease;
+  transition: all 0.15s ease;
 }
 
 tbody tr:hover {

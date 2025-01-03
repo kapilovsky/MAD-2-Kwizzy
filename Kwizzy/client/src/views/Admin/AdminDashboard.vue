@@ -1,18 +1,36 @@
 <script setup>
 import Sidebar from "@/components/Admin/Sidebar.vue";
 import SubjectCard from "@/components/Admin/SubjectCard.vue";
-import { ref, onMounted } from "vue";
+import { ref, onMounted, computed } from "vue";
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 import CreateSubject from "@/components/Admin/AddSubject.vue";
+import SearchBar from "@/components/Admin/SearchBar.vue";
+import logo from "../../assets/images/landing-page/white logo.png";
+
+const allSubjects = ref([]); // Store all subjects
+const searchQuery = ref(""); // Store search query
 const isCreateModalOpen = ref(false);
 
-const handleCreateSubject = (newSubject) => {
-  fetchSubjects(); // Refresh subjects after creation
-  isCreateModalOpen.value = false;
+// Computed property for filtered subjects
+const filteredSubjects = computed(() => {
+  if (!searchQuery.value) return allSubjects.value;
+
+  return allSubjects.value.filter(
+    (subject) =>
+      subject.name.toLowerCase().includes(searchQuery.value) ||
+      subject.description.toLowerCase().includes(searchQuery.value)
+  );
+});
+
+const handleSearch = (query) => {
+  searchQuery.value = query;
 };
 
-const subjects = ref([]);
+const handleCreateSubject = (newSubject) => {
+  fetchSubjects();
+  isCreateModalOpen.value = false;
+};
 
 const fetchSubjects = async () => {
   try {
@@ -27,7 +45,7 @@ const fetchSubjects = async () => {
       },
     });
 
-    subjects.value = response.data.subjects.map((subject) => ({
+    allSubjects.value = response.data.subjects.map((subject) => ({
       ...subject,
       image: `${API_URL}/uploads/subjects/${subject.subject_image}`,
     }));
@@ -47,11 +65,35 @@ onMounted(() => {
 
 <template>
   <Sidebar>
+    <header class="h-16 bg-white flex items-center justify-between gap-6">
+      <div class="flex items-center flex-1">
+        <div class="flex-1 max-w-lg">
+          <div class="relative">
+            <SearchBar
+              @search="handleSearch"
+              placeholder="Search subjects..."
+            />
+          </div>
+        </div>
+      </div>
+
+      <!-- Right Side Icons -->
+      <div class="flex items-center">
+        <div class="flex items-center gap-4">
+          <img
+            :src="logo"
+            alt="User avatar"
+            class="w-8 h-8 rounded-full mix-blend-difference"
+          />
+          <span class="text-sm font-medium text-gray-700">Admin</span>
+        </div>
+      </div>
+    </header>
     <div class="mb-6">
       <h1 class="text-4xl font-bold">Subjects</h1>
       <p>Manage and organize the subjects</p>
     </div>
-    <SubjectCard :subjects="subjects" />
+    <SubjectCard :subjects="filteredSubjects" />
     <CreateSubject
       :is-open="isCreateModalOpen"
       @close="isCreateModalOpen = false"

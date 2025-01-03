@@ -1,4 +1,3 @@
-<!-- components/Sidebar/Sidebar.vue -->
 <script setup>
 import { ref, provide } from "vue";
 import { useRouter } from "vue-router";
@@ -6,6 +5,7 @@ import logo from "../../assets/images/landing-page/white logo.png";
 const router = useRouter();
 const isOpen = ref(false);
 const isMobileOpen = ref(false);
+import SearchBar from "./SearchBar.vue";
 
 import HomeIcon from "../../assets/images/icons/home.svg";
 import QuizIcon from "../../assets/images/icons/quiz.svg";
@@ -162,41 +162,9 @@ const handleLogout = () => {
 
     <!-- Main Content -->
     <div class="flex-1 flex flex-col overflow-hidden">
-      <!-- Top Navigation Bar -->
-      <header
-        class="h-16 bg-white flex items-center justify-between px-6 gap-6"
-      >
-        <div class="flex items-center flex-1">
-          <div class="ml-4 flex-1 max-w-lg">
-            <div class="relative">
-              <component
-                :is="SearchIcon"
-                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
-              />
-              <input
-                type="text"
-                placeholder="Search "
-                class="w-full pl-10 pr-4 py-2 bg-gray-100 text-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
-              />
-            </div>
-          </div>
-        </div>
-
-        <!-- Right Side Icons -->
-        <div class="flex items-center">
-          <div class="flex items-center gap-4">
-            <img
-              :src="logo"
-              alt="User avatar"
-              class="w-8 h-8 rounded-full mix-blend-difference"
-            />
-            <span class="text-sm font-medium text-gray-700">Admin</span>
-          </div>
-        </div>
-      </header>
 
       <!-- Main Content Area -->
-      <main class="flex-1 overflow-y-auto bg-white p-6">
+      <main class="flex-1 overflow-y-auto bg-white px-6">
         <slot></slot>
       </main>
     </div>

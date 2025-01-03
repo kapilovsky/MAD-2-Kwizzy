@@ -7,12 +7,29 @@ from .. import db
 import os
 from flask import current_app as app
 from werkzeug.utils import secure_filename
+from sqlalchemy import or_
 
 
 class SubjectApi(Resource):
     @jwt_required()
     @role_required("admin")
     def get(self, subject_id=None):
+        search_query = request.args.get("search", "").lower()
+
+        if search_query:
+            subject_list = Subject.query.filter(
+                or_(
+                    Subject.name.ilike(f"%{search_query}%"),
+                    Subject.description.ilike(f"%{search_query}%"),
+                )
+            ).all()
+            return {
+                "subjects": list(map(lambda subject: subject.to_dict(), subject_list)),
+            }
+
+        if subject_id and not Subject.query.get(subject_id):
+            return {"message": "Subject not found"}, 404
+
         if subject_id:
             subject = Subject.query.get_or_404(subject_id)
             return subject.to_dict(), 200

@@ -27,7 +27,7 @@ const handleLogin = async () => {
     localStorage.setItem("refresh_token", refresh_token);
 
     if (user_role == "admin") {
-      router.push("/admin");
+      router.push("/admin/dashboard");
     } else if (user_role === "student") {
       router.push("/student");
     }

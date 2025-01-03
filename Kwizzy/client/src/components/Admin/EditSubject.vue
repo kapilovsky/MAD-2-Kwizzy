@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 const props = defineProps({
   isOpen: Boolean,
   subject: {
@@ -13,19 +13,33 @@ import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 const subjectData = ref({ name: "", description: "", image: null });
 const preview = ref(null);
+import CloseIcon from "../../assets/images/icons/close.svg";
 
 // Initialize form with existing subject data
-onMounted(() => {
+const initializeForm = (subject) => {
   subjectData.value = {
-    name: props.subject.name,
-    description: props.subject.description,
-    image: null,
+    name: subject.name,
+    description: subject.description,
+    image: subject.subject_image,
   };
-  // Set initial preview if image exists
-  if (props.subject.image_url) {
-    preview.value = props.subject.image_url;
+
+  // Set initial preview using the full image URL
+  if (subject.subject_image) {
+    // Assuming the image URL is constructed the same way as in your SubjectCard
+    preview.value = `${API_URL}/uploads/subjects/${subject.subject_image}`;
   }
-});
+};
+
+// Watch for changes in the subject prop
+watch(
+  () => props.subject,
+  (newSubject) => {
+    if (newSubject) {
+      initializeForm(newSubject);
+    }
+  },
+  { immediate: true }
+);
 
 const handleSubmit = async () => {
   const formData = new FormData();
@@ -52,7 +66,7 @@ const handleSubmit = async () => {
       }
     );
 
-    emit("update");
+    emit("update", response.data);
     console.log("Response:", response.data);
     emit("close");
   } catch (error) {
@@ -80,6 +94,16 @@ const removeImage = (event) => {
     fileInput.value = "";
   }
 };
+
+// Optional: Debug logs
+onMounted(() => {
+  console.log("Subject prop:", props.subject);
+  console.log(
+    "Image URL:",
+    `${API_URL}/uploads/subjects/${props.subject.subject_image}`
+  );
+  console.log("Preview:", preview.value);
+});
 </script>
 
 <template>
@@ -100,6 +124,21 @@ const removeImage = (event) => {
           class="bg-white shadow-2xl rounded-xl w-full max-w-[750px] p-3 px-4 relative z-10"
           @click.stop
         >
+          <div class="relative">
+            <p class="sohne-mono mb-4">
+              <span class="text-gray-500">{{ subject.name }}</span> / Edit
+              Subject
+            </p>
+            <button
+              @click="$emit('close')"
+              class="absolute top-0 right-0 bg-[#f0f0f0] p-1 text-black hover:bg-[#f0f0ff] rounded-md transition-colors duration-200 ease-linear flex items-center gap-1"
+            >
+              <component :is="CloseIcon" class="w-6 h-6" />[<span
+                class="sohne-mono"
+                >ESC</span
+              >]
+            </button>
+          </div>
           <form @submit.prevent="handleSubmit">
             <div>
               <input
@@ -187,13 +226,13 @@ const removeImage = (event) => {
                 <button
                   type="button"
                   @click="$emit('close')"
-                  class="px-4 py-1 rounded-lg text-[12px] border-2 border-black text-black transition-colors duration-200 font-semibold"
+                  class="px-4 py-1 rounded-lg text-[12px] border-2 border-black text-black transition-colors duration-200 font-semibold button"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  class="px-4 py-1 rounded-lg text-[12px] bg-black text-white border-2 border-black font-semibold transition-colors duration-200"
+                  class="px-4 py-1 rounded-lg text-[12px] bg-black text-white border-2 border-black font-semibold transition-colors duration-200 button"
                 >
                   Save Changes
                 </button>
@@ -207,6 +246,10 @@ const removeImage = (event) => {
 </template>
 
 <style scoped>
+.sohne-mono {
+  font-family: sohne-mono;
+  text-transform: uppercase;
+}
 /* Overall modal container transition */
 .modal-enter-active,
 .modal-leave-active {
@@ -273,16 +316,16 @@ textarea::-webkit-scrollbar-thumb {
   background: #888;
 }
 
-button {
+.button {
   transition: all 0.2s ease-in-out;
 }
 
-button:hover {
+.button:hover {
   transform: translateY(-1px);
   box-shadow: 0 5px 6px rgba(0, 0, 0, 0.1);
 }
 
-button:active {
+.button:active {
   transform: translateY(0);
 }
 </style>

@@ -3,9 +3,13 @@ const SubjectDetails = () => import("@/views/Admin/SubjectDetails.vue");
 
 const AdminRoutes = [
   {
-    path: "/admin",
+    path: "/admin/dashboard",
     name: "AdminDashboard",
     component: AdminDashboard,
+  },
+  {
+    path: "/admin",
+    redirect: "/admin/dashboard",
   },
   {
     path: "/admin/subject/:id",
