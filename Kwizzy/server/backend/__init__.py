@@ -58,8 +58,8 @@ def create_app():
     api.add_resource(Login, "/api/login")
     api.add_resource(Register, "/api/register")
     api.add_resource(Admin, "/api/admin")
-    api.add_resource(SubjectApi, "/api/subject")
-    api.add_resource(ChapterApi, "/api/chapter")
+    api.add_resource(SubjectApi, "/api/subject", "/api/subject/<int:subject_id>")
+    api.add_resource(ChapterApi, "/api/chapter", "/api/chapter/<int:chapter_id>")
     api.add_resource(FileApi, "/api/uploads/subjects/<path:filename>")
 
     with app.app_context():

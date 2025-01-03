@@ -1,18 +1,38 @@
 <script setup>
-import { ref } from "vue";
-const props = defineProps({ isOpen: Boolean });
-const emit = defineEmits(["close", "create"]);
+import { ref, onMounted } from "vue";
+const props = defineProps({
+  isOpen: Boolean,
+  subject: {
+    type: Object,
+    required: true,
+  },
+});
+const emit = defineEmits(["close", "update"]);
 const modalRef = ref(null);
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 const subjectData = ref({ name: "", description: "", image: null });
+const preview = ref(null);
+
+// Initialize form with existing subject data
+onMounted(() => {
+  subjectData.value = {
+    name: props.subject.name,
+    description: props.subject.description,
+    image: null,
+  };
+  // Set initial preview if image exists
+  if (props.subject.image_url) {
+    preview.value = props.subject.image_url;
+  }
+});
 
 const handleSubmit = async () => {
   const formData = new FormData();
   formData.append("name", subjectData.value.name);
   formData.append("description", subjectData.value.description);
   if (subjectData.value.image) {
-    formData.append("image", subjectData.value.image); // Append image file
+    formData.append("image", subjectData.value.image);
   }
 
   try {
@@ -20,28 +40,27 @@ const handleSubmit = async () => {
     if (!token) {
       throw new Error("No access token available");
     }
-    console.log("FormData entries:");
-    formData.forEach((value, key) => {
-      console.log(key, value);
-    });
 
-    const response = await axios.post(`${API_URL}/subject`, formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.put(
+      `${API_URL}/subject/${props.subject.id}`,
+      formData,
+      {
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
 
-    emit("create");
+    emit("update");
     console.log("Response:", response.data);
     emit("close");
   } catch (error) {
     console.error("Server response data:", error.response?.data);
-    alert(error.response?.data?.message || "Error during creation");
+    alert(error.response?.data?.message || "Error during update");
   }
 };
 
-const preview = ref(null);
 const handleImageUpload = (event) => {
   const file = event.target.files[0];
   if (file) {
@@ -54,7 +73,6 @@ const removeImage = (event) => {
   event.preventDefault();
   preview.value = null;
   subjectData.value.image = null;
-  // Reset the file input if needed
   const fileInput = event.target
     .closest("label")
     .querySelector('input[type="file"]');
@@ -63,14 +81,16 @@ const removeImage = (event) => {
   }
 };
 </script>
+
 <template>
   <Transition name="fade">
     <div v-if="isOpen">
       <div
         class="absolute inset-0 bg-black/20 backdrop-blur-[3px]"
         @click="$emit('close')"
-      ></div></div
-  ></Transition>
+      ></div>
+    </div>
+  </Transition>
 
   <Transition name="modal">
     <div v-if="isOpen" class="fixed inset-0 z-50">
@@ -81,7 +101,6 @@ const removeImage = (event) => {
           @click.stop
         >
           <form @submit.prevent="handleSubmit">
-            <!-- Your existing form content -->
             <div>
               <input
                 v-model="subjectData.name"
@@ -92,7 +111,6 @@ const removeImage = (event) => {
               />
             </div>
 
-            <!-- Description -->
             <div>
               <textarea
                 v-model="subjectData.description"
@@ -102,7 +120,7 @@ const removeImage = (event) => {
                 placeholder="Add description..."
               ></textarea>
             </div>
-            <!-- Image Upload -->
+
             <div class="flex items-end justify-between">
               <label class="block">
                 <input
@@ -114,7 +132,6 @@ const removeImage = (event) => {
                 <div
                   class="relative w-40 h-40 border-2 border-dashed border-gray-300 rounded-lg cursor-pointer hover:bg-gray-50"
                 >
-                  <!-- Remove button -->
                   <button
                     type="button"
                     v-if="preview"
@@ -165,7 +182,7 @@ const removeImage = (event) => {
                   </div>
                 </div>
               </label>
-              <!-- Buttons -->
+
               <div class="flex justify-end gap-3 mt-6">
                 <button
                   type="button"
@@ -178,7 +195,7 @@ const removeImage = (event) => {
                   type="submit"
                   class="px-4 py-1 rounded-lg text-[12px] bg-black text-white border-2 border-black font-semibold transition-colors duration-200"
                 >
-                  Create Subject
+                  Save Changes
                 </button>
               </div>
             </div>

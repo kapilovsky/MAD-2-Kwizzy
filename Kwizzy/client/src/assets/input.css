@@ -8,3 +8,14 @@
   box-sizing: border-box;
   font-family: Inter;
 }
+
+::selection {
+  background-color: #151515;
+  color: #eeeeee;
+}
+
+/* For Firefox */
+::-moz-selection {
+  background-color: #151515;
+  color: #eeeeee;
+}
