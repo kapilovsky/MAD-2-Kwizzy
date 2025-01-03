@@ -44,15 +44,11 @@ class QuizApi(Resource):
 
             # Get all quizzes with filters
             chapter_id = request.args.get("chapter_id")
-            search_query = request.args.get("search_query", "").strip()
 
             query = Quiz.query
 
             if chapter_id:
                 query = query.filter(Quiz.chapter_id == chapter_id)
-            if search_query:
-                query = query.filter(Quiz.name.ilike(f"%{search_query}%"))
-
             quizzes = query.all()
 
             return {

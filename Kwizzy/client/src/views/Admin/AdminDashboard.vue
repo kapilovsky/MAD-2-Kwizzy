@@ -93,7 +93,7 @@ onMounted(() => {
         </div>
       </div>
     </header>
-    <div class="mb-6">
+    <div class="mb-6 mt-4">
       <h1 class="text-4xl font-bold">Subjects</h1>
       <p>Manage and organize the subjects</p>
     </div>

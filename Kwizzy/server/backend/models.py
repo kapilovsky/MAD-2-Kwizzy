@@ -75,11 +75,13 @@ class Chapter(db.Model):
     description = Column(String(255), nullable=False)
 
     def to_dict(self):
+        quizzes = len(self.quizzes)
         return {
             "id": self.id,
             "name": self.name,
             "description": self.description,
             "subject_id": self.subject_id,
+            "total_quizzes": quizzes,
         }
 
     quizzes = relationship(

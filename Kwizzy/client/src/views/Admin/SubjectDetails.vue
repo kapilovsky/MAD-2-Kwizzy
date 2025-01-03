@@ -11,6 +11,7 @@ import AddChapter from "@/components/Admin/AddChapter.vue";
 import EditChapter from "@/components/Admin/EditChapter.vue";
 import SearchBar from "@/components/Admin/SearchBar.vue";
 import Loader from "@/components/Loader.vue";
+import { RouterLink } from "vue-router";
 
 const route = useRoute();
 const router = useRouter();
@@ -41,7 +42,6 @@ const fetchSubjectDetails = async () => {
       ...response.data,
       image: `${API_URL}/uploads/subjects/${response.data.subject_image}`,
     };
-    chapters.value = response.data.chapters || [];
   } catch (error) {
     console.error("Error fetching subject details:", error);
   } finally {
@@ -155,9 +155,6 @@ const filteredChapters = computed(() => {
 
 const handleSearch = (query) => {
   searchQuery.value = query;
-  if (!query) {
-    fetchChapters();
-  }
 };
 </script>
 
@@ -284,7 +281,16 @@ const handleSearch = (query) => {
               :key="chapter.id"
               class="border-b border-black"
             >
-              <td class="py-2">▞ &nbsp;{{ chapter.name }}</td>
+              <RouterLink
+                :to="`/admin/subject/${subject.id}/chapter/${chapter.id}`"
+              >
+                <td class="py-2">
+                  ▞ &nbsp;<span class="hover:text-[#0000ff]">{{
+                    chapter.name
+                  }}</span>
+                </td>
+              </RouterLink>
+
               <td class="py-2">{{ chapter.description }}</td>
               <td class="py-2">
                 {{ chapter.quizzes || 0 }}
@@ -346,7 +352,7 @@ const handleSearch = (query) => {
   </Sidebar>
 </template>
 
-<style scoped>
+<style>
 .sohne {
   font-family: sohne;
 }
@@ -360,8 +366,9 @@ table th {
   font-family: sohne-mono;
   text-transform: uppercase;
 }
-table td {
-  font-family: sohne-mono;
+table td,
+table td span {
+  font-family: monospace;
   font-size: 18px;
   letter-spacing: -0.6px;
 }
