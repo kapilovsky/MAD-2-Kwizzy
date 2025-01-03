@@ -6,13 +6,16 @@ import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 import Sidebar from "@/components/Admin/Sidebar.vue";
 import AddChapter from "@/components/Admin/AddChapter.vue";
+import EditChapter from "@/components/Admin/EditChapter.vue";
 
 const route = useRoute();
 const router = useRouter();
 const subjectId = route.params.id;
 const subject = ref(null);
 const chapters = ref([]);
+const selectedChapter = ref(null);
 const isAddChapterModalOpen = ref(false);
+const isEditChapterModalOpen = ref(false);
 
 const fetchSubjectDetails = async () => {
   try {
@@ -60,10 +63,41 @@ const handleChapterCreated = (chapter) => {
   isAddChapterModalOpen.value = false;
 };
 
+const handleChapterUpdated = (updatedChapter) => {
+  const index = chapters.value.findIndex(
+    (chapter) => chapter.id === updatedChapter.id
+  );
+  if (index !== -1) {
+    chapters.value[index] = updatedChapter; // Update the chapter in the array
+  }
+  isEditChapterModalOpen.value = false; // Close the edit modal
+};
+
 onMounted(() => {
   fetchSubjectDetails();
   fetchChapters();
 });
+
+const openEditModal = (chapter) => {
+  selectedChapter.value = chapter;
+  isEditChapterModalOpen.value = true;
+};
+
+const deleteChapter = async (chapterId) => {
+  try {
+    const token = localStorage.getItem("access_token");
+    if (!token) throw new Error("No access token available");
+
+    await axios.delete(`${API_URL}/chapter/${chapterId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    fetchChapters();
+  } catch (error) {
+    console.error("Error deleting chapter:", error);
+  }
+};
 </script>
 
 <template>
@@ -140,7 +174,7 @@ onMounted(() => {
               :key="chapter.id"
               class="border-b border-black"
             >
-              <td class="py-2">{{ chapter.name }}</td>
+              <td class="py-2">▞ &nbsp;{{ chapter.name }}</td>
               <td class="py-2">{{ chapter.description }}</td>
               <td class="py-2">
                 {{ chapter.quizzes || 0 }}
@@ -148,40 +182,16 @@ onMounted(() => {
               <td class="py-2">
                 <div class="flex items-center gap-2">
                   <button
-                    @click="editChapter(chapter)"
-                    class="p-1 text-gray-600 hover:text-black"
+                    @click="openEditModal(chapter)"
+                    class="py-[2px] px-1 text-gray-600 hover:text-[#0000ff] sohne-mono text-[12px] border-dotted border border-gray-400"
                   >
-                    <svg
-                      class="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"
-                      />
-                    </svg>
+                    EDIT
                   </button>
                   <button
                     @click="deleteChapter(chapter.id)"
-                    class="p-1 text-gray-600 hover:text-red-600"
+                    class="py-[2px] px-1 text-gray-600 hover:text-red-600 sohne-mono text-[12px] border-dotted border border-gray-400"
                   >
-                    <svg
-                      class="w-5 h-5"
-                      fill="none"
-                      stroke="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path
-                        stroke-linecap="round"
-                        stroke-linejoin="round"
-                        stroke-width="2"
-                        d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"
-                      />
-                    </svg>
+                    DELETE
                   </button>
                 </div>
               </td>
@@ -196,8 +206,20 @@ onMounted(() => {
       v-if="isAddChapterModalOpen"
       :is-open="isAddChapterModalOpen"
       :subject-id="route.params.id"
+      :subject-name="subject.name"
       @close="isAddChapterModalOpen = false"
       @create="handleChapterCreated"
+    />
+
+    <!-- Edit Chapter Modal (create a separate component for this) -->
+    <EditChapter
+      v-if="isEditChapterModalOpen"
+      :is-open="isEditChapterModalOpen"
+      :subject-id="route.params.id"
+      :subject-name="subject.name"
+      :chapter="selectedChapter"
+      @close="isEditChapterModalOpen = false"
+      @update="handleChapterUpdated"
     />
   </Sidebar>
 </template>

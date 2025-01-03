@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, watch } from "vue";
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 import CloseIcon from "../../assets/images/icons/close.svg";
@@ -14,6 +14,10 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  chapter: {
+    type: Object,
+    required: true,
+  },
 });
 const emit = defineEmits(["close", "create"]);
 const chapterData = ref({
@@ -22,22 +26,38 @@ const chapterData = ref({
   subject_id: props.subjectId,
 });
 
+const old_chapter_name = props.chapter.name;
+
+onMounted(() => {
+  if (props.chapter) {
+    chapterData.value = {
+      name: props.chapter.name,
+      description: props.chapter.description,
+      subject_id: props.chapter.subject_id,
+    };
+  }
+});
+
 const handleSubmit = async () => {
   try {
     const token = localStorage.getItem("access_token");
     if (!token) throw new Error("No access token available");
 
-    const response = await axios.post(`${API_URL}/chapter`, chapterData.value, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
+    const response = await axios.put(
+      `${API_URL}/chapter/${props.chapter.id}`,
+      chapterData.value,
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
     console.log("Response:", response.data.chapter);
-    emit("create", response.data.chapter);
+    emit("update", response.data.chapter);
     emit("close");
   } catch (error) {
-    console.error("Error creating chapter:", error);
-    alert(error.response?.data?.message || "Error creating chapter");
+    console.error("Error updating chapter:", error);
+    alert(error.response?.data?.message || "Error updating chapter");
   }
 };
 </script>
@@ -61,7 +81,9 @@ const handleSubmit = async () => {
         >
           <div class="flex justify-between items-center mb-4">
             <p class="sohne-mono">
-              <span class="text-gray-500">{{ subjectName }}</span> / New Chapter
+              <span class="text-gray-500">{{ subjectName }} / </span
+              ><span class="text-gray-500">{{ old_chapter_name }}</span> / Edit
+              Chapter
             </p>
             <button
               @click="$emit('close')"
@@ -90,7 +112,8 @@ const handleSubmit = async () => {
                 required
                 class="w-full bg-white text-gray-900 description resize-none outline-none"
                 placeholder="Add description..."
-              ></textarea>
+                >{{ chapterData.description }}</textarea
+              >
             </div>
 
             <div>
@@ -110,7 +133,7 @@ const handleSubmit = async () => {
                 type="submit"
                 class="px-4 py-1 rounded-lg text-[14px] bg-black text-white border-2 border-black font-semibold transition-colors duration-200 button"
               >
-                Create Chapter
+                Save Changes
               </button>
             </div>
           </form>
