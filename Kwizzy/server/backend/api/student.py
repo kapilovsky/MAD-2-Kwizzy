@@ -228,7 +228,7 @@ class Student(Resource):
             if not self.validate_pagination_params(
                 request.args.get("page", 1), request.args.get("per_page", 10)
             ):
-                return self.format_response(None, 400, "Invalid pagination parameters")
+                return (None, 400, "Invalid pagination parameters")
             if student_id:
                 student = User.query.filter_by(id=student_id, role="student").first()
                 if not student:
@@ -288,18 +288,16 @@ class Student(Resource):
 
             pagination = query.paginate(page=page, per_page=per_page)
 
-            return self.format_response(
-                {
-                    "students": [self.to_dict(student) for student in pagination.items],
-                    "total": pagination.total,
-                    "pages": pagination.pages,
-                    "current_page": page,
-                    "per_page": per_page,
-                }
-            )
+            return {
+                "students": [self.to_dict(student) for student in pagination.items],
+                "total": pagination.total,
+                "pages": pagination.pages,
+                "current_page": page,
+                "per_page": per_page,
+            }
 
         except Exception as e:
-            return self.format_response(None, 500, f"Error fetching students: {str(e)}")
+            return (None, 500, f"Error fetching students: {str(e)}")
 
     @jwt_required()
     @role_required("admin")
@@ -329,13 +327,6 @@ class Student(Resource):
         except ValueError:
             return False
         return True
-
-    def format_response(self, data, status_code=200, message=None):
-        """Format API response"""
-        response = {"status": "success" if status_code < 400 else "error", "data": data}
-        if message:
-            response["message"] = message
-        return response, status_code
 
 
 class StudentStatistics(Resource):

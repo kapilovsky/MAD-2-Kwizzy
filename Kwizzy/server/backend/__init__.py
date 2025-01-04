@@ -75,11 +75,12 @@ def create_app():
     from .api.options import OptionsBulkApi
     from .api.serve_file import FileApi
 
-    api.add_resource(Student, "/api/student", "/api/student/<int:student_id>")
-    api.add_resource(Student, "/api/student", "/api/student/<int:student_id>")
+    api.add_resource(Student, "/api/students", "/api/student/<int:student_id>")
     api.add_resource(StudentStatistics, "/api/student/statistics")
     api.add_resource(StudentActivity, "/api/student/<int:student_id>/activity")
-    api.add_resource(StudentSubjectPerformance, "/api/student/<int:student_id>/subjects")
+    api.add_resource(
+        StudentSubjectPerformance, "/api/student/<int:student_id>/subjects"
+    )
     api.add_resource(Login, "/api/login")
     api.add_resource(Register, "/api/register")
     api.add_resource(Admin, "/api/admin")
