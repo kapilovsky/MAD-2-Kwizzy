@@ -8,6 +8,7 @@ const CreateQuiz = () =>
   import(/* webpackPrefetch: true */ "@/views/Admin/CreateQuiz.vue");
 const EditQuiz = () =>
   import(/* webpackPrefetch: true */ "@/views/Admin/EditQuiz.vue");
+const StudentDetails = () => import("@/views/Admin/StudentDetails.vue");
 
 const AdminRoutes = [
   {
@@ -48,6 +49,11 @@ const AdminRoutes = [
     path: "/admin/subject/:subjectId/chapter/:chapterId/quiz/:quizId/edit",
     name: "EditQuiz",
     component: EditQuiz,
+  },
+  {
+    path: "/admin/student/:id",
+    name: "StudentDetails",
+    component: StudentDetails,
   },
 ];
 
