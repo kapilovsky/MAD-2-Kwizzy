@@ -4,20 +4,6 @@ import logo from "../../assets/images/landing-page/logo.png";
 
 import { ref } from "vue";
 
-const activeSection = ref("");
-
-const handleScroll = (sectionId) => {
-  const element = document.getElementById(sectionId);
-  if (element) {
-    const offset = element.offsetTop - 20;
-    window.scrollTo({
-      top: offset,
-      behavior: "smooth",
-    });
-    activeSection.value = sectionId;
-  }
-};
-
 const footerLinks = {
   product: {
     title: "Product",

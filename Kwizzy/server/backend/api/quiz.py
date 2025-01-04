@@ -175,7 +175,13 @@ class QuizApi(Resource):
             if "price" in data:
                 quiz.price = data["price"]
             if "time_duration" in data:
-                quiz.time_duration = data["time_duration"]
+                try:
+                    time_duration = data["time_duration"]
+                    hours, minutes = map(int, time_duration.split(":"))
+                    total_seconds = hours * 3600 + minutes * 60
+                    quiz.time_duration = total_seconds
+                except ValueError:
+                    return {"message": "Invalid time format"}, 400
             if "chapter_id" in data:
                 if not Chapter.query.get(data["chapter_id"]):
                     return {"message": "Chapter not found"}, 404

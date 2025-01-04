@@ -54,6 +54,24 @@ const fetchData = async () => {
   }
 };
 
+const deleteQuiz = async (quizId) => {
+  try {
+    isLoading.value = true;
+    const token = localStorage.getItem("access_token");
+    if (!token) throw new Error("No access token available");
+    await axios.delete(`${API_URL}/quizzes/${quizId}`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+    await fetchData();
+  } catch (error) {
+    console.error("Error deleting quiz:", error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
 const filteredQuizzes = computed(() => {
   if (!searchQuery.value) {
     return quizzes.value;
@@ -168,8 +186,14 @@ onMounted(async () => {
               class="border-b-2 border-black"
             >
               <td class="py-2 relative">
-                <span class="absolute top-[2px]">&lhblk;</span>
-                &nbsp;&nbsp;<span class="font-medium">{{ quiz.name }}</span>
+                <span class="absolute top-[2px] left-[-10px]">&lhblk;</span>
+                <RouterLink
+                  :to="`/admin/subject/${subjectId}/chapter/${chapterId}/quiz/${quiz.id}`"
+                >
+                  &nbsp;&nbsp;<span class="hover:text-[#0000ff]">{{
+                    quiz.name
+                  }}</span>
+                </RouterLink>
               </td>
               <td class="py-2">
                 <span class="font-medium">{{ quiz.question_count }}</span>

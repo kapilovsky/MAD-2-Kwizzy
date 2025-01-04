@@ -122,6 +122,18 @@ const validateQuiz = () => {
       throw new Error(`Question ${idx + 1} must have at least 2 options`);
     }
 
+    const correctOptionsCount = question.options.filter(
+      (opt) => opt.is_correct
+    ).length;
+
+    if (correctOptionsCount === 0) {
+      throw new Error(`Question ${idx + 1} must have one correct answer`);
+    }
+
+    if (correctOptionsCount > 1) {
+      throw new Error(`Question ${idx + 1} can only have one correct answer`);
+    }
+
     const hasCorrectOption = question.options.some((opt) => opt.is_correct);
     if (!hasCorrectOption) {
       throw new Error(
@@ -166,6 +178,15 @@ const handleSubmit = async () => {
   } finally {
     isLoading.value = false;
   }
+};
+
+const handleOptionSelection = (questionIndex, optionIndex) => {
+  // Uncheck all other options for this question
+  quizData.questions[questionIndex].options.forEach((opt, idx) => {
+    if (idx !== optionIndex) {
+      opt.is_correct = false;
+    }
+  });
 };
 
 onMounted(() => {
@@ -370,7 +391,9 @@ onMounted(() => {
                 <div class="flex-shrink-0">
                   <input
                     v-model="option.is_correct"
-                    type="checkbox"
+                    type="radio"
+                    :name="`question-${qIndex}`"
+                    @change="handleOptionSelection(qIndex, oIndex)"
                     class="w-4 h-4"
                   />
                 </div>
