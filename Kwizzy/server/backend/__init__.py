@@ -60,7 +60,12 @@ def create_app():
         return response
 
     from .api.auth import Login, Register
-    from .api.student import Student
+    from .api.student import (
+        Student,
+        StudentActivity,
+        StudentStatistics,
+        StudentSubjectPerformance,
+    )
     from .api.admin import Admin
     from .api.subject import SubjectApi
     from .api.chapter import ChapterApi
@@ -70,7 +75,11 @@ def create_app():
     from .api.options import OptionsBulkApi
     from .api.serve_file import FileApi
 
-    api.add_resource(Student, "/api/student")
+    api.add_resource(Student, "/api/student", "/api/student/<int:student_id>")
+    api.add_resource(Student, "/api/student", "/api/student/<int:student_id>")
+    api.add_resource(StudentStatistics, "/api/student/statistics")
+    api.add_resource(StudentActivity, "/api/student/<int:student_id>/activity")
+    api.add_resource(StudentSubjectPerformance, "/api/student/<int:student_id>/subjects")
     api.add_resource(Login, "/api/login")
     api.add_resource(Register, "/api/register")
     api.add_resource(Admin, "/api/admin")
