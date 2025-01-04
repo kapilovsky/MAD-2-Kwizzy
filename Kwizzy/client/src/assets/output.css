@@ -649,10 +649,6 @@ video {
   bottom: 1.5rem;
 }
 
-.bottom-8 {
-  bottom: 2rem;
-}
-
 .left-0 {
   left: 0px;
 }
@@ -683,10 +679,6 @@ video {
 
 .right-6 {
   right: 1.5rem;
-}
-
-.right-8 {
-  right: 2rem;
 }
 
 .right-\[-8px\] {
@@ -850,6 +842,10 @@ video {
   margin-top: -40px;
 }
 
+.mt-\[150px\] {
+  margin-top: 150px;
+}
+
 .block {
   display: block;
 }
@@ -926,6 +922,10 @@ video {
   height: 375px;
 }
 
+.h-\[40px\] {
+  height: 40px;
+}
+
 .h-full {
   height: 100%;
 }
@@ -984,6 +984,10 @@ video {
 
 .w-\[200px\] {
   width: 200px;
+}
+
+.w-\[40px\] {
+  width: 40px;
 }
 
 .w-\[5rem\] {
@@ -1142,6 +1146,10 @@ video {
 
 .gap-2 {
   gap: 0.5rem;
+}
+
+.gap-24 {
+  gap: 6rem;
 }
 
 .gap-3 {
@@ -1335,6 +1343,11 @@ video {
 .bg-\[\#000000\] {
   --tw-bg-opacity: 1;
   background-color: rgb(0 0 0 / var(--tw-bg-opacity, 1));
+}
+
+.bg-\[\#0000dd\] {
+  --tw-bg-opacity: 1;
+  background-color: rgb(0 0 221 / var(--tw-bg-opacity, 1));
 }
 
 .bg-\[\#192227\] {
@@ -2096,6 +2109,11 @@ button:focus {
   transform: translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y));
 }
 
+.hover\:bg-\[\#161616\]:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(22 22 22 / var(--tw-bg-opacity, 1));
+}
+
 .hover\:bg-\[\#f0f0ff\]:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(240 240 255 / var(--tw-bg-opacity, 1));
@@ -2137,15 +2155,6 @@ button:focus {
 
 .hover\:bg-white\/90:hover {
   background-color: rgb(255 255 255 / 0.9);
-}
-
-.hover\:bg-\[\]:hover {
-  background-color: ;
-}
-
-.hover\:bg-\[\#161616\]:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(22 22 22 / var(--tw-bg-opacity, 1));
 }
 
 .hover\:fill-\[\#de0000\]:hover {

@@ -76,13 +76,12 @@ const handleScroll = (sectionId) => {
                 Ready to ace your exams? Dive into Kwizzy – your ultimate quiz
                 companion!
               </span>
-              <a
-                href="#"
+              <RouterLink
+                to="/login"
                 class="font-bold text-black underline underline-offset-4 flex items-center justify-center"
               >
-                Start Your Journey Now
-                <ion-icon name="arrow-forward-sharp"></ion-icon>
-              </a>
+                Start Your Journey Now 🡲
+              </RouterLink>
             </p>
           </div>
         </div>
@@ -210,9 +209,6 @@ const handleScroll = (sectionId) => {
               <span class="rainbow-text animated-gradient">
                 Because Traditional Studying is so 2010
               </span>
-              <!-- <span class="inline-flex items-center gap-1">
-            Read More <ion-icon name="arrow-forward-sharp"></ion-icon>
-          </span> -->
             </a>
           </div>
           <div class="hero-content">
@@ -230,6 +226,7 @@ const handleScroll = (sectionId) => {
 
           <div class="flex justify-center mt-8">
             <button
+              @click="handleScroll('call-to-action')"
               class="px-4 py-2 font-medium text-black bg-white rounded-lg"
             >
               Get Started
@@ -267,7 +264,7 @@ const handleScroll = (sectionId) => {
           </p>
 
           <div class="mt-8">
-            <RouterLink to="/dashboard">
+            <RouterLink to="/login">
               <button class="px-4 py-2 bg-white text-black rounded-lg">
                 Start Your Journey Now
               </button>
