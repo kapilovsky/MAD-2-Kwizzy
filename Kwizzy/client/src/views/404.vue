@@ -92,7 +92,7 @@ onUnmounted(() => {
   </div>
 </template>
 
-<style scoped>
+<style>
 @font-face {
   font-family: chintzy;
   src: url(../assets/fonts/chintzy.ttf);
@@ -105,18 +105,6 @@ onUnmounted(() => {
 @font-face {
   font-family: arame-mono;
   src: url(../assets/fonts/ArameMono.ttf);
-}
-
-.txtart {
-  font-family: "lucida grande", tahoma, verdana, arial, sans-serif;
-  height: 800px;
-  width: 600px;
-  whitespace: pre;
-}
-
-textarea {
-  whitespace: pre;
-  height: 800px;
 }
 
 .chintzy {

@@ -1,4 +1,3 @@
-<!-- views/Admin/Users.vue -->
 <script setup>
 import { ref, onMounted, watch } from "vue";
 import { studentService } from "@/services/studentService";
@@ -10,6 +9,7 @@ import FilterIcon from "@/assets/images/icons/filter.svg";
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 import user from "@/assets/images/icons/user.svg";
+import logo from "@/assets/images/landing-page/white logo.png";
 
 const students = ref([]);
 const loading = ref(true);
@@ -81,15 +81,14 @@ onMounted(() => {
 <template>
   <Sidebar>
     <!-- Header Section -->
-    <div class="h-16 bg-white flex items-center justify-between px-6 mb-6">
-      <h1 class="text-2xl font-bold">Users</h1>
-      <div class="flex items-center gap-4">
-        <div class="relative">
+    <div class="h-16 bg-white flex items-center justify-between px-6 mb-2">
+      <div class="flex items-center gap-4 max-w-xl w-full">
+        <div class="relative w-full">
           <input
             v-model="searchQuery"
             type="text"
             placeholder="Search students..."
-            class="pl-10 pr-4 py-2 border border-gray-200 rounded-lg w-64 focus:outline-none focus:ring-2 focus:ring-blue-500"
+            class="pl-10 pr-4 py-2 border border-gray-200 rounded-lg w-full focus:outline-none focus:ring-2 focus:ring-black"
             @input="handleSearch"
           />
           <component
@@ -102,25 +101,37 @@ onMounted(() => {
           <component :is="FilterIcon" class="w-5 h-5" />
         </button>
       </div>
+      <div>
+        <div class="flex items-center gap-4">
+          <img
+            :src="logo"
+            alt="User avatar"
+            class="w-8 h-8 rounded-full mix-blend-exclusion"
+          />
+          <span class="text-sm font-medium text-gray-700">Admin</span>
+        </div>
+      </div>
     </div>
 
     <!-- Main Content -->
     <div class="px-6">
       <!-- Stats Cards -->
+      <h1 class="text-4xl font-bold sohne mb-4">Users</h1>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div class="bg-white rounded-xl p-6 border border-gray-100">
-          <div class="text-sm text-gray-500 mb-2">Total Students</div>
-          <div class="text-2xl font-bold">{{ totalStudents }}</div>
+        <div class="bg-white">
+          <div class="text-sm text-gray-900 mb-2 sohne-mono">
+            🡲 Total Students: {{ totalStudents }}
+          </div>
         </div>
         <!-- Add more stat cards as needed -->
       </div>
 
       <!-- Table Section -->
-      <div class="bg-white rounded-xl border border-gray-100 overflow-hidden">
+      <div class="bg-white rounded-xl overflow-hidden">
         <div class="overflow-x-auto">
           <table class="w-full">
             <thead>
-              <tr class="bg-gray-50 border-b border-gray-100">
+              <tr class="border-b-2 border-gray-900">
                 <th
                   v-for="header in [
                     'Name',
@@ -130,14 +141,16 @@ onMounted(() => {
                     'Performance',
                   ]"
                   :key="header"
-                  class="px-6 py-4 text-left text-sm font-medium text-gray-500"
+                  class="px-3 text-left font-medium text-gray-900"
                   @click="toggleSort(header.toLowerCase())"
                 >
-                  <div class="flex items-center gap-2 cursor-pointer group">
+                  <div
+                    class="flex py-[2px] items-center text-sm sohne-mono font-bold gap-2 cursor-pointer group"
+                  >
                     {{ header }}
                     <component
                       :is="SortIcon"
-                      class="w-4 h-4 opacity-0 group-hover:opacity-100"
+                      class="w-5 h-5 opacity-0 group-hover:opacity-100"
                       :class="{
                         'opacity-100': selectedSort === header.toLowerCase(),
                         'rotate-180':
@@ -148,21 +161,21 @@ onMounted(() => {
                   </div>
                 </th>
                 <th
-                  class="px-6 py-4 text-right text-sm font-medium text-gray-500"
+                  class="px-3 text-sm text-right sohne-mono font-bold text-gray-900"
                 >
                   Actions
                 </th>
               </tr>
             </thead>
 
-            <tbody class="divide-y divide-gray-100">
+            <tbody class="divide-y">
               <template v-if="!loading">
                 <tr
                   v-for="student in students"
                   :key="student.id"
-                  class="hover:bg-gray-50 transition-colors duration-200"
+                  class="hover:bg-[#fefff4] transition-colors duration-200"
                 >
-                  <td class="px-6 py-4">
+                  <td class="px-3 py-1">
                     <div class="flex items-center gap-3">
                       <img
                         v-if="student.profile_pic"
@@ -170,32 +183,36 @@ onMounted(() => {
                         :alt="student.name"
                         class="w-8 h-8 rounded-full object-cover"
                       />
-                      <component
+                      <img
                         v-else
-                        :is="user"
+                        :src="`https://ui-avatars.com/api/?name=${encodeURIComponent(
+                          student.name
+                        )}&color=7F9CF5&background=EBF4FF`"
+                        :alt="student.name"
                         class="w-8 h-8 rounded-full object-cover"
                       />
 
                       <div>
-                        <div class="font-medium text-gray-900">
+                        <div class="font-medium text-gray-900 arame-mono">
                           {{ student.name }}
-                        </div>
-                        <div class="text-sm text-gray-500">
-                          ID: {{ student.id }}
                         </div>
                       </div>
                     </div>
                   </td>
-                  <td class="px-6 py-4 text-gray-600">{{ student.email }}</td>
-                  <td class="px-6 py-4">
-                    <span class="px-2 py-1 bg-gray-100 rounded-full text-sm">
+                  <td class="px-3 py-1 text-gray-900 arame-mono">
+                    {{ student.email }}
+                  </td>
+                  <td class="px-3 py-4">
+                    <span
+                      class="px-3 py-1 bg-[#EBF4FF] rounded-full text-sm sohne-mono uppercase text-[#7F9CF5]"
+                    >
                       {{ student.qualification }}
                     </span>
                   </td>
-                  <td class="px-6 py-4 text-gray-600">
+                  <td class="px-3 py-1 text-gray-900">
                     {{ formatDate(student.dob) }}
                   </td>
-                  <td class="px-6 py-4">
+                  <td class="px-3 py-1">
                     <div class="flex items-center gap-2">
                       <div
                         class="w-full bg-gray-200 rounded-full h-2.5 dark:bg-gray-700"
@@ -212,15 +229,15 @@ onMounted(() => {
                           :style="`width: ${student.quiz_stats.performance_percentage}%`"
                         ></div>
                       </div>
-                      <span class="text-sm text-gray-600">
+                      <span class="text-sm text-gray-900 arame-mono">
                         {{ student.quiz_stats.performance_percentage }}%
                       </span>
                     </div>
                   </td>
-                  <td class="px-6 py-4 text-right">
+                  <td class="px-3 py-1 text-right">
                     <RouterLink
                       :to="`/admin/student/${student.id}`"
-                      class="text-blue-600 hover:text-blue-800 font-medium text-sm"
+                      class="text-[#7F9CF5] bg-[#EBF4FF] hover:text-[#0000ff] transition-all duration-200 px-3 py-1 rounded sohne-mono text-sm"
                     >
                       View Details
                     </RouterLink>
@@ -238,10 +255,8 @@ onMounted(() => {
         </div>
 
         <!-- Pagination -->
-        <div
-          class="px-6 py-4 bg-gray-50 border-t border-gray-100 flex items-center justify-between"
-        >
-          <div class="text-sm text-gray-500">
+        <div class="px-3 py-2 bg-[#fefff0] flex items-center justify-between">
+          <div class="text-sm sohne text-neutral-500">
             Showing {{ (currentPage - 1) * itemsPerPage + 1 }} to
             {{ Math.min(currentPage * itemsPerPage, totalStudents) }} of
             {{ totalStudents }} students
@@ -251,7 +266,7 @@ onMounted(() => {
             <button
               @click="currentPage--"
               :disabled="currentPage === 1"
-              class="px-3 py-1 rounded border border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="px-3 py-1 rounded border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed sohne"
             >
               Previous
             </button>
@@ -275,7 +290,7 @@ onMounted(() => {
             <button
               @click="currentPage++"
               :disabled="currentPage === totalPages"
-              class="px-3 py-1 rounded border border-gray-200 disabled:opacity-50 disabled:cursor-not-allowed"
+              class="px-3 py-1 rounded border border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed sohne"
             >
               Next
             </button>
@@ -288,4 +303,9 @@ onMounted(() => {
 
 <style scoped>
 /* Add any additional styles here */
+.arame-mono {
+  font-family: Inter;
+  font-weight: 600;
+  font-size: 16px;
+}
 </style>
