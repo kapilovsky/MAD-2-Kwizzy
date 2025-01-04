@@ -31,6 +31,7 @@ defineProps({
   position: relative;
   width: 80px;
   height: 80px;
+  /* color: white; */
 }
 .lds-hourglass:after {
   content: " ";

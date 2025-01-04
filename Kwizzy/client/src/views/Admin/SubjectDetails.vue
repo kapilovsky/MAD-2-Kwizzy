@@ -205,7 +205,7 @@ const handleSearch = (query) => {
         class="w-[150px] h-[150px] rounded-xl object-cover"
       />
       <div>
-        <h1 class="text-4xl font-bold mb-2">{{ subject?.name }}</h1>
+        <h1 class="text-4xl font-bold mb-2 magnetic">{{ subject?.name }}</h1>
         <p class="text-gray-600">{{ subject?.description }}</p>
         <p class="text-gray-600 mb-4">{{ subject?.chapters }} Chapters</p>
         <button
@@ -256,7 +256,7 @@ const handleSearch = (query) => {
     <!-- Chapters Table -->
     <div>
       <div>
-        <h2 class="text-6xl font-semibold sohne tracking-[-2px] mb-4">
+        <h2 class="text-6xl font-semibold sohne tracking-[-2px] mb-4 magnetic">
           Chapters
         </h2>
       </div>
@@ -299,13 +299,13 @@ const handleSearch = (query) => {
                 <div class="flex items-center gap-2">
                   <button
                     @click="openEditModal(chapter)"
-                    class="py-[2px] px-1 text-gray-600 hover:text-[#0000ff] sohne-mono text-[12px] border-dotted border border-gray-400"
+                    class="py-[2px] px-1 text-gray-600 hover:text-[#0000ff] sohne-mono text-[12px] border-dotted border border-gray-400 link-hover"
                   >
                     EDIT
                   </button>
                   <button
                     @click="deleteChapter(chapter.id)"
-                    class="py-[2px] px-1 text-gray-600 hover:text-red-600 sohne-mono text-[12px] border-dotted border border-gray-400"
+                    class="py-[2px] px-1 text-gray-600 hover:text-red-600 sohne-mono text-[12px] border-dotted border border-gray-400 link-hover"
                   >
                     DELETE
                   </button>
@@ -356,7 +356,6 @@ const handleSearch = (query) => {
 .sohne {
   font-family: sohne;
 }
-
 .sohne-mono {
   font-family: sohne-mono;
   text-transform: uppercase;

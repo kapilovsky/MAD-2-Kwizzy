@@ -19,69 +19,34 @@ const chapter = ref(null);
 const quizzes = ref([]);
 const searchQuery = ref("");
 
-const fetchChapter = async () => {
+const fetchData = async () => {
   try {
     isLoading.value = true;
     const token = localStorage.getItem("access_token");
     if (!token) {
       throw new Error("No access token available");
     }
-    const response = await axios.get(`${API_URL}/chapter/${chapterId.value}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    chapter.value = response.data;
-    isLoading.value = false;
-  } catch (error) {
-    console.error("Error fetching chapter:", error);
-    isLoading.value = false;
-  } finally {
-    isLoading.value = false;
-  }
-};
 
-const fetchSubject = async () => {
-  try {
-    isLoading.value = true;
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-      throw new Error("No access token available");
-    }
-    const response = await axios.get(`${API_URL}/subject/${subjectId.value}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    subject.value = response.data;
-    isLoading.value = false;
-  } catch (error) {
-    console.error("Error fetching subject:", error);
-    isLoading.value = false;
-  } finally {
-    isLoading.value = false;
-  }
-};
+    // Fetch data
+    const [chapterRes, subjectRes, quizzesRes] = await Promise.all([
+      axios.get(`${API_URL}/chapter/${chapterId.value}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      axios.get(`${API_URL}/subject/${subjectId.value}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      axios.get(`${API_URL}/quizzes`, {
+        headers: { Authorization: `Bearer ${token}` },
+        params: { chapter_id: chapterId.value },
+      }),
+    ]);
 
-const fetchQuizzes = async () => {
-  try {
-    isLoading.value = true;
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-      throw new Error("No access token available");
-    }
-    const response = await axios.get(`${API_URL}/quizzes`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-      params: { chapter_id: chapterId.value },
-    });
-    quizzes.value = response.data.quizzes;
-    console.log("Fetched quizzes:", quizzes.value);
-    isLoading.value = false;
+    // Set data
+    chapter.value = chapterRes.data;
+    subject.value = subjectRes.data;
+    quizzes.value = quizzesRes.data.quizzes;
   } catch (error) {
-    console.error("Error fetching quizzes:", error);
-    isLoading.value = false;
+    console.error("Error fetching data:", error);
   } finally {
     isLoading.value = false;
   }
@@ -102,9 +67,7 @@ const handleSearch = (query) => {
 };
 
 onMounted(async () => {
-  await fetchChapter();
-  await fetchSubject();
-  await fetchQuizzes();
+  await fetchData();
 });
 </script>
 
