@@ -159,7 +159,7 @@ onMounted(async () => {
       <h2 class="text-5xl font-semibold sohne tracking-[-2px]">Quizzes</h2>
       <RouterLink
         :to="`/admin/subject/${subjectId}/chapter/${chapterId}/quiz/create`"
-        class="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors duration-200 flex items-center gap-2"
+        class="px-4 py-2 bg-black text-white rounded-lg hover:bg-[#161616] hover:scale-95 transition-all duration-200 flex items-center gap-2 font-semibold"
       >
         <component :is="AddIcon" class="w-5 h-5" />
         Create Quiz
@@ -207,11 +207,15 @@ onMounted(async () => {
 
               <td class="py-2">
                 <div class="flex items-center gap-2">
-                  <button
-                    class="py-[2px] px-1 text-gray-600 hover:text-[#0000ff] sohne-mono text-[12px] border-dotted border border-gray-400"
+                  <RouterLink
+                    :to="`/admin/subject/${subjectId}/chapter/${chapterId}/quiz/${quiz.id}/edit`"
                   >
-                    EDIT
-                  </button>
+                    <button
+                      class="py-[2px] px-1 text-gray-600 hover:text-[#0000ff] sohne-mono text-[12px] border-dotted border border-gray-400"
+                    >
+                      EDIT
+                    </button>
+                  </RouterLink>
 
                   <button
                     @click="deleteQuiz(quiz.id)"

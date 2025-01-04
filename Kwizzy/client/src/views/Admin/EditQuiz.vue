@@ -1,5 +1,5 @@
 <script setup>
-import { ref, reactive, onMounted } from "vue";
+import { ref, reactive, onMounted, useTemplateRef } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import Sidebar from "@/components/Admin/Sidebar.vue";
@@ -10,61 +10,74 @@ import DeleteIcon from "@/assets/images/icons/delete.svg";
 
 const route = useRoute();
 const router = useRouter();
-
 const API_URL = import.meta.env.VITE_API_URL;
 
+const isLoading = ref(true);
 const subjectName = ref(null);
 const chapterName = ref(null);
 
-const isLoading = ref(false);
-const chapterId = route.params.chapterId;
 const subjectId = route.params.subjectId;
+const chapterId = route.params.chapterId;
+const quizId = route.params.quizId;
 
-const getNames = async () => {
-  try {
-    isLoading.value = true;
-    const token = localStorage.getItem("access_token");
-    if (!token) throw new Error("No access token available");
-    const [subjectRes, chapterRes] = await Promise.all([
-      axios.get(`${API_URL}/subject/${subjectId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }),
-      axios.get(`${API_URL}/chapter/${chapterId}`, {
-        headers: {
-          Authorization: `Bearer ${token}`,
-        },
-      }),
-    ]);
-    subjectName.value = subjectRes.data.name;
-    chapterName.value = chapterRes.data.name;
-  } catch (error) {
-    console.log("Error", error);
-  } finally {
-    isLoading.value = false;
-  }
+const headerRef = useTemplateRef("headerRef");
+const scrollToTop = () => {
+  headerRef.value.scrollIntoView({ behavior: "smooth", block: "start" });
 };
 
-// Initialize with one question
+// Quiz data structure
 const quizData = reactive({
   name: "",
   description: "",
   time_duration: "",
   price: 0,
-  questions: [
-    {
-      title: "",
-      text: "",
-      options: [
-        { text: "", is_correct: false },
-        { text: "", is_correct: false },
-        { text: "", is_correct: false },
-        { text: "", is_correct: false },
-      ],
-    },
-  ],
+  questions: [],
 });
+
+// Fetch all required data
+const fetchData = async () => {
+  try {
+    isLoading.value = true;
+    const token = localStorage.getItem("access_token");
+    if (!token) throw new Error("No access token available");
+
+    // Fetch all data concurrently
+    const [quizRes, subjectRes, chapterRes] = await Promise.all([
+      axios.get(`${API_URL}/quizzes/${quizId}?include_answers=true`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      axios.get(`${API_URL}/subject/${subjectId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+      axios.get(`${API_URL}/chapter/${chapterId}`, {
+        headers: { Authorization: `Bearer ${token}` },
+      }),
+    ]);
+
+    // Populate quiz data
+    quizData.name = quizRes.data.name;
+    quizData.description = quizRes.data.description;
+    quizData.time_duration = quizRes.data.time_duration;
+    quizData.price = quizRes.data.price;
+    quizData.questions = quizRes.data.questions.map((q) => ({
+      id: q.id,
+      title: q.title,
+      text: q.text,
+      options: q.options.map((opt) => ({
+        id: opt.id,
+        text: opt.text,
+        is_correct: opt.is_correct,
+      })),
+    }));
+
+    subjectName.value = subjectRes.data.name;
+    chapterName.value = chapterRes.data.name;
+  } catch (error) {
+    console.error("Error fetching data:", error);
+  } finally {
+    isLoading.value = false;
+  }
+};
 
 // Add a new question
 const addQuestion = () => {
@@ -91,14 +104,12 @@ const addOption = (questionIndex) => {
 // Remove option from a specific question
 const removeOption = (questionIndex, optionIndex) => {
   if (quizData.questions[questionIndex].options.length > 2) {
-    // Minimum 2 options
     quizData.questions[questionIndex].options.splice(optionIndex, 1);
   }
 };
 
 const removeQuestion = (index) => {
   if (quizData.questions.length > 1) {
-    // Keep at least one question
     quizData.questions.splice(index, 1);
   }
 };
@@ -134,13 +145,6 @@ const validateQuiz = () => {
       throw new Error(`Question ${idx + 1} can only have one correct answer`);
     }
 
-    const hasCorrectOption = question.options.some((opt) => opt.is_correct);
-    if (!hasCorrectOption) {
-      throw new Error(
-        `Question ${idx + 1} must have at least one correct answer`
-      );
-    }
-
     const hasEmptyOption = question.options.some((opt) => !opt.text.trim());
     if (hasEmptyOption) {
       throw new Error(`All options in Question ${idx + 1} must have text`);
@@ -156,22 +160,17 @@ const handleSubmit = async () => {
     const token = localStorage.getItem("access_token");
     if (!token) throw new Error("No access token available");
 
-    const response = await axios.post(
-      `${API_URL}/quizzes`,
-      {
-        ...quizData,
-        chapter_id: chapterId,
+    const response = await axios.put(`${API_URL}/quizzes/${quizId}`, quizData, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/json",
       },
-      {
-        headers: {
-          Authorization: `Bearer ${token}`,
-          "Content-Type": "application/json",
-        },
-      }
-    );
+    });
+
+    console.log("Quiz updated:", response.data);
 
     router.push(
-      `/admin/subject/${route.params.subjectId}/chapter/${chapterId}`
+      `/admin/subject/${subjectId}/chapter/${chapterId}/quiz/${quizId}`
     );
   } catch (error) {
     alert(error.response?.data?.message || error.message);
@@ -181,23 +180,22 @@ const handleSubmit = async () => {
 };
 
 onMounted(() => {
-  getNames();
+  fetchData();
 });
 </script>
 
 <template>
   <Loader v-if="isLoading" />
   <Sidebar v-else>
-    <header class="h-16 bg-white flex items-center justify-between gap-6 mb-2">
+    <header ref="headerRef" class="h-16 bg-white flex items-center justify-between gap-6 mb-2">
       <div class="flex items-center flex-1">
         <div class="flex-1 max-w-lg">
           <h2 class="text-3xl font-bold sohne-mono">
-            <span class="text-[34px]">🡲</span> Quiz Form
+            <span class="text-[34px]">🡲</span> Edit Quiz
           </h2>
         </div>
       </div>
 
-      <!-- Right Side Icons -->
       <div class="flex items-center">
         <div class="flex items-center gap-4">
           <img
@@ -209,6 +207,7 @@ onMounted(() => {
         </div>
       </div>
     </header>
+
     <div class="py-4 px-4">
       <!-- Breadcrumbs -->
       <div class="flex items-center gap-2 text-sm mb-6">
@@ -233,8 +232,17 @@ onMounted(() => {
           {{ chapterName }}
         </RouterLink>
         <span class="text-gray-500">/</span>
-        <span class="text-gray-500 sohne-mono">Create Quiz</span>
+        <RouterLink
+          :to="`/admin/subject/${subjectId}/chapter/${chapterId}/quiz/${quizId}`"
+          class="text-gray-500 hover:text-black sohne-mono"
+        >
+          {{ quizData.name }}
+        </RouterLink>
+        <span class="text-gray-500">/</span>
+        <span class="text-black sohne-mono">Edit Quiz</span>
       </div>
+
+      <!-- Form -->
       <form @submit.prevent="handleSubmit" class="space-y-8">
         <!-- Quiz Details Section -->
         <div
@@ -264,12 +272,14 @@ onMounted(() => {
             <div class="grid grid-cols-2 gap-4">
               <div class="mt-2 flex flex-col gap-1">
                 <label class="block sohne-mono font-medium"
-                  >Time Duration (hh:mm) *</label
+                  >Time Duration［HH:MM］</label
                 >
                 <input
                   v-model="quizData.time_duration"
                   type="text"
                   required
+                  placeholder="01:30"
+                  pattern="^([0-1]?[0-9]|2[0-3]):[0-5][0-9]$"
                   class="mt-1 block w-full border-b-2 bg-transparent border-[#fdfcfc] outline-none font-semibold"
                 />
               </div>
@@ -287,7 +297,7 @@ onMounted(() => {
               </div>
             </div>
           </div>
-          <div class="text-[300px] mt-[-40px] mb-[-60px]">🡽</div>
+          <div class="text-[160px] mt-[-40px] mb-[-40px]">🡽</div>
         </div>
 
         <!-- Questions Section -->
@@ -296,10 +306,7 @@ onMounted(() => {
         >
           <div class="flex justify-between items-center">
             <h2 class="text-2xl font-bold sohne-mono">
-              Questions
-              <span class="font-mono text-[26px]"
-                >[{{ quizData.questions.length }}]</span
-              >
+              Questions ［{{ quizData.questions.length }}］
             </h2>
             <button
               type="button"
@@ -360,10 +367,7 @@ onMounted(() => {
             <div class="flex flex-col gap-4 pt-8">
               <div class="flex justify-between items-center">
                 <h4 class="font-medium sohne-mono">
-                  Options
-                  <span class="tracking-tighter"
-                    >[{{ question.options.length }}]</span
-                  >
+                  Options ［{{ question.options.length }}］
                 </h4>
                 <button
                   type="button"
@@ -408,21 +412,26 @@ onMounted(() => {
           </div>
         </div>
 
-        <!-- Submit Button -->
+        <!-- Action Buttons -->
         <div class="flex justify-end gap-4">
           <button
             type="button"
+            @click="scrollToTop"
+            class="px-6 py-2 border-2 border-[#192227] text-[#192227] rounded-lg hover:bg-gray-100 sohne-mono"
+          >Back to Top</button>
+          <button
+            type="button"
             @click="router.back()"
-            class="px-6 py-2 border-2 border-black text-black rounded-lg hover:bg-gray-100"
+            class="px-6 py-2 border-2 border-[#192227] text-[#192227] rounded-lg hover:bg-gray-100 sohne-mono"
           >
             Cancel
           </button>
           <button
             type="submit"
             :disabled="isLoading"
-            class="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
+            class="px-6 py-2 bg-[#192227] text-white rounded-lg hover:bg-gray-800 sohne-mono"
           >
-            {{ isLoading ? "Creating Quiz..." : "Create Quiz" }}
+            Save Changes
           </button>
         </div>
       </form>
@@ -434,6 +443,7 @@ onMounted(() => {
 .shadow {
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
 }
+
 input {
   font-size: 24px;
 }

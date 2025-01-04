@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, useTemplateRef } from "vue";
+import { ref, onMounted, useTemplateRef, onUnmounted, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
 import axios from "axios";
 import Sidebar from "@/components/Admin/Sidebar.vue";
@@ -65,7 +65,7 @@ onMounted(() => {
       ref="headerRef"
       class="h-16 bg-white flex items-center justify-between gap-6 mb-2"
     >
-      <div class="flex items-center flex-1">
+      <div ref="topMarker" class="flex items-center flex-1">
         <div class="flex-1 max-w-lg">
           <h2 class="text-3xl font-bold sohne-mono">
             <span class="text-[34px]">🡲</span> Quiz Details
@@ -125,7 +125,9 @@ onMounted(() => {
               <div class="flex gap-8">
                 <div>
                   <span class="text-gray-400 sohne-mono text-sm">Duration</span>
-                  <p class="text-xl font-semibold">{{ quiz?.time_duration }}</p>
+                  <p class="text-xl font-semibold">
+                    {{ quiz?.time_duration }}
+                  </p>
                 </div>
                 <div>
                   <span class="text-gray-400 sohne-mono text-sm">Price</span>
@@ -201,7 +203,7 @@ onMounted(() => {
         <div class="flex justify-end gap-4">
           <button
             @click="scrollToTop"
-            class="px-6 py-2 border-2 border-[#192227] text-[#192227] rounded-lg hover:bg-gray-100 sohne-mono"
+            class="px-6 py-2 border-2 border-[#192227] text-[#192227] rounded-lg hover:bg-gray-100 sohne-mono font-bold"
           >
             Back to Top
           </button>

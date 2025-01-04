@@ -5,7 +5,6 @@ import logo from "../../assets/images/landing-page/white logo.png";
 const router = useRouter();
 const isOpen = ref(false);
 const isMobileOpen = ref(false);
-import SearchBar from "./SearchBar.vue";
 
 import HomeIcon from "../../assets/images/icons/home.svg";
 import QuizIcon from "../../assets/images/icons/quiz.svg";
@@ -41,7 +40,7 @@ const handleLogout = () => {
     <!-- Desktop Sidebar -->
     <Transition>
       <aside
-        class="hidden md:flex flex-col bg-[#fafafa] overflow-hidden transition-all duration-300 ease-in-out"
+        class="hidden md:flex flex-col bg-[#fafafa] transition-all duration-300 ease-in-out"
         :class="[isOpen ? 'w-64' : 'w-16']"
         @mouseenter="isOpen = true"
         @mouseleave="isOpen = false"
@@ -161,8 +160,7 @@ const handleLogout = () => {
     </div>
 
     <!-- Main Content -->
-    <div class="flex-1 flex flex-col overflow-hidden">
-
+    <div class="flex-1 flex flex-col">
       <!-- Main Content Area -->
       <main class="flex-1 overflow-y-auto bg-white px-6">
         <slot></slot>

@@ -2139,6 +2139,15 @@ button:focus {
   background-color: rgb(255 255 255 / 0.9);
 }
 
+.hover\:bg-\[\]:hover {
+  background-color: ;
+}
+
+.hover\:bg-\[\#161616\]:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(22 22 22 / var(--tw-bg-opacity, 1));
+}
+
 .hover\:fill-\[\#de0000\]:hover {
   fill: #de0000;
 }

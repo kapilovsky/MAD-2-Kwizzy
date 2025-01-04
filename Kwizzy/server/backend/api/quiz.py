@@ -187,18 +187,19 @@ class QuizApi(Resource):
                     return {"message": "Chapter not found"}, 404
                 quiz.chapter_id = data["chapter_id"]
 
-            # Update questions if provided
             if "questions" in data:
-                # Remove existing questions and options
+                # Delete all existing questions and their options
                 for question in quiz.questions:
                     db.session.delete(question)
 
-                # Add new questions and options
+                # Add new questions
                 for q_data in data["questions"]:
                     question = Question(
                         title=q_data.get("title"), text=q_data["text"], quiz=quiz
                     )
+                    db.session.add(question)
 
+                    # Add options for this question
                     has_correct = False
                     for opt_data in q_data["options"]:
                         option = Option(
@@ -206,10 +207,12 @@ class QuizApi(Resource):
                             is_correct=opt_data["is_correct"],
                             question=question,
                         )
+                        db.session.add(option)
                         if option.is_correct:
                             has_correct = True
 
                     if not has_correct:
+                        db.session.rollback()
                         return {
                             "message": f"Question '{question.text}' must have at least one correct option"
                         }, 400
