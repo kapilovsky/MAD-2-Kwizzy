@@ -13,13 +13,17 @@ class QuizApi(Resource):
             # Get specific quiz
             if quiz_id:
                 quiz = Quiz.query.get_or_404(quiz_id)
+                time_in_seconds = quiz.time_duration
+                hours = time_in_seconds // 3600
+                minutes = (time_in_seconds % 3600) // 60
+                formatted_time = f"{hours:02d}:{minutes:02d}"
                 return {
                     "id": quiz.id,
                     "name": quiz.name,
                     "description": quiz.description,
                     "price": quiz.price,
                     "chapter_id": quiz.chapter_id,
-                    "time_duration": quiz.time_duration,
+                    "time_duration": formatted_time,
                     "questions": [
                         {
                             "id": q.id,
@@ -50,6 +54,13 @@ class QuizApi(Resource):
             if chapter_id:
                 query = query.filter(Quiz.chapter_id == chapter_id)
             quizzes = query.all()
+
+            for quiz in quizzes:
+                time_in_seconds = quiz.time_duration
+                hours = time_in_seconds // 3600
+                minutes = (time_in_seconds % 3600) // 60
+                formatted_time = f"{hours:02d}:{minutes:02d}"
+                quiz.time_duration = formatted_time
 
             return {
                 "quizzes": [
@@ -97,13 +108,21 @@ class QuizApi(Resource):
             if not chapter:
                 return {"message": "Chapter not found"}, 404
 
+            # conver time from hh:mm to seconds
+            try:
+                time_duration = data["time_duration"]
+                hours, minutes = map(int, time_duration.split(":"))
+                total_seconds = hours * 3600 + minutes * 60
+            except ValueError:
+                return {"message": "Invalid time format"}, 400
+
             # Create quiz
             new_quiz = Quiz(
                 name=data["name"],
                 description=data["description"],
                 price=data.get("price", 0),
                 chapter_id=data["chapter_id"],
-                time_duration=data["time_duration"],
+                time_duration=total_seconds,
             )
 
             # Add questions and options

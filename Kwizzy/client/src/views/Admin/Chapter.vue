@@ -4,6 +4,7 @@ import { RouterLink, useRoute, useRouter } from "vue-router";
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 import CloseIcon from "../../assets/images/icons/close.svg";
+import AddIcon from "../../assets/images/icons/add.svg";
 import Sidebar from "@/components/Admin/Sidebar.vue";
 import Loader from "@/components/Loader.vue";
 import SearchBar from "@/components/Admin/SearchBar.vue";
@@ -45,6 +46,7 @@ const fetchData = async () => {
     chapter.value = chapterRes.data;
     subject.value = subjectRes.data;
     quizzes.value = quizzesRes.data.quizzes;
+    console.log("Quizzes:", quizzes.value);
   } catch (error) {
     console.error("Error fetching data:", error);
   } finally {
@@ -135,20 +137,26 @@ onMounted(async () => {
       </div>
     </div>
 
+    <div class="flex justify-between items-center mb-4">
+      <h2 class="text-5xl font-semibold sohne tracking-[-2px]">Quizzes</h2>
+      <RouterLink
+        :to="`/admin/subject/${subjectId}/chapter/${chapterId}/quiz/create`"
+        class="px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors duration-200 flex items-center gap-2"
+      >
+        <component :is="AddIcon" class="w-5 h-5" />
+        Create Quiz
+      </RouterLink>
+    </div>
+
     <!-- Chapter Quizzes -->
     <div>
-      <div>
-        <h2 class="text-5xl font-semibold sohne tracking-[-2px] mb-4">
-          Quizzes
-        </h2>
-      </div>
       <div class="px-2">
         <table class="w-full">
           <thead>
             <tr class="text-left text-sm border-b-2 border-black">
               <th>Quiz Name</th>
               <th>Questions</th>
-              <th>Time Limit</th>
+              <th>Time Limit［HH:MM］</th>
               <th>Price</th>
               <th>Actions</th>
             </tr>

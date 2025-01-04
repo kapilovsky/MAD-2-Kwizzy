@@ -13,10 +13,6 @@ import CustomCursor from "./components/CustomCursor.vue";
 </template>
 
 <style>
-* {
-  cursor: none;
-}
-
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s ease;
