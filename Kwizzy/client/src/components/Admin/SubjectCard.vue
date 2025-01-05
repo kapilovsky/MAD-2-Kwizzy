@@ -68,6 +68,7 @@ const props = defineProps({
 </template>
 
 <style scoped>
+
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s ease;

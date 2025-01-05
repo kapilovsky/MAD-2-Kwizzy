@@ -3,36 +3,64 @@ from ..models import Chapter, Subject
 from flask_jwt_extended import jwt_required
 from ..utils import role_required
 from flask import request
-from .. import db
+from .. import db, cache
 from sqlalchemy import desc
+from time import perf_counter_ns
 
 
 class ChapterApi(Resource):
+    def __init__(self):
+        self.cache_timeout = 300  # 5 minutes
+
+    @cache.memoize(timeout=300)
+    def get_chapter_by_id(self, chapter_id):
+        """Cached method to get single chapter"""
+        chapter = Chapter.query.get_or_404(chapter_id)
+        return chapter.to_dict()
+
+    @cache.memoize(timeout=300)
+    def get_chapters_by_subject(self, subject_id):
+        """Cached method to get chapters by subject"""
+        chapters = Chapter.query.filter(Chapter.subject_id == subject_id).all()
+        return [chapter.to_dict() for chapter in chapters]
+
+    @cache.cached(timeout=300, key_prefix="all_chapters")
+    def get_all_chapters(self):
+        """Cached method to get all chapters"""
+        start = perf_counter_ns()
+        chapters = Chapter.query.all()
+        end = perf_counter_ns()
+        print(f"Time taken to fetch chapters: {(end - start) / 1_000_000} ms")
+        return [chapter.to_dict() for chapter in chapters]
+
+    def invalidate_cache(self, chapter_id=None, subject_id=None):
+        """Invalidate chapter-related caches"""
+        if chapter_id:
+            cache.delete_memoized(self.get_chapter_by_id, chapter_id)
+        if subject_id:
+            cache.delete_memoized(self.get_chapters_by_subject, subject_id)
+        cache.delete("all_chapters")
+        # Also invalidate subject cache as chapter counts might have changed
+        cache.delete_memoized("get_subject_by_id", subject_id)
+        cache.delete("all_subjects")
+
     @jwt_required()
     @role_required("admin")
     def get(self, chapter_id=None):
         try:
             # Get a specific chapter
             if chapter_id:
-                chapter = Chapter.query.get_or_404(chapter_id)
-                return chapter.to_dict(), 200
+                return self.get_chapter_by_id(chapter_id), 200
 
-            # Get all chapters with optional subject filter
+            # Get chapters with optional subject filter
             subject_id = request.args.get("subject_id")
 
-            # Start with base query
-            query = Chapter.query
-
-            # Apply subject filter
             if subject_id:
-                query = query.filter(Chapter.subject_id == subject_id)
+                chapters = self.get_chapters_by_subject(subject_id)
+            else:
+                chapters = self.get_all_chapters()
 
-            chapters = query.all()
-
-            return {
-                "chapters": [chapter.to_dict() for chapter in chapters],
-                "total": len(chapters),
-            }, 200
+            return {"chapters": chapters, "total": len(chapters)}, 200
 
         except Exception as e:
             print("Error:", str(e))
@@ -60,11 +88,10 @@ class ChapterApi(Resource):
             if not subject:
                 return {"message": "Subject not found"}, 404
 
-            # Check if chapter name exists in the same subject
+            # Check for duplicate chapter name
             existing_chapter = Chapter.query.filter_by(
                 name=data.get("name"), subject_id=data.get("subject_id")
             ).first()
-
             if existing_chapter:
                 return {
                     "message": "A chapter with this name already exists in this subject"
@@ -79,6 +106,9 @@ class ChapterApi(Resource):
 
             db.session.add(new_chapter)
             db.session.commit()
+
+            # Invalidate relevant caches
+            self.invalidate_cache(subject_id=data.get("subject_id"))
 
             return {
                 "message": "Chapter created successfully",
@@ -95,6 +125,7 @@ class ChapterApi(Resource):
     def put(self, chapter_id):
         try:
             chapter = Chapter.query.get_or_404(chapter_id)
+            original_subject_id = chapter.subject_id
             data = request.get_json()
 
             if not data:
@@ -109,13 +140,12 @@ class ChapterApi(Resource):
                     "fields": missing_fields,
                 }, 400
 
-            # Check if new name conflicts with existing chapters in the same subject
+            # Check for duplicate chapter name
             existing_chapter = Chapter.query.filter(
                 Chapter.name == data.get("name"),
                 Chapter.subject_id == chapter.subject_id,
                 Chapter.id != chapter_id,
             ).first()
-
             if existing_chapter:
                 return {
                     "message": "A chapter with this name already exists in this subject"
@@ -125,13 +155,19 @@ class ChapterApi(Resource):
             chapter.name = data.get("name")
             chapter.description = data.get("description")
 
-            # Update subject_id if provided
-            if "subject_id" in data:
-                if not Subject.query.get(data["subject_id"]):
+            # Update subject if provided
+            new_subject_id = data.get("subject_id")
+            if new_subject_id:
+                if not Subject.query.get(new_subject_id):
                     return {"message": "Subject not found"}, 404
-                chapter.subject_id = data["subject_id"]
+                chapter.subject_id = new_subject_id
 
             db.session.commit()
+
+            # Invalidate relevant caches
+            self.invalidate_cache(chapter_id=chapter_id, subject_id=original_subject_id)
+            if new_subject_id and new_subject_id != original_subject_id:
+                self.invalidate_cache(subject_id=new_subject_id)
 
             return {
                 "message": "Chapter updated successfully",
@@ -148,8 +184,13 @@ class ChapterApi(Resource):
     def delete(self, chapter_id):
         try:
             chapter = Chapter.query.get_or_404(chapter_id)
+            subject_id = chapter.subject_id
+
             db.session.delete(chapter)
             db.session.commit()
+
+            # Invalidate relevant caches
+            self.invalidate_cache(chapter_id=chapter_id, subject_id=subject_id)
 
             return {
                 "message": "Chapter deleted successfully",

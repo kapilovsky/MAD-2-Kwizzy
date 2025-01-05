@@ -3,6 +3,7 @@ from werkzeug.utils import safe_join
 from flask_restful import Resource
 from flask import current_app
 import os
+from .. import cache
 
 
 class FileApi(Resource):

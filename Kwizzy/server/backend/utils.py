@@ -9,7 +9,6 @@ def role_required(role):
         @wraps(fn)
         def decorator(*args, **kwargs):
             claims = get_jwt()
-            print(claims)
             if "role" not in claims or claims["role"] != role:
                 return (
                     {"message": "You don't have the required permissions"},

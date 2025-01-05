@@ -52,10 +52,13 @@ class SubjectApi(Resource):
             if search_query:
                 return {"subjects": self.search_subjects(search_query)}
 
+            start = perf_counter_ns()
             if subject_id:
                 if not Subject.query.get(subject_id):
                     return {"message": "Subject not found"}, 404
                 return self.get_subject_by_id(subject_id)
+            end = perf_counter_ns()
+            print(f"Time taken to fetch subject: {(end - start) / 1_000_000} ms")
 
             return {"subjects": self.get_all_subjects()}
 
