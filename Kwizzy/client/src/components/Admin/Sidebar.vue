@@ -24,7 +24,6 @@ provide("sidebarState", {
 
 const navigationItems = [
   { name: "Home", icon: HomeIcon, path: "/admin" },
-  { name: "Quizzes", icon: QuizIcon, path: "/admin/quizzes" },
   { name: "Users", icon: UsersIcon, path: "/admin/users" },
   { name: "Summary", icon: ChartBarIcon, path: "/admin/summary" },
 ];

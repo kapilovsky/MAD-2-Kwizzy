@@ -7,6 +7,9 @@ import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 const subjectData = ref({ name: "", description: "", image: null });
 import CloseIcon from "../../assets/images/icons/close.svg";
+import { useToast } from "@/composables/useToast";
+import Toast from "../Toast.vue";
+const toast = useToast();
 
 const handleSubmit = async () => {
   const formData = new FormData();
@@ -21,10 +24,6 @@ const handleSubmit = async () => {
     if (!token) {
       throw new Error("No access token available");
     }
-    console.log("FormData entries:");
-    formData.forEach((value, key) => {
-      console.log(key, value);
-    });
 
     const response = await axios.post(`${API_URL}/subject`, formData, {
       headers: {
@@ -34,7 +33,7 @@ const handleSubmit = async () => {
     });
 
     emit("create");
-    console.log("Response:", response.data);
+    toast.success(response.data.message);
     emit("close");
   } catch (error) {
     console.error("Server response data:", error.response?.data);

@@ -1,6 +1,7 @@
 <script setup>
 import { RouterLink, RouterView } from "vue-router";
 import CustomCursor from "./components/CustomCursor.vue";
+import Toast from "./components/Toast.vue";
 </script>
 
 <template>
@@ -10,6 +11,7 @@ import CustomCursor from "./components/CustomCursor.vue";
       <component :is="Component" />
     </Transition>
   </RouterView>
+  <Toast />
 </template>
 
 <style>

@@ -80,7 +80,12 @@ class SubjectApi(Resource):
             db.session.commit()
 
             print("Subject created successfully")  # Debug print
-            return new_subject.to_dict(), 201
+            return (
+                {
+                    "message": "Subject created successfully",
+                    "subject": new_subject.to_dict(),
+                }
+            ), 201
 
         except Exception as e:
             db.session.rollback()
