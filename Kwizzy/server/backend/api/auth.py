@@ -93,4 +93,5 @@ class Login(Resource):
             "access_token": access_token,
             "refresh_token": refresh_token,
             "user_role": user.role,
+            "user_id": user.id,
         }, 200

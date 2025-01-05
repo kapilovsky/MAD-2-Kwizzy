@@ -794,10 +794,6 @@ video {
   margin-right: 0.75rem;
 }
 
-.mt-0\.5 {
-  margin-top: 0.125rem;
-}
-
 .mt-1 {
   margin-top: 0.25rem;
 }
@@ -880,10 +876,6 @@ video {
 
 .hidden {
   display: none;
-}
-
-.h-1 {
-  height: 0.25rem;
 }
 
 .h-10 {
@@ -1553,10 +1545,6 @@ video {
 .bg-white {
   --tw-bg-opacity: 1;
   background-color: rgb(255 255 255 / var(--tw-bg-opacity, 1));
-}
-
-.bg-white\/20 {
-  background-color: rgb(255 255 255 / 0.2);
 }
 
 .bg-yellow-400 {

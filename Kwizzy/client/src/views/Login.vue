@@ -22,14 +22,15 @@ const handleLogin = async () => {
       email: email.value,
       password: password.value,
     });
-    const { access_token, refresh_token, user_role, message } = response.data;
+    const { access_token, refresh_token, user_role, message, user_id } =
+      response.data;
     localStorage.setItem("access_token", access_token);
     localStorage.setItem("refresh_token", refresh_token);
 
     if (user_role == "admin") {
       router.push("/admin/dashboard");
     } else if (user_role === "student") {
-      router.push("/student");
+      router.push(`/student/${user_id}`);
     }
     console.log(message);
   } catch (error) {

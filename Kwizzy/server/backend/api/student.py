@@ -224,7 +224,6 @@ class Student(Resource):
             return {"error": str(e)}, 500
 
     @jwt_required()
-    @role_required("admin")
     @cache.memoize(timeout=300)
     def get(self, student_id=None):
         try:

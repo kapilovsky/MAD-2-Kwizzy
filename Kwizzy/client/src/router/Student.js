@@ -2,7 +2,7 @@ const StudentDashboard = () => import("../views/Student/StudentDashboard.vue");
 
 const StudentRoutes = [
   {
-    path: "/student",
+    path: "/student/:id",
     name: "student",
     component: StudentDashboard,
   },

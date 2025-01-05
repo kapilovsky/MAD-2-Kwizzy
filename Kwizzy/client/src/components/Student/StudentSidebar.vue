@@ -1,4 +1,3 @@
-<!-- components/Sidebar/Sidebar.vue -->
 <script setup>
 import { ref, provide } from "vue";
 import { useRouter } from "vue-router";
@@ -6,6 +5,10 @@ import logo from "../../assets/images/landing-page/white logo.png";
 const router = useRouter();
 const isOpen = ref(false);
 const isMobileOpen = ref(false);
+import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
+import { useToast } from "@/composables/useToast";
+const toast = useToast();
 
 import HomeIcon from "../../assets/images/icons/home.svg";
 import QuizIcon from "../../assets/images/icons/quiz.svg";
@@ -16,6 +19,17 @@ import SearchIcon from "../../assets/images/icons/search.svg";
 import MenuIcon from "../../assets/images/icons/menu.svg";
 import CloseIcon from "../../assets/images/icons/close.svg";
 
+const props = defineProps({
+  student: {
+    type: Object,
+    required: true,
+  },
+});
+
+const student_name = ref(props.student.student_info.name);
+
+console.log("Student:", student_name.value);
+
 provide("sidebarState", {
   isOpen,
   isMobileOpen,
@@ -24,14 +38,14 @@ provide("sidebarState", {
 });
 
 const navigationItems = [
-  { name: "Home", icon: HomeIcon, path: "/admin" },
+  { name: "Home", icon: HomeIcon, path: "/student" },
   { name: "Quizzes", icon: QuizIcon, path: "/admin/quizzes" },
   { name: "Users", icon: UsersIcon, path: "/admin/users" },
   { name: "Summary", icon: ChartBarIcon, path: "/admin/summary" },
 ];
 
 const handleLogout = () => {
-  // Implement logout logic
+  localStorage.removeItem("access_token");
   router.push("/login");
 };
 </script>
@@ -190,7 +204,9 @@ const handleLogout = () => {
               alt="User avatar"
               class="w-8 h-8 rounded-full mix-blend-difference"
             />
-            <span class="text-sm font-medium text-gray-700">Admin</span>
+            <span class="text-sm font-semibold text-gray-700"
+              >Welcome Back, {{ student_name }}</span
+            >
           </div>
         </div>
       </header>
