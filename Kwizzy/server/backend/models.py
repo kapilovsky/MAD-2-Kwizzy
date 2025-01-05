@@ -12,6 +12,7 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 from . import db
+from . import cache
 
 
 class User(db.Model, UserMixin):
@@ -174,3 +175,31 @@ class QuizResult(db.Model):
     user_answers = relationship(
         "UserAnswer", back_populates="quiz_result", cascade="all, delete"
     )
+
+    def save(self):
+        db.session.add(self)
+        db.session.commit()
+        self.invalidate_caches()
+
+    def delete(self):
+        db.session.delete(self)
+        db.session.commit()
+        self.invalidate_caches()
+
+    def invalidate_caches(self):
+        """Invalidate all related caches when a quiz result changes"""
+        from .api.student import Student
+
+        student = Student()
+
+        # Invalidate student-specific caches
+        student.invalidate_student_cache(self.user_id)
+
+        # Invalidate statistics cache
+        cache.delete("student_statistics")
+
+        # Invalidate activity cache
+        cache.delete_memoized(student.get_recent_activity, self.user_id)
+
+        # Invalidate performance cache
+        cache.delete_memoized(student.get_subject_performance, self.user_id)

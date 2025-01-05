@@ -3,6 +3,8 @@ import { ref, onMounted, watch, onUnmounted } from "vue";
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 import CloseIcon from "../../assets/images/icons/close.svg";
+import { useToast } from "@/composables/useToast";
+const toast = useToast();
 
 const props = defineProps({
   isOpen: Boolean,
@@ -65,12 +67,13 @@ const handleSubmit = async () => {
         },
       }
     );
+    toast.success(response.data.message);
     console.log("Response:", response.data.chapter);
     emit("update", response.data.chapter);
     emit("close");
   } catch (error) {
     console.error("Error updating chapter:", error);
-    alert(error.response?.data?.message || "Error updating chapter");
+    toast.error(error.response?.data?.message || "Error updating chapter");
   }
 };
 </script>

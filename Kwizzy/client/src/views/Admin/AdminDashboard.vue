@@ -8,6 +8,8 @@ import CreateSubject from "@/components/Admin/AddSubject.vue";
 import SearchBar from "@/components/Admin/SearchBar.vue";
 import logo from "../../assets/images/landing-page/white logo.png";
 import Loader from "@/components/Loader.vue";
+import { useToast } from "@/composables/useToast";
+const toast = useToast();
 
 const allSubjects = ref([]); // Store all subjects
 const searchQuery = ref(""); // Store search query
@@ -52,9 +54,8 @@ const fetchSubjects = async () => {
       ...subject,
       image: `${API_URL}/uploads/subjects/${subject.subject_image}`,
     }));
-
-    console.log("All subjects:", allSubjects.value);
   } catch (error) {
+    toast.error("Error fetching subjects");
     console.error(
       "Error fetching subjects:",
       error.response?.data || error.message
@@ -100,6 +101,7 @@ onMounted(() => {
         <h1 class="text-4xl font-bold">Subjects</h1>
         <p>Manage and organize the subjects</p>
       </div>
+
       <SubjectCard :subjects="filteredSubjects" :loading="isLoading" />
       <CreateSubject
         :is-open="isCreateModalOpen"

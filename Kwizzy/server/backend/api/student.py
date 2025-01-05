@@ -1,14 +1,18 @@
 from flask_restful import Resource
-from flask import request, jsonify
+from flask import request
+from flask_caching import Cache
 from flask_jwt_extended import jwt_required
 from ..utils import role_required
 from ..models import User, QuizResult, Quiz, Chapter, Subject
 from sqlalchemy import func, desc
 from datetime import datetime, timedelta
 from .. import db
+from .. import cache
 
 
 class Student(Resource):
+    @jwt_required()
+    @cache.memoize(timeout=300)
     def to_dict(self, user):
         """Convert user object to dictionary with relevant student information"""
         # Calculate quiz statistics
@@ -41,6 +45,8 @@ class Student(Resource):
             },
         }
 
+    @jwt_required()
+    @cache.memoize(timeout=300)
     def get_recent_activity(self, student_id):
         """Get student's recent activity"""
         try:
@@ -68,6 +74,8 @@ class Student(Resource):
         except Exception as e:
             return {"error": str(e)}
 
+    @jwt_required()
+    @cache.memoize(timeout=600)
     def get_subject_performance(self, student_id):
         """Get subject-wise performance breakdown"""
         try:
@@ -101,6 +109,8 @@ class Student(Resource):
         except Exception as e:
             return {"error": str(e)}
 
+    @jwt_required()
+    @cache.memoize(timeout=300)
     def calculate_average_score(self, quiz_results):
         """Calculate average score of all completed quizzes"""
         try:
@@ -132,6 +142,8 @@ class Student(Resource):
 
         return round((total_marks_scored / total_possible_marks) * 100, 2)
 
+    @jwt_required()
+    @cache.memoize(timeout=400)
     def get_detailed_performance(self, user):
         """Get detailed performance breakdown"""
         quiz_details = []
@@ -166,6 +178,9 @@ class Student(Resource):
 
         return quiz_details
 
+    @jwt_required()
+    @role_required("admin")
+    @cache.memoize(timeout=900)
     def get_student_statistics(self):
         """Get overall student statistics"""
         try:
@@ -230,14 +245,22 @@ class Student(Resource):
             ):
                 return (None, 400, "Invalid pagination parameters")
             if student_id:
+                cache_key = f"student_details:{student_id}"
+                cached_data = cache.get(cache_key)
+
+                if cached_data is not None:
+                    return cached_data
                 student = User.query.filter_by(id=student_id, role="student").first()
                 if not student:
                     return {"message": "Student not found"}, 404
 
-                return {
+                response_data = {
                     "student_info": self.to_dict(student),
                     "detailed_performance": self.get_detailed_performance(student),
-                }, 200
+                }
+
+                cache.set(cache_key, response_data, timeout=300)
+                return response_data, 200
 
             # Get all students with pagination and filters
             page = request.args.get("page", 1, type=int)
@@ -245,6 +268,12 @@ class Student(Resource):
             search = request.args.get("search", "").strip()
             sort_by = request.args.get("sort_by", "name")
             order = request.args.get("order", "asc")
+
+            cache_key = f"students_list:{page}:{per_page}:{search}:{sort_by}:{order}"
+            cached_data = cache.get(cache_key)
+
+            if cached_data is not None:
+                return cached_data
 
             query = User.query.filter_by(role="student")
 
@@ -288,7 +317,7 @@ class Student(Resource):
 
             pagination = query.paginate(page=page, per_page=per_page)
 
-            return {
+            response_data = {
                 "students": [self.to_dict(student) for student in pagination.items],
                 "total": pagination.total,
                 "pages": pagination.pages,
@@ -296,8 +325,20 @@ class Student(Resource):
                 "per_page": per_page,
             }
 
+            cache.set(cache_key, response_data, timeout=300)
+            return response_data, 200
+
         except Exception as e:
             return (None, 500, f"Error fetching students: {str(e)}")
+
+    def invalidate_student_cache(self, student_id):
+        """Invalidate all caches related to a student"""
+        cache.delete_memoized(self.to_dict)
+        cache.delete_memoized(self.get_recent_activity)
+        cache.delete_memoized(self.get_subject_performance)
+        cache.delete_memoized(self.get_detailed_performance)
+        cache.delete(f"student_details:{student_id}")
+        cache.delete_many("students_list:*")  # Delete all student list caches
 
     @jwt_required()
     @role_required("admin")
@@ -332,6 +373,7 @@ class Student(Resource):
 class StudentStatistics(Resource):
     @jwt_required()
     @role_required("admin")
+    @cache.cached(timeout=900, key_prefix="student_statistics")
     def get(self):
         return Student().get_student_statistics(), 200
 
@@ -339,6 +381,7 @@ class StudentStatistics(Resource):
 class StudentActivity(Resource):
     @jwt_required()
     @role_required("admin")
+    @cache.memoize(timeout=300)
     def get(self, student_id):
         return Student().get_recent_activity(student_id), 200
 
@@ -346,5 +389,6 @@ class StudentActivity(Resource):
 class StudentSubjectPerformance(Resource):
     @jwt_required()
     @role_required("admin")
+    @cache.memoize(timeout=600)
     def get(self, student_id):
         return Student().get_subject_performance(student_id), 200

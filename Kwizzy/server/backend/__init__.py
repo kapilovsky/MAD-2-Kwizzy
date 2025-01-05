@@ -29,6 +29,13 @@ def create_app():
     app.config["ALLOWED_EXTENSIONS"] = set(
         os.getenv("ALLOWED_EXTENSIONS", "").split(",")
     )
+    cache = Cache(
+        config={
+            "CACHE_TYPE": os.getenv("CACHE_TYPE", "redis"),
+            "CACHE_REDIS_URL": os.getenv("CACHE_REDIS_URL"),
+            "CACHE_DEFAULT_TIMEOUT": os.getenv("CACHE_DEFAULT_TIMEOUT"),
+        }
+    )
     app.config["UPLOAD_FOLDER"] = os.getenv("UPLOAD_FOLDER")
     api = Api(app)
     db.init_app(app)

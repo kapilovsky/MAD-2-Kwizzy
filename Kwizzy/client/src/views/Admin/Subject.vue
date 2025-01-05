@@ -12,7 +12,9 @@ import EditChapter from "@/components/Admin/EditChapter.vue";
 import SearchBar from "@/components/Admin/SearchBar.vue";
 import Loader from "@/components/Loader.vue";
 import { RouterLink } from "vue-router";
+import { useToast } from "@/composables/useToast";
 
+const toast = useToast();
 const route = useRoute();
 const router = useRouter();
 const subjectId = route.params.id;
@@ -112,11 +114,12 @@ const deleteSubject = async () => {
     const token = localStorage.getItem("access_token");
     if (!token) throw new Error("No access token available");
 
-    await axios.delete(`${API_URL}/subject/${subjectId}`, {
+    const response = await axios.delete(`${API_URL}/subject/${subjectId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+    toast.success(response.data.message);
     router.push("/admin/dashboard");
   } catch (error) {
     console.error("Error deleting subject:", error);
@@ -128,11 +131,12 @@ const deleteChapter = async (chapterId) => {
     const token = localStorage.getItem("access_token");
     if (!token) throw new Error("No access token available");
 
-    await axios.delete(`${API_URL}/chapter/${chapterId}`, {
+    const response = await axios.delete(`${API_URL}/chapter/${chapterId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+    toast.success(response.data.message);
     fetchChapters();
   } catch (error) {
     console.error("Error deleting chapter:", error);

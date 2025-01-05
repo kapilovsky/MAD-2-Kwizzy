@@ -3,7 +3,8 @@ import { ref } from "vue";
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 import CloseIcon from "../../assets/images/icons/close.svg";
-
+import { useToast } from "@/composables/useToast";
+const toast = useToast();
 const props = defineProps({
   isOpen: Boolean,
   subjectId: {
@@ -32,12 +33,12 @@ const handleSubmit = async () => {
         Authorization: `Bearer ${token}`,
       },
     });
-    console.log("Response:", response.data.chapter);
+    toast.success(response.data.message);
     emit("create", response.data.chapter);
     emit("close");
   } catch (error) {
-    console.error("Error creating chapter:", error);
-    alert(error.response?.data?.message || "Error creating chapter");
+    console.error("Error creating chapter:", error.response?.data?.message);
+    toast.error(error.response?.data?.message || "Error creating chapter");
   }
 };
 </script>

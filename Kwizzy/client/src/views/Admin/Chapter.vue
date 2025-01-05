@@ -9,10 +9,12 @@ import Sidebar from "@/components/Admin/Sidebar.vue";
 import Loader from "@/components/Loader.vue";
 import SearchBar from "@/components/Admin/SearchBar.vue";
 import logo from "../../assets/images/landing-page/white logo.png";
+import { useToast } from "@/composables/useToast";
 const isLoading = ref(false);
 
 const route = useRoute();
 const router = useRouter();
+const toast = useToast();
 const subjectId = ref(route.params.subjectId);
 const chapterId = ref(route.params.chapterId);
 const subject = ref(null);
@@ -59,13 +61,15 @@ const deleteQuiz = async (quizId) => {
     isLoading.value = true;
     const token = localStorage.getItem("access_token");
     if (!token) throw new Error("No access token available");
-    await axios.delete(`${API_URL}/quizzes/${quizId}`, {
+    const response = await axios.delete(`${API_URL}/quizzes/${quizId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
+    toast.success(response.data.message);
     await fetchData();
   } catch (error) {
+    toast.error(error.response?.data?.message || "Error deleting quiz");
     console.error("Error deleting quiz:", error);
   } finally {
     isLoading.value = false;

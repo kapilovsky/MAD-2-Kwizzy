@@ -41,27 +41,24 @@ const getTypeClasses = (type) => {
   <div
     class="fixed top-4 right-4 z-50 flex flex-col gap-2 min-w-[320px] max-w-[420px]"
   >
-    <TransitionGroup name="toast" tag="div" class="space-y-2">
+    <TransitionGroup name="toast" tag="div">
       <div
         v-for="toast in toasts"
         :key="toast.id"
         :class="[
-          'flex items-start gap-3 p-4 rounded-lg border shadow-lg transform transition-all duration-300',
+          'flex items-start justify-center gap-3 p-4 rounded-lg border shadow-lg transform transition-all duration-300 mb-4',
           getTypeClasses(toast.type),
         ]"
       >
         <!-- Icon -->
-        <component
-          :is="getIcon(toast.type)"
-          class="w-5 h-5 flex-shrink-0 mt-0.5"
-        />
+        <component :is="getIcon(toast.type)" class="w-5 h-5 flex-shrink-0" />
 
         <!-- Content -->
         <div class="flex-1 min-w-0">
           <h3 v-if="toast.title" class="font-semibold text-sm">
             {{ toast.title }}
           </h3>
-          <p class="text-sm mt-1">{{ toast.message }}</p>
+          <p class="text-sm">{{ toast.message }}</p>
         </div>
 
         <!-- Close Button -->
@@ -78,15 +75,6 @@ const getTypeClasses = (type) => {
             />
           </svg>
         </button>
-
-        <!-- Progress Bar -->
-        <div
-          class="absolute bottom-0 left-0 h-1 bg-white/20 transition-all duration-300"
-          :style="{
-            width: '100%',
-            animation: `shrink ${toast.duration}ms linear forwards`,
-          }"
-        />
       </div>
     </TransitionGroup>
   </div>
@@ -101,6 +89,10 @@ const getTypeClasses = (type) => {
 .toast-enter-from {
   opacity: 0;
   transform: translateX(100%);
+}
+
+.toast-move {
+  transition: all 0.3s ease;
 }
 
 .toast-leave-to {
