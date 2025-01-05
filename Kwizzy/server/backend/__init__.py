@@ -29,12 +29,13 @@ def create_app():
     app.config["ALLOWED_EXTENSIONS"] = set(
         os.getenv("ALLOWED_EXTENSIONS", "").split(",")
     )
-    cache = Cache(
+    cache.init_app(
+        app,
         config={
             "CACHE_TYPE": os.getenv("CACHE_TYPE", "redis"),
             "CACHE_REDIS_URL": os.getenv("CACHE_REDIS_URL"),
-            "CACHE_DEFAULT_TIMEOUT": os.getenv("CACHE_DEFAULT_TIMEOUT"),
-        }
+            "CACHE_DEFAULT_TIMEOUT": int(os.getenv("CACHE_DEFAULT_TIMEOUT", 300)),
+        },
     )
     app.config["UPLOAD_FOLDER"] = os.getenv("UPLOAD_FOLDER")
     api = Api(app)
@@ -42,16 +43,15 @@ def create_app():
     migrate.init_app(app, db)
     mail.init_app(app)
     jwt.init_app(app)
-    cache.init_app(app)
 
     CORS(
         app,
         resources={
             r"/api/*": {
-                "origins": ["http://localhost:5173"],  # Your Vue.js development server
+                "origins": ["http://localhost:5173"],
                 "methods": ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
                 "allow_headers": ["Content-Type", "Authorization"],
-                "expose_headers": ["Content-Range", "X-Content-Range"],
+                "expose_headers": ["Content-Range"],
                 "supports_credentials": True,
             }
         },
@@ -110,6 +110,9 @@ def create_app():
     with app.app_context():
         db.create_all()
     return app
+
+
+app = create_app()
 
 
 def create_database(app):

@@ -9,21 +9,23 @@ import SearchBar from "@/components/Admin/SearchBar.vue";
 import logo from "../../assets/images/landing-page/white logo.png";
 import Loader from "@/components/Loader.vue";
 import { useToast } from "@/composables/useToast";
+import { useSubjects } from "@/composables/useSubjects";
 const toast = useToast();
+const { allSubjects, isLoading, fetchSubjects, invalidateCache } =
+  useSubjects();
 
-const allSubjects = ref([]); // Store all subjects
-const searchQuery = ref(""); // Store search query
-const isLoading = ref(true);
+const searchQuery = ref("");
 const isCreateModalOpen = ref(false);
 
 // Computed property for filtered subjects
 const filteredSubjects = computed(() => {
   if (!searchQuery.value) return allSubjects.value;
 
+  const query = searchQuery.value.toLowerCase();
   return allSubjects.value.filter(
     (subject) =>
-      subject.name.toLowerCase().includes(searchQuery.value) ||
-      subject.description.toLowerCase().includes(searchQuery.value)
+      subject.name.toLowerCase().includes(query) ||
+      subject.description.toLowerCase().includes(query)
   );
 });
 
@@ -31,38 +33,10 @@ const handleSearch = (query) => {
   searchQuery.value = query;
 };
 
-const handleCreateSubject = (newSubject) => {
-  fetchSubjects();
+const handleCreateSubject = async (newSubject) => {
+  invalidateCache();
+  await fetchSubjects(true);
   isCreateModalOpen.value = false;
-};
-
-const fetchSubjects = async () => {
-  try {
-    isLoading.value = true;
-    const token = localStorage.getItem("access_token");
-    if (!token) {
-      throw new Error("No access token available");
-    }
-
-    const response = await axios.get(`${API_URL}/subject`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    allSubjects.value = response.data.subjects.map((subject) => ({
-      ...subject,
-      image: `${API_URL}/uploads/subjects/${subject.subject_image}`,
-    }));
-  } catch (error) {
-    toast.error("Error fetching subjects");
-    console.error(
-      "Error fetching subjects:",
-      error.response?.data || error.message
-    );
-  } finally {
-    isLoading.value = false;
-  }
 };
 
 onMounted(() => {

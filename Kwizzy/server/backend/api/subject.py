@@ -8,35 +8,59 @@ import os
 from flask import current_app as app
 from werkzeug.utils import secure_filename
 from sqlalchemy import or_
+from .. import cache
+from time import perf_counter_ns
 
 
 class SubjectApi(Resource):
+
+    def __init__(self):
+        self.cache_timeout = 300
+
+    @cache.cached(timeout=300, key_prefix="all_subjects")
+    def get_all_subjects(self):
+        """Cached method to get all subjects"""
+        start = perf_counter_ns()
+        subject_list = Subject.query.all()
+        end = perf_counter_ns()
+        print(f"Time taken to fetch subjects: {(end - start) / 1_000_000} ms")
+        return [subject.to_dict() for subject in subject_list]
+
+    @cache.memoize(timeout=300)
+    def get_subject_by_id(self, subject_id):
+        """Cached method to get single subject"""
+        subject = Subject.query.get_or_404(subject_id)
+        return subject.to_dict()
+
+    @cache.memoize(timeout=300)
+    def search_subjects(self, search_query):
+        """Cached method to search subjects"""
+        subjects = Subject.query.filter(
+            or_(
+                Subject.name.ilike(f"%{search_query}%"),
+                Subject.description.ilike(f"%{search_query}%"),
+            )
+        ).all()
+        return [subject.to_dict() for subject in subjects]
+
     @jwt_required()
     @role_required("admin")
     def get(self, subject_id=None):
-        search_query = request.args.get("search", "").lower()
+        try:
+            search_query = request.args.get("search", "").lower()
 
-        if search_query:
-            subject_list = Subject.query.filter(
-                or_(
-                    Subject.name.ilike(f"%{search_query}%"),
-                    Subject.description.ilike(f"%{search_query}%"),
-                )
-            ).all()
-            return {
-                "subjects": list(map(lambda subject: subject.to_dict(), subject_list)),
-            }
+            if search_query:
+                return {"subjects": self.search_subjects(search_query)}
 
-        if subject_id and not Subject.query.get(subject_id):
-            return {"message": "Subject not found"}, 404
+            if subject_id:
+                if not Subject.query.get(subject_id):
+                    return {"message": "Subject not found"}, 404
+                return self.get_subject_by_id(subject_id)
 
-        if subject_id:
-            subject = Subject.query.get_or_404(subject_id)
-            return subject.to_dict(), 200
-        subject_list = Subject.query.all()
-        return {
-            "subjects": list(map(lambda subject: subject.to_dict(), subject_list)),
-        }
+            return {"subjects": self.get_all_subjects()}
+
+        except Exception as e:
+            return {"message": str(e)}, 500
 
     @jwt_required()
     @role_required("admin")
@@ -79,7 +103,7 @@ class SubjectApi(Resource):
             db.session.add(new_subject)
             db.session.commit()
 
-            print("Subject created successfully")  # Debug print
+            self.invalidate_cache()
             return (
                 {
                     "message": "Subject created successfully",
@@ -112,7 +136,7 @@ class SubjectApi(Resource):
 
             db.session.delete(subject)
             db.session.commit()
-
+            self.invalidate_cache()
             return {"message": "Subject deleted successfully"}, 200
 
         except Exception as e:
@@ -127,6 +151,7 @@ class SubjectApi(Resource):
     @jwt_required()
     @role_required("admin")
     def put(self, subject_id):
+        cache.clear()
         try:
             subject = Subject.query.get_or_404(subject_id)
 
@@ -175,7 +200,7 @@ class SubjectApi(Resource):
             subject.description = description
 
             db.session.commit()
-
+            self.invalidate_cache()
             return subject.to_dict(), 200
 
         except Exception as e:
@@ -186,3 +211,9 @@ class SubjectApi(Resource):
                 "error": str(e),
                 "error_type": type(e).__name__,
             }, 400
+
+    def invalidate_cache(self):
+        """Invalidate all subject-related caches"""
+        cache.delete("all_subjects")
+        cache.delete_memoized(self.get_subject_by_id)
+        cache.delete_memoized(self.search_subjects)

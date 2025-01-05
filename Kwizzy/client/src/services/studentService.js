@@ -22,6 +22,8 @@ export const studentService = {
       const response = await axios.get(`${API_URL}/students`, {
         headers: {
           Authorization: `Bearer ${token}`,
+          Accept: "application/json",
+          "Content-Type": "application/json",
         },
         params: {
           page,
@@ -31,7 +33,14 @@ export const studentService = {
           order,
         },
       });
-      return response.data;
+      return {
+        ...response.data,
+        pagination: {
+          total: parseInt(response.headers["x-total-count"] || "0"),
+          pages: parseInt(response.headers["x-total-pages"] || "0"),
+          currentPage: parseInt(response.headers["x-current-page"] || "1"),
+        },
+      };
     } catch (error) {
       console.error("Error fetching students:", error);
       throw error;
