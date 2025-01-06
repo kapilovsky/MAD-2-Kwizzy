@@ -40,7 +40,6 @@ const fetchData = async () => {
       }),
       axios.get(`${API_URL}/quizzes`, {
         headers: { Authorization: `Bearer ${token}` },
-        params: { chapter_id: chapterId.value },
       }),
     ]);
 

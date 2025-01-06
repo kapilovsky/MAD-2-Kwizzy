@@ -4,36 +4,35 @@ import { useRoute } from "vue-router";
 import { studentService } from "@/services/studentService";
 import { ref, onMounted, computed } from "vue";
 import Loader from "@/components/Loader.vue";
+import axios from "axios";
+const API_URL = import.meta.env.VITE_API_URL;
 
 const route = useRoute();
 const student = ref(null);
+const quizzes = ref([]);
 const isLoading = ref(true);
 const student_id = parseInt(route.params.id);
-
-// Mock data for recent quizzes (replace with actual API data)
-const recentQuizzes = ref([
-  {
-    id: 1,
-    name: "JavaScript Basics",
-    score: 85,
-    total: 100,
-    date: "2024-01-05",
-  },
-  {
-    id: 2,
-    name: "Python Functions",
-    score: 92,
-    total: 100,
-    date: "2024-01-04",
-  },
-  { id: 3, name: "Data Structures", score: 78, total: 100, date: "2024-01-03" },
-]);
 
 const fetchStudent = async () => {
   try {
     isLoading.value = true;
     student.value = await studentService.getStudent(student_id);
-    console.log("student", student.value);
+  } catch (error) {
+    console.error("Error:", error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const fetchQuizzes = async () => {
+  try {
+    isLoading.value = true;
+    const token = localStorage.getItem("access_token");
+    if (!token) throw new Error("No access token available");
+    const response = await axios.get(`${API_URL}/quizzes`, {
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    quizzes.value = response.data.quizzes;
   } catch (error) {
     console.error("Error:", error);
   } finally {
@@ -43,6 +42,7 @@ const fetchStudent = async () => {
 
 onMounted(() => {
   fetchStudent();
+  fetchQuizzes();
 });
 
 // Computed properties for stats
@@ -69,37 +69,6 @@ const getCurrentDate = () => {
     day: "numeric",
   });
 };
-
-const stats = [
-  { name: "AVERAGE SCORE", value: "75%", icon: "🎯" },
-  { name: "QUIZZES COMPLETED", value: "24", icon: "📝" },
-  { name: "ACTIVE STREAK", value: "7 days", icon: "🔥" },
-  { name: "TOTAL TIME", value: "32hrs", icon: "⏱️" },
-];
-
-const recentActivity = [
-  {
-    id: 1,
-    title: "Mathematics Quiz #3",
-    timestamp: "2 hours ago",
-    score: 85,
-    icon: "📐",
-  },
-  {
-    id: 2,
-    title: "Science Quiz #5",
-    timestamp: "1 day ago",
-    score: 92,
-    icon: "🧪",
-  },
-  {
-    id: 3,
-    title: "History Quiz #2",
-    timestamp: "2 days ago",
-    score: 68,
-    icon: "📜",
-  },
-];
 </script>
 
 <template>
@@ -110,129 +79,33 @@ const recentActivity = [
 
     <Sidebar v-else-if="student" :student="student">
       <div class="mb-10">
-        <h2 class="text-4xl sohne-mono tracking-tight py-2">
+        <h2 class="text-4xl sohne-mono tracking-tight py-2 font-bold">
           HELLO, {{ student.student_info.name }} ⚡️
         </h2>
-        <p class="text-gray-500 sohne-mono text-sm">
+        <p class="text-neutral-600 sohne-mono text-sm">
           {{ getCurrentTimeGreeting() }} • {{ getCurrentDate() }}
         </p>
       </div>
 
-      <!-- Stats Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mb-10">
-        <div
-          v-for="stat in stats"
-          :key="stat.name"
-          class="p-6 bg-[#fafafa] border border-gray-200 rounded-xl hover:-translate-y-1 transition-all duration-200"
-        >
-          <div class="flex items-center justify-between mb-4">
-            <span class="text-2xl">{{ stat.icon }}</span>
-            <span class="font-mono text-xs text-gray-500">{{ stat.name }}</span>
-          </div>
-          <p class="text-2xl font-bold font-mono">{{ stat.value }}</p>
-          <p class="text-sm text-gray-500 font-mono">{{ stat.change }}</p>
-        </div>
-      </div>
+      <div>
+        <h2 class="text-3xl sohne-mono tracking-tight py-2 font-bold">
+          All Quizzes
+        </h2>
 
-      <!-- Main Content Grid -->
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
-        <!-- Recent Activity -->
-        <div class="lg:col-span-2 space-y-6">
-          <div class="flex items-center justify-between">
-            <h3 class="text-xl font-mono">RECENT ACTIVITY</h3>
-            <button
-              class="text-sm font-mono hover:text-blue-600 transition-colors"
-            >
-              VIEW ALL +
-            </button>
-          </div>
-
-          <div class="space-y-4">
-            <div
-              v-for="activity in recentActivity"
-              :key="activity.id"
-              class="p-4 bg-[#fafafa] border border-gray-200 rounded-lg hover:border-gray-300 transition-all duration-200"
-            >
-              <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                  <span class="text-xl">{{ activity.icon }}</span>
-                  <div>
-                    <h4 class="font-mono text-sm">{{ activity.title }}</h4>
-                    <p class="text-xs text-gray-500 font-mono">
-                      {{ activity.timestamp }}
-                    </p>
-                  </div>
-                </div>
-                <span
-                  class="text-sm font-mono px-2 py-1 rounded"
-                  :class="[
-                    activity.score >= 70
-                      ? 'text-green-600 bg-green-50'
-                      : 'text-orange-600 bg-orange-50',
-                  ]"
-                >
-                  {{ activity.score }}%
-                </span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <!-- Quick Stats -->
-        <div class="space-y-6">
-          <div>
-            <h3 class="text-xl font-mono mb-4">PERFORMANCE 📊</h3>
-            <div class="p-6 bg-[#fafafa] border border-gray-200 rounded-xl">
-              <div class="flex items-center justify-between mb-6">
-                <div>
-                  <p class="text-sm text-gray-500 font-mono">Average Score</p>
-                  <p class="text-2xl font-bold font-mono"></p>
-                </div>
-                <div
-                  class="w-12 h-12 rounded-full bg-green-50 flex items-center justify-center"
-                >
-                  🎯
-                </div>
-              </div>
-              <!-- Progress bars -->
-              <div class="space-y-4">
-                <div v-for="subject in subjects" :key="subject.name">
-                  <div class="flex justify-between text-sm font-mono mb-1">
-                    <span>{{ subject.name }}</span>
-                    <span>{{ subject.progress }}%</span>
-                  </div>
-                  <div class="h-2 bg-gray-200 rounded-full">
-                    <div
-                      class="h-full rounded-full transition-all duration-300"
-                      :style="{ width: `${subject.progress}%` }"
-                      :class="subject.color"
-                    ></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Upcoming Quizzes -->
-          <div>
-            <h3 class="text-xl font-mono mb-4">UPCOMING QUIZZES 📝</h3>
-            <div class="space-y-3">
-              <div
-                v-for="quiz in upcomingQuizzes"
-                :key="quiz.id"
-                class="p-4 bg-[#fafafa] border border-gray-200 rounded-lg hover:border-gray-300 transition-all duration-200"
-              >
-                <div class="flex items-center justify-between">
-                  <div>
-                    <h4 class="font-mono text-sm">{{ quiz.subject }}</h4>
-                    <p class="text-xs text-gray-500 font-mono">
-                      {{ quiz.date }}
-                    </p>
-                  </div>
-                  <span class="text-xl">{{ quiz.icon }}</span>
-                </div>
-              </div>
-            </div>
+        <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+          <div
+            v-for="quiz in quizzes"
+            :key="quiz.id"
+            class="bg-[#192227] text-[#fdfcfc] p-6 rounded-2xl shadow"
+          >
+            <RouterLink :to="`/student/${student_id}/quiz/${quiz.id}`">
+              <h2 class="text-2xl font-bold mb-6 sohne-mono">
+                {{ quiz.name }}
+              </h2>
+              <p class="text-sm font-medium sohne-mono">
+                {{ quiz.description }}
+              </p>
+            </RouterLink>
           </div>
         </div>
       </div>
