@@ -1,7 +1,7 @@
 <script setup>
 import Sidebar from "@/components/Admin/Sidebar.vue";
 import SubjectCard from "@/components/Admin/SubjectCard.vue";
-import { ref, onMounted, computed } from "vue";
+import { ref, onMounted, computed, watch } from "vue";
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 import CreateSubject from "@/components/Admin/AddSubject.vue";
@@ -9,35 +9,20 @@ import SearchBar from "@/components/Admin/SearchBar.vue";
 import logo from "../../assets/images/landing-page/white logo.png";
 import Loader from "@/components/Loader.vue";
 import { useToast } from "@/composables/useToast";
-import { useSubjects } from "@/composables/useSubjects";
-import { useEventStore } from "@/composables/eventBus";
-
-const eventStore = useEventStore();
-
-watch(
-  () => eventStore.shouldRefreshSubjects,
-  (shouldRefresh) => {
-    if (shouldRefresh) {
-      invalidateCache();
-      fetchSubjects(true);
-      eventStore.resetSubjectRefresh();
-    }
-  }
-);
+import { useSubjectStore } from "@/stores/subjectStore";
+const subjectStore = useSubjectStore();
 
 const toast = useToast();
-const { allSubjects, isLoading, fetchSubjects, invalidateCache } =
-  useSubjects();
 
 const searchQuery = ref("");
 const isCreateModalOpen = ref(false);
 
 // Computed property for filtered subjects
 const filteredSubjects = computed(() => {
-  if (!searchQuery.value) return allSubjects.value;
+  if (!searchQuery.value) return subjectStore.allSubjects;
 
   const query = searchQuery.value.toLowerCase();
-  return allSubjects.value.filter(
+  return subjectStore.allSubjects.filter(
     (subject) =>
       subject.name.toLowerCase().includes(query) ||
       subject.description.toLowerCase().includes(query)
@@ -48,14 +33,14 @@ const handleSearch = (query) => {
   searchQuery.value = query;
 };
 
-const handleCreateSubject = async (newSubject) => {
-  invalidateCache();
-  await fetchSubjects(true);
+const handleCreateSubject = async () => {
+  subjectStore.invalidateCache();
+  await subjectStore.fetchSubjects(true);
   isCreateModalOpen.value = false;
 };
 
 onMounted(() => {
-  fetchSubjects();
+  subjectStore.fetchSubjects();
 });
 </script>
 
@@ -91,7 +76,7 @@ onMounted(() => {
         <p>Manage and organize the subjects</p>
       </div>
 
-      <SubjectCard :subjects="filteredSubjects" :loading="isLoading" />
+      <SubjectCard :subjects="filteredSubjects" :loading="subjectStore.isLoading" />
       <CreateSubject
         :is-open="isCreateModalOpen"
         @close="isCreateModalOpen = false"

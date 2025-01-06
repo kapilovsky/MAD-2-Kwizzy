@@ -14,6 +14,8 @@ const API_URL = import.meta.env.VITE_API_URL;
 const subjectData = ref({ name: "", description: "", image: null });
 const preview = ref(null);
 import CloseIcon from "../../assets/images/icons/close.svg";
+import { useToast } from "@/composables/useToast";
+const toast = useToast();
 
 // Initialize form with existing subject data
 const initializeForm = (subject) => {
@@ -77,10 +79,11 @@ const handleSubmit = async (subject) => {
     );
 
     emit("update", response.data);
+    toast.success("Subject updated successfully");
     console.log("Response:", response.data);
     emit("close");
   } catch (error) {
-    console.error("Server response data:", error.response?.data);
+    console.error("Server response data:", error);
     alert(error.response?.data?.message || "Error during update");
   }
 };
