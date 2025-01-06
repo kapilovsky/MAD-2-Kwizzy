@@ -113,37 +113,46 @@ const editSubject = (subject) => {
   isEditSubjectModalOpen.value = true;
 };
 
-const deleteSubject = async () => {
-  try {
-    const token = localStorage.getItem("access_token");
-    if (!token) throw new Error("No access token available");
+const handleDeleteSubject = async (subjectId) => {
+  if (!confirm("Are you sure you want to delete this subject?")) {
+    return;
+  }
 
-    const response = await axios.delete(`${API_URL}/subject/${subjectId}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-    toast.success(response.data.message);
+  const success = await subjectStore.deleteSubject(subjectId);
+  if (success) {
     router.push("/admin/dashboard");
-  } catch (error) {
-    console.error("Error deleting subject:", error);
   }
 };
 
 const deleteChapter = async (chapterId) => {
   try {
     const token = localStorage.getItem("access_token");
-    if (!token) throw new Error("No access token available");
-
+    if (!token) {
+      toast.error("No access token available");
+      return;
+    }
+    if (!confirm("Are you sure you want to delete this chapter?")) {
+      return;
+    }
     const response = await axios.delete(`${API_URL}/chapter/${chapterId}`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
-    toast.success(response.data.message);
-    fetchChapters();
+
+    if (response.data && response.status === 200) {
+      toast.success("Chapter deleted successfully");
+      chapters.value = chapters.value.filter(
+        (chapter) => chapter.id !== chapterId
+      );
+    } else {
+      throw new Error("Unexpected response from server");
+    }
   } catch (error) {
-    console.error("Error deleting chapter:", error);
+    if (error.response) {
+      toast.error(error.response.data.message || "Error deleting chapter");
+    }
+    await fetchChapters();
   }
 };
 
@@ -214,7 +223,7 @@ const handleSearch = (query) => {
       />
       <div>
         <h1 class="text-4xl font-bold mb-2 magnetic">{{ subject?.name }}</h1>
-        <p class="text-gray-600">{{ subject?.description }}</p>
+        <p class="text-gray-600 max-w-xl">{{ subject?.description }}</p>
         <p class="text-gray-600 mb-4">{{ subject?.chapters }} Chapters</p>
         <button
           @click="isAddChapterModalOpen = true"
@@ -248,7 +257,7 @@ const handleSearch = (query) => {
           </span>
         </button>
         <button
-          @click="deleteSubject"
+          @click="handleDeleteSubject(subject.id)"
           class="px-4 py-2 text-sm text-black rounded-lg hover:text-[#ff0a0a] transition-colors sohne-mono"
         >
           <span class="relative">

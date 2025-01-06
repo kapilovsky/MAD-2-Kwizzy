@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, watch } from "vue";
 const props = defineProps({ isOpen: Boolean });
 const emit = defineEmits(["close", "create"]);
 const modalRef = ref(null);
@@ -35,6 +35,9 @@ const handleSubmit = async () => {
     emit("create");
     toast.success(response.data.message);
     emit("close");
+
+    // Reset the form
+    resetForm();
   } catch (error) {
     console.error("Server response data:", error.response?.data);
     alert(error.response?.data?.message || "Error during creation");
@@ -49,6 +52,20 @@ const handleImageUpload = (event) => {
     preview.value = URL.createObjectURL(file);
   }
 };
+
+const resetForm = () => {
+  subjectData.value = { name: "", description: "", image: null };
+  preview.value = null;
+};
+
+watch(
+  () => props.isOpen,
+  (newValue) => {
+    if (newValue) {
+      resetForm();
+    }
+  }
+);
 
 const removeImage = (event) => {
   event.preventDefault();

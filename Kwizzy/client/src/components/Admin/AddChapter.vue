@@ -28,17 +28,49 @@ const handleSubmit = async () => {
     const token = localStorage.getItem("access_token");
     if (!token) throw new Error("No access token available");
 
-    const response = await axios.post(`${API_URL}/chapter`, chapterData.value, {
-      headers: {
-        Authorization: `Bearer ${token}`,
+    // Log the data being sent
+    console.log("Sending chapter data:", chapterData.value);
+
+    const response = await axios.post(
+      `${API_URL}/chapter`,
+      {
+        name: chapterData.value.name,
+        description: chapterData.value.description,
+        subject_id: chapterData.value.subject_id,
       },
-    });
-    toast.success(response.data.message);
-    emit("create", response.data.chapter);
-    emit("close");
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    if (response.data && response.data.chapter) {
+      toast.success(response.data.message || "Chapter created successfully");
+      emit("create", response.data.chapter);
+      emit("close");
+    } else {
+      throw new Error("Invalid response format");
+    }
   } catch (error) {
-    console.error("Error creating chapter:", error.response?.data?.message);
-    toast.error(error.response?.data?.message || "Error creating chapter");
+    console.error("Error creating chapter:", error);
+
+    // More detailed error handling
+    if (error.response) {
+      // The request was made and the server responded with a status code
+      // that falls out of the range of 2xx
+      toast.error(error.response.data.message || "Error creating chapter");
+      console.error("Server error data:", error.response.data);
+    } else if (error.request) {
+      // The request was made but no response was received
+      toast.error("No response from server");
+      console.error("No response received:", error.request);
+    } else {
+      // Something happened in setting up the request that triggered an Error
+      toast.error("Error creating chapter");
+      console.error("Error:", error.message);
+    }
   }
 };
 </script>

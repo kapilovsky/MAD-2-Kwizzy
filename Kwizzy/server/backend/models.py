@@ -36,7 +36,7 @@ class Subject(db.Model):
     __tablename__ = "subjects"
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(50), nullable=False, unique=True)
-    description = Column(String(255), nullable=False)
+    description = Column(String(120), nullable=False)
     subject_image = Column(String(255), nullable=True)
 
     def to_dict(self):
@@ -74,7 +74,7 @@ class Chapter(db.Model):
     subject_id = Column(
         Integer, ForeignKey("subjects.id", ondelete="CASCADE"), nullable=False
     )
-    description = Column(String(255), nullable=False)
+    description = Column(String(120), nullable=False)
 
     def to_dict(self):
         quizzes = len(self.quizzes)
@@ -96,7 +96,7 @@ class Quiz(db.Model):
     __tablename__ = "quizzes"
     id = Column(Integer, primary_key=True, autoincrement=True)
     name = Column(String(50), nullable=False)
-    description = Column(String(255), nullable=False)
+    description = Column(String(120), nullable=False)
     price = Column(Integer, nullable=False, default=0)
     chapter_id = Column(
         Integer, ForeignKey("chapters.id", ondelete="CASCADE"), nullable=False
@@ -119,7 +119,7 @@ class Question(db.Model):
         Integer, ForeignKey("quizzes.id", ondelete="CASCADE"), nullable=False
     )
     title = Column(String(100), nullable=True)
-    text = Column(Text, nullable=False)
+    text = Column(String(255), nullable=False)
     weight = Column(Float, nullable=False, default=1.0)
 
     options = relationship(

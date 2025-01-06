@@ -1,5 +1,5 @@
 from flask_restful import Resource
-from ..models import Subject
+from ..models import Subject, Chapter
 from flask_jwt_extended import jwt_required
 from ..utils import role_required, allowed_file
 from flask import request
@@ -91,8 +91,7 @@ class SubjectApi(Resource):
                 filepath = os.path.join(upload_folder, filename)
                 image.save(filepath)
             else:
-                return {"message": "Invalid file type or no file uploaded"}, 400
-
+                filename = None
             # Create new subject
             new_subject = Subject(
                 name=name,
@@ -130,25 +129,33 @@ class SubjectApi(Resource):
 
             # Delete the associated image file if it exists
             if subject.subject_image:
-                image_path = os.path.join(
-                    app.config["UPLOAD_FOLDER"], subject.subject_image
-                )
-                if os.path.exists(image_path):
-                    os.remove(image_path)
-
+                try:
+                    image_path = os.path.join(
+                        app.config["UPLOAD_FOLDER"],
+                        "subjects",  # Add subjects subfolder
+                        subject.subject_image,
+                    )
+                    if os.path.exists(image_path):
+                        os.remove(image_path)
+                except Exception as e:
+                    print(f"Error removing image: {e}")
+                    
             db.session.delete(subject)
             db.session.commit()
             self.invalidate_cache()
-            return {"message": "Subject deleted successfully"}, 200
+
+            return {
+                "message": "Subject deleted successfully",
+                "subject_id": subject_id,
+            }, 200
 
         except Exception as e:
             db.session.rollback()
-            print("Error:", str(e))
+            print(f"Unexpected error during subject deletion: {str(e)}")
             return {
-                "message": "Error deleting subject",
+                "message": "Unexpected error while deleting subject",
                 "error": str(e),
-                "error_type": type(e).__name__,
-            }, 400
+            }, 500
 
     @jwt_required()
     @role_required("admin")

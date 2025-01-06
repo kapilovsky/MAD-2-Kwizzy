@@ -231,10 +231,6 @@ class QuizApi(Resource):
         try:
             quiz = Quiz.query.get_or_404(quiz_id)
 
-            # Check if quiz has been attempted
-            if quiz.quiz_results:
-                return {"message": "Cannot delete quiz with existing attempts"}, 400
-
             db.session.delete(quiz)
             db.session.commit()
 

@@ -211,13 +211,10 @@ onMounted(async () => {
               <td class="py-2">
                 <div class="flex items-center gap-2">
                   <RouterLink
+                    class="py-[2px] px-1 text-gray-600 hover:text-[#0000ff] sohne-mono text-[12px] border-dotted border border-gray-400"
                     :to="`/admin/subject/${subjectId}/chapter/${chapterId}/quiz/${quiz.id}/edit`"
                   >
-                    <button
-                      class="py-[2px] px-1 text-gray-600 hover:text-[#0000ff] sohne-mono text-[12px] border-dotted border border-gray-400"
-                    >
-                      EDIT
-                    </button>
+                    <button>EDIT</button>
                   </RouterLink>
 
                   <button

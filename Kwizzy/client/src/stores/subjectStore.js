@@ -87,11 +87,47 @@ export const useSubjectStore = defineStore("subjects", () => {
     invalidateCache();
   };
 
+  const deleteSubject = async (subjectId) => {
+    try {
+      const token = localStorage.getItem("access_token");
+      if (!token) throw new Error("No access token available");
+
+      const response = await axios.delete(
+        `${import.meta.env.VITE_API_URL}/subject/${subjectId}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      // Remove the subject from the local state
+      allSubjects.value = allSubjects.value.filter(
+        (subject) => subject.id !== subjectId
+      );
+
+      // Invalidate cache
+      invalidateCache();
+
+      // Show success message
+      toast.success(response.data.message);
+
+      return true; // Return true to indicate successful deletion
+    } catch (error) {
+      console.error("Error deleting subject:", error);
+      toast.error(
+        error.response?.data?.message || "Error occurred while deleting subject"
+      );
+      return false; // Return false to indicate failed deletion
+    }
+  };
+
   return {
     allSubjects,
     isLoading,
     fetchSubjects,
     invalidateCache,
     updateSubject,
+    deleteSubject,
   };
 });
