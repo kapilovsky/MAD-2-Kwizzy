@@ -27,8 +27,7 @@ const props = defineProps({
 });
 
 const student_name = ref(props.student.student_info.name);
-
-console.log("Student:", student_name.value);
+const student_id = ref(props.student.student_info.id);
 
 provide("sidebarState", {
   isOpen,
@@ -38,10 +37,9 @@ provide("sidebarState", {
 });
 
 const navigationItems = [
-  { name: "Home", icon: HomeIcon, path: "/student" },
-  { name: "Quizzes", icon: QuizIcon, path: "/admin/quizzes" },
-  { name: "Users", icon: UsersIcon, path: "/admin/users" },
-  { name: "Summary", icon: ChartBarIcon, path: "/admin/summary" },
+  { name: "Home", icon: HomeIcon, path: `/student/${student_id.value}` },
+  { name: "Quizzes", icon: QuizIcon, path: "/student/quizzes" },
+  { name: "Summary", icon: ChartBarIcon, path: "/student/summary" },
 ];
 
 const handleLogout = () => {
@@ -181,19 +179,7 @@ const handleLogout = () => {
         class="h-16 bg-white flex items-center justify-between px-6 gap-6"
       >
         <div class="flex items-center flex-1">
-          <div class="ml-4 flex-1 max-w-lg">
-            <div class="relative">
-              <component
-                :is="SearchIcon"
-                class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
-              />
-              <input
-                type="text"
-                placeholder="Search "
-                class="w-full pl-10 pr-4 py-2 bg-gray-100 text-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
-              />
-            </div>
-          </div>
+          <div class="ml-4 flex-1 max-w-lg"></div>
         </div>
 
         <!-- Right Side Icons -->
@@ -212,7 +198,7 @@ const handleLogout = () => {
       </header>
 
       <!-- Main Content Area -->
-      <main class="flex-1 overflow-y-auto bg-white p-6">
+      <main class="flex-1 overflow-y-auto bg-white px-6">
         <slot></slot>
       </main>
     </div>

@@ -260,7 +260,7 @@ const handleSearch = (query) => {
     <!-- Chapters Table -->
     <div>
       <div>
-        <h2 class="text-6xl font-semibold sohne tracking-[-2px] mb-4 magnetic">
+        <h2 class="text-5xl font-semibold sohne tracking-[-1px] mb-4 magnetic">
           Chapters
         </h2>
       </div>
