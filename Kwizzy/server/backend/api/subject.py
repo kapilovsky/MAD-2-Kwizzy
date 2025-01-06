@@ -17,7 +17,6 @@ class SubjectApi(Resource):
     def __init__(self):
         self.cache_timeout = 300
 
-    @cache.cached(timeout=300, key_prefix="all_subjects")
     def get_all_subjects(self):
         """Cached method to get all subjects"""
         start = perf_counter_ns()
@@ -161,12 +160,11 @@ class SubjectApi(Resource):
             # Get form data
             name = request.form.get("name")
             description = request.form.get("description")
-            image = request.files.get("image")
+            keep_existing_image = request.form.get("keep_existing_image") == "true"
 
             # Validate required fields
             if not name or not description:
                 return {"message": "Name and description are required"}, 400
-
             # Check if new name conflicts with existing subjects (excluding current subject)
             existing_subject = Subject.query.filter(
                 Subject.name == name, Subject.id != subject_id
@@ -174,33 +172,52 @@ class SubjectApi(Resource):
             if existing_subject:
                 return {"message": "A subject with this name already exists"}, 400
 
+            # Update subject details
+            subject.name = name
+            subject.description = description
+
             # Handle image upload if new image is provided
-            if image:
-                if not allowed_file(image.filename):
+            if "image" in request.files:
+                file = request.files["image"]
+                if not allowed_file(file.filename):
                     return {"message": "Invalid file type"}, 400
 
                 # Delete old image if it exists
                 if subject.subject_image:
-                    old_image_path = os.path.join(
-                        app.config["UPLOAD_FOLDER"], subject.subject_image
-                    )
-                    if os.path.exists(old_image_path):
-                        os.remove(old_image_path)
+                    try:
+                        old_image_path = os.path.join(
+                            app.config["UPLOAD_FOLDER"],
+                            "subjects",
+                            subject.subject_image,
+                        )
+                        if os.path.exists(old_image_path):
+                            os.remove(old_image_path)
+                    except Exception as e:
+                        print(f"Error removing old image: {e}")
 
                 # Save new image
-                filename = secure_filename(image.filename)
                 upload_folder = app.config["UPLOAD_FOLDER"]
                 if not os.path.exists(upload_folder):
                     os.makedirs(upload_folder)
+                filename = secure_filename(file.filename)
                 filepath = os.path.join(upload_folder, filename)
-                image.save(filepath)
-
+                file.save(filepath)
                 # Update subject image filename
                 subject.subject_image = filename
-
-            # Update subject details
-            subject.name = name
-            subject.description = description
+            elif not keep_existing_image:
+                # Remove existing image if keep_existing_image is false
+                if subject.subject_image:
+                    try:
+                        old_image_path = os.path.join(
+                            app.config["UPLOAD_FOLDER"],
+                            "subjects",
+                            subject.subject_image,
+                        )
+                        if os.path.exists(old_image_path):
+                            os.remove(old_image_path)
+                    except Exception as e:
+                        print(f"Error removing old image: {e}")
+                subject.subject_image = None
 
             db.session.commit()
             self.invalidate_cache()
@@ -217,6 +234,6 @@ class SubjectApi(Resource):
 
     def invalidate_cache(self):
         """Invalidate all subject-related caches"""
-        cache.delete("all_subjects")
+        cache.delete_memoized(self.get_all_subjects)
         cache.delete_memoized(self.get_subject_by_id)
         cache.delete_memoized(self.search_subjects)

@@ -2,6 +2,8 @@ from flask import jsonify
 from functools import wraps
 from flask_jwt_extended import get_jwt
 from flask import current_app as app
+import pytz
+from datetime import datetime
 
 
 def role_required(role):
@@ -26,3 +28,8 @@ def allowed_file(filename):
         "." in filename
         and filename.rsplit(".", 1)[1].lower() in app.config["ALLOWED_EXTENSIONS"]
     )
+
+
+def IndianTimeZone():
+    IST = pytz.timezone("Asia/Kolkata")
+    return datetime.now(IST)

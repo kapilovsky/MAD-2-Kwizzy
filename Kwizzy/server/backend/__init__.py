@@ -81,6 +81,8 @@ def create_app():
     from .api.options import OptionApi
     from .api.options import OptionsBulkApi
     from .api.serve_file import FileApi
+    from .api.user_answer import UserAnswerApi
+    from .api.quiz_result import QuizResultApi
 
     api.add_resource(Student, "/api/students", "/api/student/<int:student_id>")
     api.add_resource(StudentStatistics, "/api/student/statistics")
@@ -106,6 +108,12 @@ def create_app():
     )
     api.add_resource(OptionsBulkApi, "/api/questions/<int:question_id>/options/bulk")
     api.add_resource(FileApi, "/api/uploads/subjects/<path:filename>")
+    api.add_resource(
+        QuizResultApi, "/api/quiz-results", "/api/quiz-results/<int:result_id>"
+    )
+    api.add_resource(
+        UserAnswerApi, "/api/user-answers", "/api/user-answers/<int:answer_id>"
+    )
 
     with app.app_context():
         db.create_all()

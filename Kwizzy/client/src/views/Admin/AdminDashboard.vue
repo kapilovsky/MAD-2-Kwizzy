@@ -10,6 +10,21 @@ import logo from "../../assets/images/landing-page/white logo.png";
 import Loader from "@/components/Loader.vue";
 import { useToast } from "@/composables/useToast";
 import { useSubjects } from "@/composables/useSubjects";
+import { useEventStore } from "@/composables/eventBus";
+
+const eventStore = useEventStore();
+
+watch(
+  () => eventStore.shouldRefreshSubjects,
+  (shouldRefresh) => {
+    if (shouldRefresh) {
+      invalidateCache();
+      fetchSubjects(true);
+      eventStore.resetSubjectRefresh();
+    }
+  }
+);
+
 const toast = useToast();
 const { allSubjects, isLoading, fetchSubjects, invalidateCache } =
   useSubjects();

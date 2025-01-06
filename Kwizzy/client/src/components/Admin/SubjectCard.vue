@@ -2,6 +2,7 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { RouterLink } from "vue-router";
 import Loader from "../Loader.vue";
+const emits = defineEmits(["update"]);
 
 const props = defineProps({
   subjects: {
@@ -68,7 +69,6 @@ const props = defineProps({
 </template>
 
 <style scoped>
-
 .fade-enter-active,
 .fade-leave-active {
   transition: opacity 0.3s ease;

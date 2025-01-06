@@ -13,6 +13,8 @@ import SearchBar from "@/components/Admin/SearchBar.vue";
 import Loader from "@/components/Loader.vue";
 import { RouterLink } from "vue-router";
 import { useToast } from "@/composables/useToast";
+import { useEventStore } from "@/composables/eventBus";
+const eventStore = useEventStore();
 
 const toast = useToast();
 const route = useRoute();
@@ -93,6 +95,7 @@ const handleSubjectUpdated = (updatedSubject) => {
   };
   console.log("Updated subject:", subject.value);
   isEditSubjectModalOpen.value = false;
+  eventStore.triggerSubjectRefresh()
 };
 
 onMounted(() => {

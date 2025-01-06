@@ -20,13 +20,13 @@ const initializeForm = (subject) => {
   subjectData.value = {
     name: subject.name,
     description: subject.description,
-    image: subject.subject_image,
+    image: null, // Don't set the image directly, just handle the preview
   };
 
-  // Set initial preview using the full image URL
   if (subject.subject_image) {
-    // Assuming the image URL is constructed the same way as in your SubjectCard
     preview.value = `${API_URL}/uploads/subjects/${subject.subject_image}`;
+  } else {
+    preview.value = null;
   }
 };
 
@@ -47,13 +47,17 @@ watch(
   { immediate: true }
 );
 
-const handleSubmit = async () => {
+const handleSubmit = async (subject) => {
   const formData = new FormData();
   formData.append("name", subjectData.value.name);
   formData.append("description", subjectData.value.description);
-  if (subjectData.value.image) {
+  // Only append image if a new one was selected
+  if (subjectData.value.image instanceof File) {
     formData.append("image", subjectData.value.image);
   }
+
+  // Add a flag to indicate if the image should be kept or removed
+  formData.append("keep_existing_image", preview.value ? "true" : "false");
 
   try {
     const token = localStorage.getItem("access_token");
@@ -143,7 +147,7 @@ onUnmounted(() => {
               >]
             </button>
           </div>
-          <form @submit.prevent="handleSubmit">
+          <form @submit.prevent="handleSubmit(subject)">
             <div>
               <input
                 v-model="subjectData.name"
