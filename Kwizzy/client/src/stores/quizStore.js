@@ -31,6 +31,15 @@ export const useQuizStore = defineStore("quiz", {
 
     isQuizReady: (state) =>
       !state.isLoading && state.quiz !== null && !state.error,
+
+    isQuizInProgress: () => {
+      const startTime = localStorage.getItem("quizStartTime");
+      const endTime = localStorage.getItem("quizEndTime");
+      if (!startTime || !endTime) return false;
+
+      const now = new Date().getTime();
+      return now < parseInt(endTime);
+    },
   },
 
   actions: {
@@ -83,6 +92,57 @@ export const useQuizStore = defineStore("quiz", {
       this.userAnswers.clear();
       this.isLoading = false;
       this.error = null;
+    },
+    async checkQuizStatus(quizId) {
+      const startTime = localStorage.getItem("quizStartTime");
+      const endTime = localStorage.getItem("quizEndTime");
+
+      if (startTime && endTime) {
+        const now = new Date().getTime();
+        if (now >= parseInt(endTime)) {
+          // Quiz time has expired
+          await this.handleExpiredQuiz(quizId);
+          return false;
+        }
+        return true;
+      }
+      return false;
+    },
+    async handleExpiredQuiz(quizId) {
+      // Automatically submit quiz if time expired
+      const answers = Array.from(this.userAnswers.entries()).map(
+        ([questionId, optionId]) => ({
+          question_id: parseInt(questionId),
+          selected_option_id: parseInt(optionId),
+        })
+      );
+
+      try {
+        const response = await axios.post(
+          `${API_URL}/user-answers`,
+          {
+            quiz_id: quizId,
+            answers: answers,
+            expired: true,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${localStorage.getItem("access_token")}`,
+              "Content-Type": "application/json",
+            },
+          }
+        );
+
+        // Clear timer data
+        localStorage.removeItem("quizStartTime");
+        localStorage.removeItem("totalDuration");
+        localStorage.removeItem("quizEndTime");
+
+        return response.data;
+      } catch (error) {
+        console.error("Error handling expired quiz:", error);
+        throw error;
+      }
     },
   },
 });

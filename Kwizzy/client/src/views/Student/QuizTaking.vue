@@ -33,19 +33,19 @@ const { setQuiz, setAnswer, nextQuestion, previousQuestion, submitQuiz } =
 const initializeTimer = () => {
   const startTime = parseInt(localStorage.getItem("quizStartTime"));
   const totalDuration = parseInt(localStorage.getItem("totalDuration"));
+  const endTime = parseInt(localStorage.getItem("quizEndTime"));
 
-  if (!startTime) return;
+  if (!startTime || !endTime) return;
 
   const updateTimer = () => {
     const now = new Date().getTime();
-    const elapsed = Math.floor((now - startTime) / 1000);
-    const remaining = totalDuration * 60 - elapsed;
+    const remaining = Math.max(0, endTime - now) / 1000; // Convert to seconds
 
     if (remaining <= 0) {
       clearInterval(timerInterval);
       handleSubmit();
     } else {
-      timeRemaining.value = remaining;
+      timeRemaining.value = Math.floor(remaining);
     }
   };
 
@@ -119,7 +119,7 @@ const handleSubmit = async () => {
       // Clear quiz data
       localStorage.removeItem("quizStartTime");
       localStorage.removeItem("totalDuration");
-
+      localStorage.removeItem("quizEndTime");
       // Store result in localStorage for results page
       localStorage.setItem("quizResult", JSON.stringify(response.data.result));
 
@@ -143,11 +143,20 @@ const fetchQuizData = async () => {
   try {
     const quizData = await quizStore.fetchQuiz(route.params.quizId);
 
-    // Initialize timer with quiz duration
-    const [hours, minutes] = quizData.time_duration.split(":");
-    const totalMinutes = parseInt(hours) * 60 + parseInt(minutes);
-    localStorage.setItem("quizStartTime", new Date().getTime());
-    localStorage.setItem("totalDuration", totalMinutes);
+    const existingStartTime = localStorage.getItem("quizStartTime");
+    const existingEndTime = localStorage.getItem("quizEndTime");
+
+    if (!existingStartTime || !existingEndTime) {
+      // Only set new timer if one doesn't exist
+      const [hours, minutes] = quizData.time_duration.split(":");
+      const totalMinutes = parseInt(hours) * 60 + parseInt(minutes);
+      const startTime = new Date().getTime();
+      const endTime = startTime + totalMinutes * 60 * 1000;
+
+      localStorage.setItem("quizStartTime", startTime.toString());
+      localStorage.setItem("totalDuration", totalMinutes.toString());
+      localStorage.setItem("quizEndTime", endTime.toString());
+    }
 
     initializeTimer();
     toast.success("Quiz loaded successfully");
@@ -160,6 +169,12 @@ const fetchQuizData = async () => {
 
 onMounted(() => {
   fetchQuizData();
+
+  window.addEventListener("beforeunload", (e) => {
+    if (timeRemaining.value > 0) {
+      e.preventDefault();
+    }
+  });
 });
 
 onUnmounted(() => {
@@ -169,6 +184,8 @@ onUnmounted(() => {
   // Clear any quiz-related localStorage items
   localStorage.removeItem("quizStartTime");
   localStorage.removeItem("totalDuration");
+  localStorage.removeItem("quizEndTime");
+  window.removeEventListener("beforeunload");
   // Reset the store
   quizStore.resetQuiz();
 });
