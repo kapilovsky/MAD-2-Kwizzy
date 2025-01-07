@@ -1,6 +1,6 @@
 <script setup>
-import { ref, provide } from "vue";
-import { useRouter } from "vue-router";
+import { ref, provide, watch } from "vue";
+import { useRoute, useRouter, RouterLink } from "vue-router";
 import logo from "../../assets/images/landing-page/white logo.png";
 const router = useRouter();
 const isOpen = ref(false);
@@ -9,6 +9,7 @@ import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 import { useToast } from "@/composables/useToast";
 const toast = useToast();
+const route = useRoute();
 
 import HomeIcon from "../../assets/images/icons/home.svg";
 import QuizIcon from "../../assets/images/icons/quiz.svg";
@@ -37,10 +38,43 @@ provide("sidebarState", {
 });
 
 const navigationItems = [
-  { name: "Home", icon: HomeIcon, path: `/student/${student_id.value}` },
-  { name: "Quizzes", icon: QuizIcon, path: "/student/quizzes" },
-  { name: "Summary", icon: ChartBarIcon, path: "/student/summary" },
+  {
+    name: "Home",
+    icon: HomeIcon,
+    path: `/student/${student_id.value}`,
+    isActive: route.path === `/student/${student_id.value}`,
+  },
+  {
+    name: "Subjects",
+    icon: QuizIcon,
+    path: `/student/${student_id.value}/subjects`,
+    isActive: route.path.includes("/subjects"),
+  },
+  {
+    name: "Summary",
+    icon: ChartBarIcon,
+    path: `/student/${student_id.value}/summary`,
+    isActive: route.path.includes("/summary"),
+  },
 ];
+
+const handleNavigation = async (path) => {
+  if (route.path !== path) {
+    try {
+      await router.push(path);
+    } catch (error) {
+      console.error("Navigation error:", error);
+    }
+  }
+};
+
+watch(
+  () => route.path,
+  (newPath) => {
+    // You can add any additional logic here when route changes
+    console.log("Route changed to:", newPath);
+  }
+);
 
 const handleLogout = () => {
   localStorage.removeItem("access_token");
@@ -70,27 +104,34 @@ const handleLogout = () => {
 
         <!-- Navigation Links -->
         <nav class="flex-1 px-2 py-4 space-y-2">
-          <router-link
+          <button
             v-for="item in navigationItems"
             :key="item.name"
-            :to="item.path"
-            class="flex items-center px-3 py-2 text-neutral-900 rounded-md hover:translate-x-2 group transition-all duration-200"
-            :class="{ 'bg-[#f1f1f1]': $route.path === item.path }"
+            @click="handleNavigation(item.path)"
+            class="w-full flex items-center px-3 py-2 text-neutral-900 rounded-md hover:translate-x-2 group transition-all duration-200"
+            :class="{
+              'bg-[#f1f1f1]': item.isActive,
+              'opacity-75 hover:opacity-100': !item.isActive,
+            }"
           >
             <component
               :is="item.icon"
-              class="w-6 h-6"
-              :class="{ 'text-neutral-900': $route.path === item.path }"
+              class="w-6 h-6 transition-colors duration-200"
+              :class="{
+                'fill-[#3b515d]': item.isActive,
+                'fill-[#192227]': !item.isActive,
+              }"
             />
             <Transition name="fade">
               <span
                 v-if="isOpen"
                 class="ml-3 whitespace-nowrap text-sm font-semibold"
+                :class="{ 'text-[#3b515d]': item.isActive }"
               >
                 {{ item.name }}
               </span>
             </Transition>
-          </router-link>
+          </button>
 
           <!-- Logout Button -->
           <button

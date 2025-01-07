@@ -278,7 +278,7 @@ const handleSearch = (query) => {
         </h2>
       </div>
       <div class="px-2">
-        <table class="w-full">
+        <table class="w-full chapters">
           <thead>
             <tr class="text-left text-sm border-b-2 border-black">
               <th>Chapter Name</th>
@@ -389,11 +389,11 @@ table td span {
   letter-spacing: -0.6px;
 }
 
-tbody tr {
+.chapters tbody tr {
   transition: all 0.15s ease;
 }
 
-tbody tr:hover {
+.chapters tbody tr:hover {
   background-color: #f0f0ff;
 }
 </style>

@@ -15,9 +15,6 @@ class Student(Resource):
         """Convert user object to dictionary with relevant student information"""
         # Calculate quiz statistics
         total_quizzes = len(user.quiz_results)
-        completed_quizzes = [
-            result for result in user.quiz_results if result.marks_scored is not None
-        ]
         latest_activity = max([r.completed_at for r in user.quiz_results], default=None)
 
         return {
@@ -29,11 +26,8 @@ class Student(Resource):
             "profile_pic": user.profile_pic,
             "quiz_stats": {
                 "total_quizzes_attempted": total_quizzes,
-                "quizzes_completed": len(completed_quizzes),
-                "average_score": self.calculate_average_score(user.quiz_results),
-                "total_score": sum(r.marks_scored or 0 for r in user.quiz_results),
                 "last_active": (
-                    latest_activity.strftime("%Y-%m-%d %H:%M:%S")
+                    latest_activity.strftime("%Y-%m-%d %H:%M")
                     if latest_activity
                     else None
                 ),
@@ -49,7 +43,7 @@ class Student(Resource):
             recent_results = (
                 QuizResult.query.filter_by(user_id=student_id)
                 .order_by(QuizResult.completed_at.desc())
-                .limit(5)
+                .limit(8)
                 .all()
             )
 
@@ -63,7 +57,7 @@ class Student(Resource):
                         if result.total_marks
                         else 0
                     ),
-                    "completed_at": result.completed_at.strftime("%Y-%m-%d %H:%M:%S"),
+                    "completed_at": result.completed_at.strftime("%Y-%m-%d %H:%M"),
                 }
                 for result in recent_results
             ]
@@ -103,27 +97,6 @@ class Student(Resource):
         except Exception as e:
             return {"error": str(e)}
 
-    def calculate_average_score(self, quiz_results):
-        """Calculate average score of all completed quizzes"""
-        try:
-            completed_results = [r for r in quiz_results if r.marks_scored is not None]
-            if not completed_results:
-                return 0
-
-            valid_results = [
-                (result.marks_scored / result.total_marks) * 100
-                for result in completed_results
-                if result.total_marks > 0 and result.marks_scored is not None
-            ]
-
-            return (
-                round(sum(valid_results) / len(valid_results), 2)
-                if valid_results
-                else 0
-            )
-        except ZeroDivisionError:
-            return 0
-
     def calculate_performance_percentage(self, quiz_results):
         """Calculate overall performance percentage"""
         total_marks_scored = sum(r.marks_scored or 0 for r in quiz_results)
@@ -152,7 +125,7 @@ class Student(Resource):
                         "total_marks": result.total_marks,
                         "percentage": round(percentage, 2),
                         "completed_at": result.completed_at.strftime(
-                            "%Y-%m-%d %H:%M:%S"
+                            "%Y-%m-%d %H:%M"
                         ),
                         "answers_breakdown": {
                             "total_questions": len(result.user_answers),
@@ -348,13 +321,11 @@ class StudentStatistics(Resource):
 
 class StudentActivity(Resource):
     @jwt_required()
-    @role_required("admin")
     def get(self, student_id):
         return Student().get_recent_activity(student_id), 200
 
 
 class StudentSubjectPerformance(Resource):
     @jwt_required()
-    @role_required("admin")
     def get(self, student_id):
         return Student().get_subject_performance(student_id), 200

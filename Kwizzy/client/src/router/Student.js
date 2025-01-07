@@ -1,10 +1,11 @@
 import { useQuizStore } from "../stores/quizStore";
 import { useQuizResultStore } from "../stores/quizResultStore";
 
-const StudentDashboard = () => import("../views/Student/StudentDashboard.vue");
+import StudentDashboard from "../views/Student/StudentDashboard.vue";
 const QuizDetails = () => import("../views/Student/Quiz.vue");
 const QuizTaking = () => import("../views/Student/QuizTaking.vue");
 const QuizResults = () => import("../views/Student/QuizResults.vue");
+import Subjects from "../views/Student/Subjects.vue";
 
 const StudentRoutes = [
   {
@@ -17,13 +18,26 @@ const StudentRoutes = [
     },
   },
   {
+    path: "/student/:id/subjects",
+    name: "subjects",
+    component: Subjects,
+    meta: {
+      requiresAuth: true,
+      title: "Subjects",
+    },
+  },
+  {
+    path: "/student/subject",
+    redirect: "/student/:id/subjects",
+  },
+  {
     path: "/student/:id/quiz/:quizId",
     name: "quiz",
     component: QuizDetails,
     meta: {
       requiresAuth: true,
       title: "Quiz Details",
-     },
+    },
   },
   {
     path: "/student/:id/quiz/:quizId/take",
@@ -104,20 +118,6 @@ const StudentRoutes = [
 
 // Add navigation guards
 const addNavigationGuards = (router) => {
-  router.beforeEach((to, from, next) => {
-    // Handle refresh warnings for quiz taking
-    if (to.meta.preventRefresh) {
-      window.onbeforeunload = (e) => {
-        e.preventDefault();
-        e.returnValue = "";
-      };
-    } else {
-      window.onbeforeunload = null;
-    }
-
-    next();
-  });
-
   // Clean up when leaving quiz-related routes
   router.afterEach((to, from) => {
     if (from.name === "quiz-take" && to.name !== "quiz-results") {

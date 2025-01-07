@@ -51,6 +51,9 @@ export const studentService = {
   async getStudent(id) {
     try {
       const token = localStorage.getItem("access_token");
+      if (!token) {
+        throw new Error("Token not found");
+      }
       const response = await axios.get(`${API_URL}/student/${id}`, {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -61,6 +64,21 @@ export const studentService = {
       console.error("Error fetching student:", error);
       throw error;
     }
+  },
+
+  async getRecentActivity(id) {
+    try {
+      const token = localStorage.getItem("access_token");
+      if (!token) {
+        throw new Error("Token not found");
+      }
+      const response = await axios.get(`${API_URL}/student/${id}/activity`, {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      });
+      return response.data;
+    } catch {}
   },
 
   // Get student statistics

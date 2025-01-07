@@ -86,7 +86,6 @@ const handleSubmit = async () => {
 
   try {
     isSubmitting.value = true;
-    const loadingToast = toast.info("Submitting quiz...");
 
     // Format answers for API
     const answers = Array.from(userAnswers.value.entries()).map(
@@ -147,7 +146,7 @@ const handleSubmit = async () => {
 
 const fetchQuizData = async () => {
   try {
-    const quizData = await quizStore.fetchQuiz(route.params.quizId);
+    const quizData = await quizStore.fetchQuiz(quizId);
 
     const existingStartTime = localStorage.getItem("quizStartTime");
     const existingEndTime = localStorage.getItem("quizEndTime");
@@ -165,11 +164,11 @@ const fetchQuizData = async () => {
     }
 
     initializeTimer();
-    toast.success("Quiz loaded successfully");
+    toast.success("Quiz has started, good luck!");
   } catch (error) {
     console.error("Error fetching quiz:", error);
     toast.error("Error loading quiz");
-    router.push("/dashboard");
+    router.push(`/student/${studentId}`);
   }
 };
 
