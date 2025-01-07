@@ -15,6 +15,7 @@ const AdminRoutes = [
     path: "/admin/dashboard",
     name: "AdminDashboard",
     component: AdminDashboard,
+    meta: { requiresAuth: true },
   },
   {
     path: "/admin",
@@ -24,36 +25,43 @@ const AdminRoutes = [
     path: "/admin/subject/:id",
     name: "Subject",
     component: Subject,
+    meta: { requiresAuth: true },
   },
   {
     path: "/admin/subject/:subjectId/chapter/:chapterId",
     name: "Chapter",
     component: Chapter,
+    meta: { requiresAuth: true },
   },
   {
     path: "/admin/users",
     name: "Users",
     component: Users,
+    meta: { requiresAuth: true },
   },
   {
     path: "/admin/subject/:subjectId/chapter/:chapterId/quiz/create",
     name: "CreateQuiz",
     component: CreateQuiz,
+    meta: { requiresAuth: true },
   },
   {
     path: "/admin/subject/:subjectId/chapter/:chapterId/quiz/:quizId",
     name: "Quiz",
     component: Quiz,
+    meta: { requiresAuth: true },
   },
   {
     path: "/admin/subject/:subjectId/chapter/:chapterId/quiz/:quizId/edit",
     name: "EditQuiz",
     component: EditQuiz,
+    meta: { requiresAuth: true },
   },
   {
     path: "/admin/student/:id",
     name: "StudentDetails",
     component: StudentDetails,
+    meta: { requiresAuth: true },
   },
 ];
 

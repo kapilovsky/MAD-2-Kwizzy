@@ -10,4 +10,12 @@ const router = createRouter({
   routes,
 });
 
+router.beforeEach((to, from, next) => {
+  if (to.meta.requiresAuth && !localStorage.getItem("access_token")) {
+    next("/login");
+  } else {
+    next();
+  }
+});
+
 export default router;

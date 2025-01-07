@@ -8,7 +8,6 @@ from sqlalchemy import (
     String,
     Boolean,
     ForeignKey,
-    Float,
 )
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
@@ -120,7 +119,6 @@ class Question(db.Model):
     )
     title = Column(String(100), nullable=True)
     text = Column(String(255), nullable=False)
-    weight = Column(Float, nullable=False, default=1.0)
 
     options = relationship(
         "Option", back_populates="question", cascade="all, delete-orphan"
@@ -168,8 +166,8 @@ class QuizResult(db.Model):
     user_id = Column(
         Integer, ForeignKey("users.id", ondelete="CASCADE"), nullable=False
     )
-    marks_scored = Column(Float, nullable=True)
-    total_marks = Column(Float, nullable=True)
+    marks_scored = Column(Integer, nullable=True)
+    total_marks = Column(Integer, nullable=True)
     completed_at = Column(DateTime, default=IndianTimeZone())
 
     user = relationship("User", back_populates="quiz_results")

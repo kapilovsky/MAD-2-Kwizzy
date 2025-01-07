@@ -82,7 +82,7 @@ class UserAnswerApi(Resource):
                 user_id=user_id,
                 marks_scored=correct_answers,
                 total_marks=total_questions,
-                completed_at=IndianTimeZone.now(),
+                completed_at=IndianTimeZone(),
             )
 
             db.session.add(quiz_result)
