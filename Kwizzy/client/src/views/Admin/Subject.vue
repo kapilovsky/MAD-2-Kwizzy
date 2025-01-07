@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, computed } from "vue";
-import { useRoute, useRouter } from "vue-router";
+import { useRoute, useRouter, RouterLink } from "vue-router";
 import "../../assets/font.css";
 import logo from "../../assets/images/landing-page/white logo.png";
 import axios from "axios";
@@ -11,7 +11,6 @@ import AddChapter from "@/components/Admin/AddChapter.vue";
 import EditChapter from "@/components/Admin/EditChapter.vue";
 import SearchBar from "@/components/Admin/SearchBar.vue";
 import Loader from "@/components/Loader.vue";
-import { RouterLink } from "vue-router";
 import { useToast } from "@/composables/useToast";
 import { useSubjectStore } from "@/stores/subjectStore";
 
@@ -117,7 +116,6 @@ const handleDeleteSubject = async (subjectId) => {
   if (!confirm("Are you sure you want to delete this subject?")) {
     return;
   }
-
   const success = await subjectStore.deleteSubject(subjectId);
   if (success) {
     router.push("/admin/dashboard");

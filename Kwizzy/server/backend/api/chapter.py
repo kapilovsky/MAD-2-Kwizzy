@@ -26,7 +26,6 @@ class ChapterApi(Resource):
         return [chapter.to_dict() for chapter in chapters]
 
     @jwt_required()
-    @role_required("admin")
     def get(self, chapter_id=None):
         try:
             # Get a specific chapter

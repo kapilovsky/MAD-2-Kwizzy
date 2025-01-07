@@ -186,7 +186,7 @@ const handleLogout = () => {
         class="h-16 bg-white flex items-center justify-between px-6 gap-6"
       >
         <div class="flex items-center flex-1">
-          <div v-if="showSearch" class="ml-4 flex-1 max-w-lg"></div>
+          <div class="ml-4 flex-1 max-w-lg"></div>
         </div>
 
         <!-- Right Side Icons -->

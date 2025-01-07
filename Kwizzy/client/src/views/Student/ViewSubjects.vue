@@ -1,7 +1,14 @@
 <template>
   <div>
-    <div class="mb-6 mt-4">
+    <div class="absolute top-6">
+      <div class="w-[450px]">
+        <SearchBar @search="handleSearch" placeholder="Search subjects..." />
+      </div>
+    </div>
+
+    <div class="mb-6 mt-4 flex flex-col gap-4">
       <h1 class="text-4xl font-bold">Subjects</h1>
+
       <p>
         Explore a variety of subjects and choose the ones you want to practice.
       </p>
@@ -13,7 +20,6 @@
   </div>
 </template>
 <script setup>
-import { useRoute } from "vue-router";
 import { ref, onMounted, computed } from "vue";
 import { useSubjectStore } from "@/stores/subjectStore";
 const subjectStore = useSubjectStore();
