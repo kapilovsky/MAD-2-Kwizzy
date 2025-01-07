@@ -7,7 +7,6 @@
       </p>
     </div>
     <SubjectCard
-      :student="student"
       :subjects="filteredSubjects"
       :loading="subjectStore.isLoading"
     />

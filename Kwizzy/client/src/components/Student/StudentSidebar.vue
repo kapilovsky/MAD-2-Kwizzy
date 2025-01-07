@@ -1,6 +1,6 @@
 <script setup>
 import { ref, provide, computed } from "vue";
-import { useRouter, RouterLink,useRoute } from "vue-router";
+import { useRouter, RouterLink, useRoute } from "vue-router";
 import logo from "../../assets/images/landing-page/white logo.png";
 const router = useRouter();
 const isOpen = ref(false);
@@ -25,29 +25,9 @@ const props = defineProps({
     type: Object,
     required: true,
   },
-  showSearch: {
-    type: Boolean,
-    default: false,
-  },
 });
 
 const emit = defineEmits(["search"]);
-
-const searchPlaceholder = computed(() => {
-  const route = useRoute();
-  switch (route.name) {
-    case "subjects":
-      return "Search subjects...";
-    case "quiz":
-      return "Search quizzes...";
-    default:
-      return "Search...";
-  }
-});
-
-const handleSearch = (query) => {
-  emit("search", query);
-};
 
 const student_name = ref(props.student.student_info.name);
 const student_id = ref(props.student.student_info.id);
@@ -206,12 +186,7 @@ const handleLogout = () => {
         class="h-16 bg-white flex items-center justify-between px-6 gap-6"
       >
         <div class="flex items-center flex-1">
-          <div v-if="showSearch" class="ml-4 flex-1 max-w-lg">
-            <SearchBar
-              @search="handleSearch"
-              :placeholder="searchPlaceholder"
-            />
-          </div>
+          <div v-if="showSearch" class="ml-4 flex-1 max-w-lg"></div>
         </div>
 
         <!-- Right Side Icons -->

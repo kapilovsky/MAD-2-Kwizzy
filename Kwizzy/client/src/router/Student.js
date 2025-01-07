@@ -16,6 +16,7 @@ const StudentRoutes = [
     meta: {
       requiresAuth: true,
       title: "Student Dashboard",
+      roles: ['student']
     },
     children: [
       {
@@ -25,7 +26,6 @@ const StudentRoutes = [
         meta: {
           requiresAuth: true,
           title: "Student Dashboard",
-          showSearch: false,
         },
       },
       {
@@ -35,7 +35,6 @@ const StudentRoutes = [
         meta: {
           requiresAuth: true,
           title: "Subjects",
-          showSearch: true,
         },
       },
       {
@@ -45,7 +44,6 @@ const StudentRoutes = [
         meta: {
           requiresAuth: true,
           title: "Subject Details",
-          showSearch: true,
         },
       },
       {
@@ -55,7 +53,6 @@ const StudentRoutes = [
         meta: {
           requiresAuth: true,
           title: "Quiz Details",
-          showSearch: false,
         },
       },
       {
@@ -66,7 +63,6 @@ const StudentRoutes = [
           requiresAuth: true,
           title: "Taking Quiz",
           preventRefresh: true, // to handle refresh warnings
-          showSearch: false,
         },
         beforeEnter: async (to, from, next) => {
           const quizStore = useQuizStore();
@@ -105,7 +101,6 @@ const StudentRoutes = [
           requiresAuth: true,
           title: "Quiz Results",
           preventRefresh: true,
-          showSearch: false,
         },
         beforeEnter: async (to, from, next) => {
           const quizResultStore = useQuizResultStore();

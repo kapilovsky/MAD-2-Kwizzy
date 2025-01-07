@@ -13,10 +13,6 @@ const props = defineProps({
     type: Boolean,
     required: true,
   },
-  student: {
-    type: Object,
-    required: true,
-  },
 });
 </script>
 

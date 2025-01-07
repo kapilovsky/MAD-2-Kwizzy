@@ -5,11 +5,7 @@
       <Loader />
     </div>
 
-    <StudentSidebar
-      v-else-if="student"
-      :show-search="showSearch"
-      :student="student"
-    >
+    <StudentSidebar v-else-if="student" :student="student">
       <router-view v-slot="{ Component }">
         <component :is="Component" :student="student" />
       </router-view>
@@ -25,7 +21,6 @@ import StudentSidebar from "@/components/Student/StudentSidebar.vue";
 import Loader from "@/components/Loader.vue";
 
 const route = useRoute();
-const showSearch = ref(route.meta.showSearch);
 const student = ref(null);
 const isLoading = ref(true);
 

@@ -18,6 +18,7 @@ const AdminRoutes = [
     meta: {
       requiresAuth: true,
       title: "Admin Dashboard",
+      roles: ['admin']
     },
   },
   {
@@ -26,6 +27,7 @@ const AdminRoutes = [
     meta: {
       requiresAuth: true,
       title: "Admin Dashboard",
+      roles: ['admin']
     },
   },
   {
@@ -35,6 +37,7 @@ const AdminRoutes = [
     meta: {
       requiresAuth: true,
       title: "Subject",
+      roles: ['admin']
     },
   },
   {
@@ -44,6 +47,7 @@ const AdminRoutes = [
     meta: {
       requiresAuth: true,
       title: "Chapter",
+      roles: ['admin']
     },
   },
   {
@@ -53,6 +57,7 @@ const AdminRoutes = [
     meta: {
       requiresAuth: true,
       title: "Users",
+      roles: ['admin']
     },
   },
   {
@@ -62,6 +67,7 @@ const AdminRoutes = [
     meta: {
       requiresAuth: true,
       title: "Create Quiz",
+      roles: ['admin']
     },
   },
   {
@@ -71,6 +77,7 @@ const AdminRoutes = [
     meta: {
       requiresAuth: true,
       title: "Quiz",
+      roles: ['admin']
     },
   },
   {
@@ -80,6 +87,7 @@ const AdminRoutes = [
     meta: {
       requiresAuth: true,
       title: "Edit Quiz",
+      roles: ['admin']
     },
   },
   {
@@ -89,6 +97,7 @@ const AdminRoutes = [
     meta: {
       requiresAuth: true,
       title: "Student Details",
+      roles: ['admin']
     },
   },
 ];
