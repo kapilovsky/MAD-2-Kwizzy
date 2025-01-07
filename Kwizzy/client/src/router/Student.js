@@ -5,6 +5,7 @@ import StudentDashboard from "../views/Student/StudentDashboard.vue";
 const QuizDetails = () => import("../views/Student/Quiz.vue");
 const QuizTaking = () => import("../views/Student/QuizTaking.vue");
 const QuizResults = () => import("../views/Student/QuizResults.vue");
+const Quizzes = () => import("../views/Student/Quizzes.vue");
 import ViewSubjects from "../views/Student/ViewSubjects.vue";
 import Subject from "../views/Student/Subject.vue";
 
@@ -16,7 +17,7 @@ const StudentRoutes = [
     meta: {
       requiresAuth: true,
       title: "Student Dashboard",
-      roles: ['student']
+      roles: ["student"],
     },
     children: [
       {
@@ -47,7 +48,16 @@ const StudentRoutes = [
         },
       },
       {
-        path: "quiz/:quizId",
+        path: "subject/:subjectId/chapter/:chapterId",
+        name: "chapter",
+        component: Quizzes,
+        meta: {
+          requiresAuth: true,
+          title: "Chapter Details",
+        },
+      },
+      {
+        path: "subject/:subjectId/chapter/:chapterId/quiz/:quizId",
         name: "quiz",
         component: QuizDetails,
         meta: {
@@ -56,7 +66,7 @@ const StudentRoutes = [
         },
       },
       {
-        path: "quiz/:quizId/take",
+        path: "subject/:subjectId/chapter/:chapterId/quiz/:quizId/take",
         name: "quiz-take",
         component: QuizTaking,
         meta: {

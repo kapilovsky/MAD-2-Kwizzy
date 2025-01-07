@@ -6,7 +6,7 @@
       </div>
     </div>
 
-    <div class="mb-6 mt-4 flex flex-col gap-4">
+  <div class="mb-6 mt-4 flex flex-col gap-4">
       <h1 class="text-4xl font-bold">Subjects</h1>
 
       <p>

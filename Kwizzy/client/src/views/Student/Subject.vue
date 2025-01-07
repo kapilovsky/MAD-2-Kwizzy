@@ -1,5 +1,6 @@
 <template>
-  <div>
+  <Loader v-if="isLoading" />
+  <div v-else>
     <div class="absolute top-6">
       <div class="w-[450px]">
         <SearchBar @search="handleSearch" placeholder="Search chapters..." />
@@ -61,11 +62,13 @@
                   {{ chapter.quizzes || 0 }}
                 </td>
                 <td class="p-2 text-right">
-                  <button
-                    class="py-[2px] px-1 text-gray-600 hover:text-[#0000ff] sohne-mono text-[12px] border-dotted border border-gray-400 link-hover"
-                  >
-                    View
-                  </button>
+                  <RouterLink :to="`${route.path}/chapter/${chapter.id}`">
+                    <button
+                      class="py-[2px] px-1 text-gray-600 hover:text-[#0000ff] sohne-mono text-[12px] border-dotted border border-gray-400 link-hover"
+                    >
+                      View
+                    </button>
+                  </RouterLink>
                 </td>
               </tr>
             </tbody>
@@ -81,6 +84,7 @@ import { useRoute, useRouter, RouterLink } from "vue-router";
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 import SearchBar from "@/components/Admin/SearchBar.vue";
+import Loader from "@/components/Loader.vue";
 
 const route = useRoute();
 const router = useRouter();

@@ -1,7 +1,7 @@
 <template>
   <div class="container mx-auto px-4 py-8">
     <div v-if="isLoading" class="flex justify-center items-center h-64">
-      <div class="spinner"></div>
+      <Loader />
     </div>
 
     <div v-else-if="quiz" class="max-w-2xl mx-auto">
@@ -89,7 +89,7 @@ import { useRouter, useRoute } from "vue-router";
 import axios from "axios";
 import { useToast } from "@/composables/useToast";
 import DialogModal from "@/components/DialogModal.vue";
-
+import Loader from "@/components/Loader.vue";
 const API_URL = import.meta.env.VITE_API_URL;
 const router = useRouter();
 const route = useRoute();
@@ -149,9 +149,3 @@ onMounted(() => {
   fetchQuizDetails();
 });
 </script>
-
-<style scoped>
-.spinner {
-  /* Add your spinner styles here */
-}
-</style>

@@ -59,16 +59,8 @@ const handleKeyPress = async (e) => {
   }
 };
 
-const startAutoRedirect = () => {
-  setTimeout(async () => {
-    if (!isNavigating.value) {
-      await handleRedirect();
-    }
-  }, 12000);
-};
 onMounted(() => {
   document.addEventListener("keydown", handleKeyPress);
-  startAutoRedirect();
 });
 
 onUnmounted(() => {
