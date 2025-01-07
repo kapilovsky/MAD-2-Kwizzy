@@ -1,6 +1,6 @@
 import { useQuizStore } from "../stores/quizStore";
 import { useQuizResultStore } from "../stores/quizResultStore";
-
+import StudentLayout from "../views/Student/StudentLayout.vue";
 import StudentDashboard from "../views/Student/StudentDashboard.vue";
 const QuizDetails = () => import("../views/Student/Quiz.vue");
 const QuizTaking = () => import("../views/Student/QuizTaking.vue");
@@ -11,108 +11,116 @@ const StudentRoutes = [
   {
     path: "/student/:id",
     name: "student",
-    component: StudentDashboard,
+    component: StudentLayout,
     meta: {
       requiresAuth: true,
       title: "Student Dashboard",
     },
-  },
-  {
-    path: "/student/:id/subjects",
-    name: "subjects",
-    component: Subjects,
-    meta: {
-      requiresAuth: true,
-      title: "Subjects",
-    },
-  },
-  {
-    path: "/student/subject",
-    redirect: "/student/:id/subjects",
-  },
-  {
-    path: "/student/:id/quiz/:quizId",
-    name: "quiz",
-    component: QuizDetails,
-    meta: {
-      requiresAuth: true,
-      title: "Quiz Details",
-    },
-  },
-  {
-    path: "/student/:id/quiz/:quizId/take",
-    name: "quiz-take",
-    component: QuizTaking,
-    meta: {
-      requiresAuth: true,
-      title: "Taking Quiz",
-      preventRefresh: true, // Add this to handle refresh warnings
-    },
-    beforeEnter: async (to, from, next) => {
-      const quizStore = useQuizStore();
+    children: [
+      {
+        path: "",
+        component: StudentDashboard,
+        name: "student-dashboard",
+        meta: {
+          requiresAuth: true,
+          title: "Student Dashboard",
+        },
+      },
+      {
+        path: "subjects",
+        name: "subjects",
+        component: Subjects,
+        meta: {
+          requiresAuth: true,
+          title: "Subjects",
+        },
+      },
+      {
+        path: "quiz/:quizId",
+        name: "quiz",
+        component: QuizDetails,
+        meta: {
+          requiresAuth: true,
+          title: "Quiz Details",
+        },
+      },
+      {
+        path: "quiz/:quizId/take",
+        name: "quiz-take",
+        component: QuizTaking,
+        meta: {
+          requiresAuth: true,
+          title: "Taking Quiz",
+          preventRefresh: true, // Add this to handle refresh warnings
+        },
+        beforeEnter: async (to, from, next) => {
+          const quizStore = useQuizStore();
 
-      try {
-        // Check if quiz is in progress
-        const quizStartTime = localStorage.getItem("quizStartTime");
-        const isInProgress =
-          quizStartTime && (await quizStore.checkQuizStatus(to.params.quizId));
+          try {
+            // Check if quiz is in progress
+            const quizStartTime = localStorage.getItem("quizStartTime");
+            const isInProgress =
+              quizStartTime &&
+              (await quizStore.checkQuizStatus(to.params.quizId));
 
-        if (!isInProgress && from.name !== "quiz") {
-          // If quiz is not in progress and not coming from quiz details page
-          next({
-            name: "quiz",
-            params: {
-              id: to.params.id,
-              quizId: to.params.quizId,
-            },
-          });
-          return;
-        }
+            if (!isInProgress && from.name !== "quiz") {
+              // If quiz is not in progress and not coming from quiz details page
+              next({
+                name: "quiz",
+                params: {
+                  id: to.params.id,
+                  quizId: to.params.quizId,
+                },
+              });
+              return;
+            }
 
-        next();
-      } catch (error) {
-        console.error("Error checking quiz status:", error);
-        next({ name: "error" });
-      }
-    },
-  },
-  {
-    path: "/student/:id/quiz/:quizId/results",
-    name: "quiz-results",
-    component: QuizResults,
-    meta: {
-      requiresAuth: true,
-      title: "Quiz Results",
-      preventRefresh: true,
-    },
-    beforeEnter: async (to, from, next) => {
-      const quizResultStore = useQuizResultStore();
+            next();
+          } catch (error) {
+            console.error("Error checking quiz status:", error);
+            next({ name: "error" });
+          }
+        },
+      },
+      {
+        path: "quiz/:quizId/results",
+        name: "quiz-results",
+        component: QuizResults,
+        meta: {
+          requiresAuth: true,
+          title: "Quiz Results",
+          preventRefresh: true,
+        },
+        beforeEnter: async (to, from, next) => {
+          const quizResultStore = useQuizResultStore();
 
-      try {
-        // If coming from quiz-take, we already have the result
-        if (from.name === "quiz-take") {
-          next();
-          return;
-        }
+          try {
+            // If coming from quiz-take, we already have the result
+            if (from.name === "quiz-take") {
+              next();
+              return;
+            }
 
-        // If refreshing or direct access, check if we have resultId
-        const resultId = to.query.resultId;
-        if (!resultId) {
-          next({
-            name: "student",
-            params: { id: to.params.id },
-          });
-          return;
-        }
+            // If refreshing or direct access, check if we have resultId
+            const resultId = to.query.resultId;
+            if (!resultId) {
+              next({
+                name: "student",
+                params: { id: to.params.id },
+              });
+              return;
+            }
 
-        // Pre-fetch the result
-        await quizResultStore.fetchResult(resultId);
-        next();
-      } catch (error) {
-        console.error("Error fetching quiz result:", error);
-        next({ name: "error" });
-      }
-    },
+            // Pre-fetch the result
+            await quizResultStore.fetchResult(resultId);
+            next();
+          } catch (error) {
+            console.error("Error fetching quiz result:", error);
+            next({ name: "error" });
+          }
+        },
+      },
+    ],
   },
 ];
 
