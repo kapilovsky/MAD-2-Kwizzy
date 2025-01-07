@@ -43,7 +43,6 @@ class SubjectApi(Resource):
         return [subject.to_dict() for subject in subjects]
 
     @jwt_required()
-    @role_required("admin")
     def get(self, subject_id=None):
         try:
             search_query = request.args.get("search", "").lower()
@@ -139,7 +138,7 @@ class SubjectApi(Resource):
                         os.remove(image_path)
                 except Exception as e:
                     print(f"Error removing image: {e}")
-                    
+
             db.session.delete(subject)
             db.session.commit()
             self.invalidate_cache()

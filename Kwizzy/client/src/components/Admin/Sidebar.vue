@@ -11,7 +11,6 @@ import QuizIcon from "../../assets/images/icons/quiz.svg";
 import ChartBarIcon from "../../assets/images/icons/summary.svg";
 import UsersIcon from "../../assets/images/icons/users.svg";
 import LogoutIcon from "../../assets/images/icons/logout.svg";
-import SearchIcon from "../../assets/images/icons/search.svg";
 import MenuIcon from "../../assets/images/icons/menu.svg";
 import CloseIcon from "../../assets/images/icons/close.svg";
 

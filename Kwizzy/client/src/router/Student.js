@@ -5,7 +5,8 @@ import StudentDashboard from "../views/Student/StudentDashboard.vue";
 const QuizDetails = () => import("../views/Student/Quiz.vue");
 const QuizTaking = () => import("../views/Student/QuizTaking.vue");
 const QuizResults = () => import("../views/Student/QuizResults.vue");
-import Subjects from "../views/Student/Subjects.vue";
+import ViewSubjects from "../views/Student/ViewSubjects.vue";
+import Subject from "../views/Student/Subject.vue";
 
 const StudentRoutes = [
   {
@@ -24,15 +25,27 @@ const StudentRoutes = [
         meta: {
           requiresAuth: true,
           title: "Student Dashboard",
+          showSearch: false,
         },
       },
       {
         path: "subjects",
-        name: "subjects",
-        component: Subjects,
+        name: "ViewSubjects",
+        component: ViewSubjects,
         meta: {
           requiresAuth: true,
           title: "Subjects",
+          showSearch: true,
+        },
+      },
+      {
+        path: "subject/:subjectId",
+        name: "subject",
+        component: Subject,
+        meta: {
+          requiresAuth: true,
+          title: "Subject Details",
+          showSearch: true,
         },
       },
       {
@@ -42,6 +55,7 @@ const StudentRoutes = [
         meta: {
           requiresAuth: true,
           title: "Quiz Details",
+          showSearch: false,
         },
       },
       {
@@ -51,7 +65,8 @@ const StudentRoutes = [
         meta: {
           requiresAuth: true,
           title: "Taking Quiz",
-          preventRefresh: true, // Add this to handle refresh warnings
+          preventRefresh: true, // to handle refresh warnings
+          showSearch: false,
         },
         beforeEnter: async (to, from, next) => {
           const quizStore = useQuizStore();
@@ -90,6 +105,7 @@ const StudentRoutes = [
           requiresAuth: true,
           title: "Quiz Results",
           preventRefresh: true,
+          showSearch: false,
         },
         beforeEnter: async (to, from, next) => {
           const quizResultStore = useQuizResultStore();
