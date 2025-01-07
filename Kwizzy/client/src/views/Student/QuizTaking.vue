@@ -2,6 +2,7 @@
 <script setup>
 import { onMounted, onUnmounted, ref } from "vue";
 import { useQuizStore } from "@/stores/quizStore";
+import { useQuizResultStore } from "@/stores/quizResultStore";
 import { storeToRefs } from "pinia";
 import { useRouter, useRoute } from "vue-router";
 import axios from "axios";
@@ -12,10 +13,13 @@ const router = useRouter();
 const route = useRoute();
 const toast = useToast();
 const quizStore = useQuizStore();
+const quizResultStore = useQuizResultStore();
 
 const timeRemaining = ref(null);
 const isSubmitting = ref(false);
 let timerInterval;
+const quizId = route.params.quizId;
+const studentId = route.params.id;
 
 const {
   quiz,
@@ -81,12 +85,6 @@ const handleSubmit = async () => {
   if (isSubmitting.value) return;
 
   try {
-    // Check if quiz exists
-    if (!quiz.value) {
-      toast.error("Quiz data not available");
-      return;
-    }
-
     isSubmitting.value = true;
     const loadingToast = toast.info("Submitting quiz...");
 
@@ -98,7 +96,6 @@ const handleSubmit = async () => {
       })
     );
 
-    // Prepare request payload using quiz from store
     const payload = {
       quiz_id: quiz.value.id,
       answers: answers,
@@ -116,19 +113,28 @@ const handleSubmit = async () => {
     });
 
     if (response.data && response.status === 201) {
+      // Store the result in both localStorage and Pinia store
+      const quizResult = response.data.result;
+      localStorage.setItem("quizResult", JSON.stringify(quizResult));
+      quizResultStore.setResult(quizResult);
+
       // Clear quiz data
       localStorage.removeItem("quizStartTime");
       localStorage.removeItem("totalDuration");
-      localStorage.removeItem("quizEndTime");
-      // Store result in localStorage for results page
-      localStorage.setItem("quizResult", JSON.stringify(response.data.result));
 
+      // Show success message
       toast.success("Quiz submitted successfully!");
 
-      // Redirect to results page with result ID
-      router.push({
-        path: `/student/${route.params.studentId}/quiz/${route.params.quizId}/results`,
-        query: { resultId: response.data.result.result_id },
+      // Navigate to results page
+      await router.replace({
+        name: "quiz-results",
+        params: {
+          id: route.params.id,
+          quizId: route.params.quizId,
+        },
+        query: {
+          resultId: quizResult.result_id,
+        },
       });
     }
   } catch (error) {
@@ -185,7 +191,7 @@ onUnmounted(() => {
   localStorage.removeItem("quizStartTime");
   localStorage.removeItem("totalDuration");
   localStorage.removeItem("quizEndTime");
-  window.removeEventListener("beforeunload");
+  window.removeEventListener("beforeunload", () => {});
   // Reset the store
   quizStore.resetQuiz();
 });

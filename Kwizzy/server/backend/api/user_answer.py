@@ -102,16 +102,23 @@ class UserAnswerApi(Resource):
 
             # Prepare detailed result response
             result = {
+                "id": quiz_result.id,  # Add this
                 "quiz_id": quiz.id,
                 "quiz_name": quiz.name,
+                "quiz_description": quiz.description,  # Add this
                 "total_questions": total_questions,
-                "correct_answers": correct_answers,
+                "marks_scored": correct_answers,  # Rename for consistency
+                "total_marks": total_questions,
                 "percentage": round(percentage, 2),
                 "result_id": quiz_result.id,
-                "detailed_answers": [
+                "completed_at_formatted": quiz_result.completed_at.strftime(
+                    "%d-%m-%Y %I:%M:%S %p IST"
+                ),  # Add formatted date
+                "user_answers": [  # Rename detailed_answers to user_answers for consistency
                     {
+                        "id": idx + 1,  # Add an ID for each answer
                         "question_id": answer["question_id"],
-                        "your_answer": answer["selected_option"],
+                        "selected_option": answer["selected_option"],
                         "is_correct": answer["is_correct"],
                         "correct_option": Option.query.filter_by(
                             question_id=answer["question_id"], is_correct=True
@@ -119,9 +126,8 @@ class UserAnswerApi(Resource):
                         .first()
                         .id,
                     }
-                    for answer in user_answers
+                    for idx, answer in enumerate(user_answers)
                 ],
-                "completed_at": quiz_result.completed_at.isoformat(),
             }
 
             return {"message": "Quiz submitted successfully", "result": result}, 201

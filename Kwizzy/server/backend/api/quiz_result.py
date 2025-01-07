@@ -28,11 +28,12 @@ class QuizResultApi(Resource):
     def get(self, result_id=None):
         try:
             user_id = get_jwt_identity()
+            user_id = int(user_id)
 
             if result_id:
                 result = QuizResult.query.get_or_404(result_id)
                 # Ensure user can only access their own results
-                if result.user_id != user_id:
+                if int(result.user_id) != user_id:
                     return {"message": "Unauthorized access"}, 403
                 return self.get_quiz_result_by_id(result_id)
 

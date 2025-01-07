@@ -12,7 +12,8 @@ from sqlalchemy import (
 from sqlalchemy.orm import relationship
 from flask_login import UserMixin
 from . import db
-from .utils import IndianTimeZone
+from .utils import IndianTimeZone, convert_to_ist, format_ist_datetime
+from datetime import datetime
 
 
 class User(db.Model, UserMixin):
@@ -155,6 +156,15 @@ class UserAnswer(db.Model):
 
     quiz_result = relationship("QuizResult", back_populates="user_answers")
 
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "result_id": self.result_id,
+            "question_id": self.question_id,
+            "selected_option": self.selected_option,
+            "is_correct": self.is_correct,
+        }
+
 
 # ||----------------------Quiz Result Model----------------------||#
 class QuizResult(db.Model):
@@ -175,3 +185,21 @@ class QuizResult(db.Model):
     user_answers = relationship(
         "UserAnswer", back_populates="quiz_result", cascade="all, delete"
     )
+
+    def to_dict(self):
+        return {
+            "id": self.id,
+            "quiz_id": self.quiz_id,
+            "user_id": self.user_id,
+            "marks_scored": self.marks_scored,
+            "total_marks": self.total_marks,
+            "completed_at_formatted": format_ist_datetime(self.completed_at),  #
+            "user_answers": (
+                [answer.to_dict() for answer in self.user_answers]
+                if hasattr(self, "user_answers")
+                else []
+            ),
+            # Add quiz details if needed
+            "quiz_name": self.quiz.name if self.quiz else None,
+            "quiz_description": self.quiz.description if self.quiz else None,
+        }

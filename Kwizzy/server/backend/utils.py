@@ -33,3 +33,29 @@ def allowed_file(filename):
 def IndianTimeZone():
     IST = pytz.timezone("Asia/Kolkata")
     return datetime.now(IST)
+
+
+def convert_to_ist(utc_dt):
+    """Converts UTC datetime to IST"""
+    if not utc_dt:
+        return None
+
+    # If datetime is naive (no timezone info), assume it's UTC
+    if utc_dt.tzinfo is None:
+        utc_dt = pytz.utc.localize(utc_dt)
+
+    IST = pytz.timezone("Asia/Kolkata")
+    ist_dt = utc_dt.astimezone(IST)
+    return ist_dt
+
+
+# Format datetime to string in IST
+def format_ist_datetime(dt):
+    """Formats datetime to IST string"""
+    if not dt:
+        return None
+
+    ist_dt = convert_to_ist(dt)
+    return ist_dt.strftime(
+        "%d-%m-%Y %I:%M:%S %p IST"
+    )  # Example: "07-01-2025 10:07:18 PM IST"

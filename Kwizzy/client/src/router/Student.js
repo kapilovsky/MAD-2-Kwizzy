@@ -1,4 +1,6 @@
 import { useQuizStore } from "../stores/quizStore";
+import { useQuizResultStore } from "../stores/quizResultStore";
+
 const StudentDashboard = () => import("../views/Student/StudentDashboard.vue");
 const QuizDetails = () => import("../views/Student/Quiz.vue");
 const QuizTaking = () => import("../views/Student/QuizTaking.vue");
@@ -9,13 +11,19 @@ const StudentRoutes = [
     path: "/student/:id",
     name: "student",
     component: StudentDashboard,
-    meta: { requiresAuth: true },
+    meta: {
+      requiresAuth: true,
+      title: "Student Dashboard",
+    },
   },
   {
     path: "/student/:id/quiz/:quizId",
     name: "quiz",
     component: QuizDetails,
-    meta: { requiresAuth: true },
+    meta: {
+      requiresAuth: true,
+      title: "Quiz Details",
+     },
   },
   {
     path: "/student/:id/quiz/:quizId/take",
@@ -24,20 +32,23 @@ const StudentRoutes = [
     meta: {
       requiresAuth: true,
       title: "Taking Quiz",
+      preventRefresh: true, // Add this to handle refresh warnings
     },
     beforeEnter: async (to, from, next) => {
       const quizStore = useQuizStore();
 
       try {
         // Check if quiz is in progress
-        const isInProgress = await quizStore.checkQuizStatus(to.params.quizId);
+        const quizStartTime = localStorage.getItem("quizStartTime");
+        const isInProgress =
+          quizStartTime && (await quizStore.checkQuizStatus(to.params.quizId));
 
         if (!isInProgress && from.name !== "quiz") {
           // If quiz is not in progress and not coming from quiz details page
           next({
             name: "quiz",
             params: {
-              studentId: to.params.studentId,
+              id: to.params.id,
               quizId: to.params.quizId,
             },
           });
@@ -55,8 +66,68 @@ const StudentRoutes = [
     path: "/student/:id/quiz/:quizId/results",
     name: "quiz-results",
     component: QuizResults,
-    meta: { requiresAuth: true },
+    meta: {
+      requiresAuth: true,
+      title: "Quiz Results",
+      preventRefresh: true,
+    },
+    beforeEnter: async (to, from, next) => {
+      const quizResultStore = useQuizResultStore();
+
+      try {
+        // If coming from quiz-take, we already have the result
+        if (from.name === "quiz-take") {
+          next();
+          return;
+        }
+
+        // If refreshing or direct access, check if we have resultId
+        const resultId = to.query.resultId;
+        if (!resultId) {
+          next({
+            name: "student",
+            params: { id: to.params.id },
+          });
+          return;
+        }
+
+        // Pre-fetch the result
+        await quizResultStore.fetchResult(resultId);
+        next();
+      } catch (error) {
+        console.error("Error fetching quiz result:", error);
+        next({ name: "error" });
+      }
+    },
   },
 ];
 
-export default StudentRoutes;
+// Add navigation guards
+const addNavigationGuards = (router) => {
+  router.beforeEach((to, from, next) => {
+    // Handle refresh warnings for quiz taking
+    if (to.meta.preventRefresh) {
+      window.onbeforeunload = (e) => {
+        e.preventDefault();
+        e.returnValue = "";
+      };
+    } else {
+      window.onbeforeunload = null;
+    }
+
+    next();
+  });
+
+  // Clean up when leaving quiz-related routes
+  router.afterEach((to, from) => {
+    if (from.name === "quiz-take" && to.name !== "quiz-results") {
+      // Clear quiz data if leaving quiz without completing
+      localStorage.removeItem("quizStartTime");
+      localStorage.removeItem("totalDuration");
+      const quizStore = useQuizStore();
+      quizStore.resetQuiz();
+    }
+  });
+};
+
+export { StudentRoutes, addNavigationGuards };

@@ -15,53 +15,81 @@ const AdminRoutes = [
     path: "/admin/dashboard",
     name: "AdminDashboard",
     component: AdminDashboard,
-    meta: { requiresAuth: true },
+    meta: {
+      requiresAuth: true,
+      title: "Admin Dashboard",
+    },
   },
   {
     path: "/admin",
     redirect: "/admin/dashboard",
+    meta: {
+      requiresAuth: true,
+      title: "Admin Dashboard",
+    },
   },
   {
     path: "/admin/subject/:id",
     name: "Subject",
     component: Subject,
-    meta: { requiresAuth: true },
+    meta: {
+      requiresAuth: true,
+      title: "Subject",
+    },
   },
   {
     path: "/admin/subject/:subjectId/chapter/:chapterId",
     name: "Chapter",
     component: Chapter,
-    meta: { requiresAuth: true },
+    meta: {
+      requiresAuth: true,
+      title: "Chapter",
+    },
   },
   {
     path: "/admin/users",
     name: "Users",
     component: Users,
-    meta: { requiresAuth: true },
+    meta: {
+      requiresAuth: true,
+      title: "Users",
+    },
   },
   {
     path: "/admin/subject/:subjectId/chapter/:chapterId/quiz/create",
     name: "CreateQuiz",
     component: CreateQuiz,
-    meta: { requiresAuth: true },
+    meta: {
+      requiresAuth: true,
+      title: "Create Quiz",
+    },
   },
   {
     path: "/admin/subject/:subjectId/chapter/:chapterId/quiz/:quizId",
     name: "Quiz",
     component: Quiz,
-    meta: { requiresAuth: true },
+    meta: {
+      requiresAuth: true,
+      title: "Quiz",
+    },
   },
   {
     path: "/admin/subject/:subjectId/chapter/:chapterId/quiz/:quizId/edit",
     name: "EditQuiz",
     component: EditQuiz,
-    meta: { requiresAuth: true },
+    meta: {
+      requiresAuth: true,
+      title: "Edit Quiz",
+    },
   },
   {
     path: "/admin/student/:id",
     name: "StudentDetails",
     component: StudentDetails,
-    meta: { requiresAuth: true },
+    meta: {
+      requiresAuth: true,
+      title: "Student Details",
+    },
   },
 ];
 
