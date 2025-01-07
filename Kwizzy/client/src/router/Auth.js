@@ -2,7 +2,6 @@ import LandingPage from "../views/LandingPage.vue";
 import Login from "../views/Login.vue";
 import Signup from "../views/Signup.vue";
 const PageNotFound = () => import("../views/404.vue");
-const Unauthorized = () => import("../views/Unauthorized.vue");
 
 const AuthRoutes = [
   {
@@ -28,15 +27,6 @@ const AuthRoutes = [
     name: "Page Not Found",
     component: PageNotFound,
     meta: { title: "404 Page Not Found" },
-  },
-
-  {
-    path: "/unauthorized",
-    name: "unauthorized",
-    component: () => import("@/views/Unauthorized.vue"),
-    meta: {
-      title: "Unauthorized Access",
-    },
   },
 ];
 

@@ -2,29 +2,73 @@
 import { ref, onMounted, onUnmounted } from "vue";
 import { useRouter } from "vue-router";
 const router = useRouter();
+import { getUserRole, getUserId, isAuthenticated } from "@/utils/auth";
 import logo from "../assets/images/landing-page/white logo.png";
 
 const isNavigating = ref(false);
 
-const handleKeyPress = async (e) => {
-  if (e.key === "Escape") {
-    isNavigating.value = true;
-    try {
+const handleRedirect = async () => {
+  isNavigating.value = true;
+  try {
+    if (isAuthenticated()) {
+      const userRole = getUserRole();
+      if (userRole === "student") {
+        const userId = getUserId();
+        if (userId) {
+          await router.push({
+            path: `/student/${userId}`,
+            replace: true,
+          });
+        } else {
+          throw new Error("User ID not found");
+        }
+      } else if (userRole === "admin") {
+        await router.push({
+          path: "/admin/dashboard",
+          replace: true,
+        });
+      } else {
+        // If role is invalid or not found, redirect to login
+        await router.push({
+          path: "/login",
+          replace: true,
+        });
+      }
+    } else {
+      // If no token, redirect to login page
       await router.push({
-        path: "/",
+        path: "/login",
         replace: true,
       });
-      window.location.reload();
-    } catch (error) {
-      console.log(error, "error");
-    } finally {
-      isNavigating.value = false;
     }
+  } catch (error) {
+    console.error("Navigation error:", error);
+    // Fallback to login page if anything goes wrong
+    await router.push({
+      path: "/login",
+      replace: true,
+    });
+  } finally {
+    isNavigating.value = false;
   }
 };
 
+const handleKeyPress = async (e) => {
+  if (e.key === "Escape" && !isNavigating.value) {
+    await handleRedirect();
+  }
+};
+
+const startAutoRedirect = () => {
+  setTimeout(async () => {
+    if (!isNavigating.value) {
+      await handleRedirect();
+    }
+  }, 12000);
+};
 onMounted(() => {
   document.addEventListener("keydown", handleKeyPress);
+  startAutoRedirect();
 });
 
 onUnmounted(() => {
