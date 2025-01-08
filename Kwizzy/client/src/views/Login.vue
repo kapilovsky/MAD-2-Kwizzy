@@ -41,9 +41,9 @@ const handleLogin = async () => {
 </script>
 
 <template>
-  <div class="container flex items-center justify-between h-screen px-24">
+  <div class="container flex items-center sm:justify-between h-screen px-24">
     <div
-      class="login flex flex-col justify-start gap-6 h-full py-24 max-w-sm ml-12"
+      class="login flex flex-col justify-start gap-6 h-full py-24 max-w-sm sm:ml-12 px-8 sm:px-0"
     >
       <h1 class="text-4xl">Welcome Back 👋</h1>
       <p class="font-[Inter] text-black/70 text-lg">
@@ -157,6 +157,9 @@ button[type="submit"]:hover ion-icon {
 @media (max-width: 768px) {
   .container {
     padding: 0 0.5rem;
+  }
+  .login-image {
+    display: none;
   }
 }
 </style>

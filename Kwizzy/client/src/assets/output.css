@@ -2909,6 +2909,10 @@ button:focus {
     margin-bottom: 3.5rem;
   }
 
+  .sm\:ml-12 {
+    margin-left: 3rem;
+  }
+
   .sm\:inline {
     display: inline;
   }
@@ -2949,6 +2953,10 @@ button:focus {
     flex-direction: row;
   }
 
+  .sm\:justify-between {
+    justify-content: space-between;
+  }
+
   .sm\:px-24 {
     padding-left: 6rem;
     padding-right: 6rem;
@@ -2957,6 +2965,16 @@ button:focus {
   .sm\:py-24 {
     padding-top: 6rem;
     padding-bottom: 6rem;
+  }
+
+  .sm\:px-0 {
+    padding-left: 0px;
+    padding-right: 0px;
+  }
+
+  .sm\:py-5 {
+    padding-top: 1.25rem;
+    padding-bottom: 1.25rem;
   }
 
   .sm\:text-4xl {

@@ -49,9 +49,9 @@ const submit = async () => {
 </script>
 
 <template>
-  <div class="container flex items-center justify-between h-screen px-24">
+  <div class="container flex items-center sm:justify-between h-screen px-24">
     <div
-      class="Signup flex flex-col justify-start gap-4 h-full py-10 max-w-sm ml-12"
+      class="Signup flex flex-col justify-start gap-4 h-full py-10 sm:py-5 max-w-sm sm:ml-12 px-8 sm:px-0"
     >
       <h1 class="text-4xl">Ready to Crush Quizzes Like a Pro?</h1>
 
@@ -136,13 +136,13 @@ const submit = async () => {
         </button>
       </form>
 
-      <footer class="mt-4">
+      <!-- <footer class="mt-4">
         <p>
           By signing up, you agree to my
           <span class="text-blue-600">Terms of Service</span> and
           <span class="text-blue-600">Privacy Policy</span>.
         </p>
-      </footer>
+      </footer> -->
     </div>
     <div class="login-image">
       <div class="img-wrapper w-[720px]">
@@ -200,6 +200,10 @@ button[type="submit"]:hover ion-icon {
 @media (max-width: 768px) {
   .container {
     padding: 0 0.5rem;
+  }
+
+  .login-image {
+    display: none;
   }
 }
 </style>
