@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-gray-50 py-8">
+  <div class="min-h-screen bg-[#fafafa] p-8">
     <!-- Loading State -->
     <div
       v-if="quizResultStore.isLoading"
@@ -9,12 +9,12 @@
     </div>
 
     <!-- Error State -->
-    <div v-else-if="error" class="max-w-2xl mx-auto px-4">
-      <div class="bg-red-50 border border-red-200 rounded-lg p-6 text-center">
-        <h2 class="text-red-600 text-xl font-semibold mb-2">{{ error }}</h2>
+    <div v-else-if="error" class="max-w-2xl mx-auto">
+      <div class="bg-red-50 border border-red-200 rounded-3xl p-8 text-center">
+        <h2 class="text-red-600 text-xl sohne-mono mb-2">{{ error }}</h2>
         <button
-          @click="router.push(`/student/${route.params.id}/dashboard`)"
-          class="mt-4 px-6 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700"
+          @click="backToDashboard"
+          class="mt-4 px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors sohne-mono"
         >
           Back to Dashboard
         </button>
@@ -22,53 +22,63 @@
     </div>
 
     <!-- Results Content -->
-    <div v-else-if="quizResult" class="max-w-4xl mx-auto px-4">
+    <div v-else-if="quizResult" class="max-w-4xl mx-auto">
       <!-- Quiz Header -->
-      <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
+      <div class="bg-[#192227] rounded-3xl p-8 mb-8 text-white">
         <div
-          class="flex flex-col md:flex-row justify-between items-start md:items-center mb-6"
+          class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8"
         >
           <div>
-            <h1 class="text-3xl font-bold mb-2">{{ quizResult.quiz_name }}</h1>
-            <p class="text-gray-600">{{ quizResult.quiz_description }}</p>
+            <h1 class="text-4xl sohne-mono font-bold mb-2">
+              {{ quizResult.quiz_name }}
+            </h1>
+            <p class="text-gray-400">{{ quizResult.quiz_description }}</p>
           </div>
           <div class="mt-4 md:mt-0 text-right">
-            <p class="text-sm text-gray-500">Completed on</p>
-            <p class="font-medium">{{ quizResult.completed_at_formatted }}</p>
+            <p class="text-sm text-gray-400 font-mono">Completed on</p>
+            <p class="font-medium text-[#e0f2ff]">
+              {{ quizResult.completed_at_formatted }}
+            </p>
           </div>
         </div>
 
         <!-- Score Overview -->
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <!-- Score -->
-          <div class="bg-gray-50 rounded-lg p-6 text-center">
-            <h3 class="text-gray-500 text-sm uppercase mb-2">Score</h3>
-            <div class="text-4xl font-bold">
+          <!-- Score Card -->
+          <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 text-center">
+            <h3 class="text-gray-400 font-mono text-sm uppercase mb-2">
+              Score
+            </h3>
+            <div class="text-4xl font-bold text-[#e0f2ff]">
               {{ quizResult.marks_scored }}/{{ quizResult.total_marks }}
             </div>
           </div>
 
-          <!-- Percentage -->
-          <div class="bg-gray-50 rounded-lg p-6 text-center">
-            <h3 class="text-gray-500 text-sm uppercase mb-2">Percentage</h3>
+          <!-- Percentage Card -->
+          <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 text-center">
+            <h3 class="text-gray-400 font-mono text-sm uppercase mb-2">
+              Accuracy
+            </h3>
             <div
               class="text-4xl font-bold"
               :class="{
-                'text-green-600': percentage >= 70,
-                'text-yellow-600': percentage >= 40 && percentage < 70,
-                'text-red-600': percentage < 40,
+                'text-green-400': percentage >= 70,
+                'text-yellow-400': percentage >= 40 && percentage < 70,
+                'text-red-400': percentage < 40,
               }"
             >
               {{ percentage }}%
             </div>
           </div>
 
-          <!-- Status -->
-          <div class="bg-gray-50 rounded-lg p-6 text-center">
-            <h3 class="text-gray-500 text-sm uppercase mb-2">Status</h3>
+          <!-- Status Card -->
+          <div class="bg-white/5 backdrop-blur-sm rounded-2xl p-6 text-center">
+            <h3 class="text-gray-400 font-mono text-sm uppercase mb-2">
+              Status
+            </h3>
             <div
               class="text-2xl font-bold"
-              :class="percentage >= 70 ? 'text-green-600' : 'text-red-600'"
+              :class="percentage >= 70 ? 'text-green-400' : 'text-red-400'"
             >
               {{ percentage >= 70 ? "PASSED" : "FAILED" }}
             </div>
@@ -76,53 +86,79 @@
         </div>
       </div>
 
-      <!-- Detailed Answers -->
-      <div class="bg-white rounded-lg shadow-lg p-6">
-        <h2 class="text-2xl font-semibold mb-6">Answer Review</h2>
+      <!-- Answer Review -->
+      <div class="bg-white rounded-3xl shadow-sm p-8">
+        <h2 class="text-3xl sohne-mono font-bold mb-8">Answer Review</h2>
 
         <div class="space-y-6">
           <div
             v-for="answer in quizResult.user_answers"
             :key="answer.id"
-            class="border rounded-lg overflow-hidden"
+            class="border rounded-2xl overflow-hidden transition-all duration-200 hover:shadow-md"
           >
             <div
-              class="p-4"
-              :class="
-                answer.is_correct
-                  ? 'bg-green-50 border-green-200'
-                  : 'bg-red-50 border-red-200'
-              "
+              class="p-6"
+              :class="answer.is_correct ? 'bg-[#192227]' : 'bg-red-50'"
             >
               <div class="flex items-center justify-between">
-                <div class="flex items-center gap-3">
-                  <span
-                    class="w-8 h-8 rounded-full flex items-center justify-center text-white"
-                    :class="answer.is_correct ? 'bg-green-500' : 'bg-red-500'"
+                <div class="flex items-center gap-4">
+                  <div
+                    class="w-10 h-10 rounded-full flex items-center justify-center text-lg"
+                    :class="
+                      answer.is_correct
+                        ? 'bg-green-500 text-white'
+                        : 'bg-red-500 text-white'
+                    "
                   >
-                    {{ answer.is_correct ? "✓" : "✗" }}
-                  </span>
-                  <span class="font-medium"
-                    >Question {{ answer.question_id }}</span
-                  >
+                    <component
+                      v-if="answer.is_correct"
+                      :is="Check"
+                      class="w-6 h-6 fill-white"
+                    />
+                    <component v-else :is="Cross" class="w-6 h-6 fill-[#fff]" />
+                  </div>
+                  <div>
+                    <p
+                      class="font-medium"
+                      :class="
+                        answer.is_correct ? 'text-white' : 'text-gray-900'
+                      "
+                    >
+                      Question {{ answer.question_id }}
+                    </p>
+                    <p
+                      class="text-sm"
+                      :class="
+                        answer.is_correct ? 'text-gray-400' : 'text-gray-500'
+                      "
+                    >
+                      {{
+                        answer.is_correct
+                          ? "Correct Answer"
+                          : "Incorrect Answer"
+                      }}
+                    </p>
+                  </div>
                 </div>
-                <span
-                  class="px-3 py-1 rounded-full text-sm"
-                  :class="
-                    answer.is_correct
-                      ? 'bg-green-100 text-green-800'
-                      : 'bg-red-100 text-red-800'
-                  "
-                >
-                  {{ answer.is_correct ? "Correct" : "Incorrect" }}
-                </span>
               </div>
             </div>
 
-            <div class="p-4 bg-white">
-              <div class="mb-4">
-                <p class="text-sm text-gray-500 mb-1">Selected Option:</p>
-                <p class="font-medium">Option {{ answer.selected_option }}</p>
+            <div class="p-6 bg-white">
+              <div class="space-y-4">
+                <div>
+                  <p class="text-sm text-gray-500 font-mono uppercase mb-2">
+                    Your Answer
+                  </p>
+                  <p class="font-medium">Option {{ answer.selected_option }}</p>
+                </div>
+                <div v-if="!answer.is_correct">
+                  <p class="text-sm text-gray-500 font-mono uppercase mb-2">
+                    Correct Answer
+                  </p>
+                  <p class="font-medium text-green-600">
+                    Option {{ answer.correct_option }}
+                  </p>
+                </div>
               </div>
             </div>
           </div>
@@ -130,37 +166,22 @@
       </div>
 
       <!-- Action Buttons -->
-      <div class="flex flex-col md:flex-row justify-between gap-4 mt-6">
+      <div class="flex flex-col md:flex-row justify-between gap-4 mt-8">
         <button
-          @click="router.push(`/student/${route.params.id}`)"
-          class="px-6 py-3 bg-gray-100 rounded-lg hover:bg-gray-200 transition-colors text-gray-700 font-medium"
+          @click="backToDashboard"
+          class="px-6 py-3 bg-[#192227] text-white rounded-xl hover:bg-[#2a3b44] transition-colors sohne-mono"
         >
-          Back to Dashboard
+          ← Back to Dashboard
         </button>
         <div class="flex gap-4">
           <button
             @click="shareResults"
-            class="px-6 py-3 bg-blue-100 text-blue-700 rounded-lg hover:bg-blue-200 transition-colors font-medium"
+            class="px-6 py-3 bg-blue-100 text-blue-700 rounded-xl hover:bg-blue-200 transition-colors sohne-mono"
           >
             Share Results
           </button>
-          <!-- <button
-            @click="retakeQuiz"
-            class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors font-medium"
-          >
-            Retake Quiz
-          </button> -->
         </div>
       </div>
-    </div>
-    <div v-else class="max-w-2xl mx-auto px-4 text-center">
-      <p class="text-gray-600">No quiz result data available.</p>
-      <button
-        @click="fetchQuizResult"
-        class="mt-4 px-6 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700"
-      >
-        Retry Loading
-      </button>
     </div>
   </div>
 </template>
@@ -173,6 +194,8 @@ import axios from "axios";
 import { useToast } from "@/composables/useToast";
 import Loader from "@/components/Loader.vue";
 import { useQuizResultStore } from "@/stores/quizResultStore";
+import Check from "../../assets/images/icons/check.svg";
+import Cross from "../../assets/images/icons/x-circle.svg";
 
 const API_URL = import.meta.env.VITE_API_URL;
 const router = useRouter();
@@ -265,6 +288,16 @@ watch(
   },
   { immediate: true }
 );
+
+const backToDashboard = async () => {
+  try {
+    await router.push(`/student/${route.params.id}`);
+    window.location.reload(); // Force reload after navigation
+  } catch (error) {
+    console.error("Navigation error:", error);
+    toast.error("Error returning to dashboard");
+  }
+};
 
 // Use both onMounted and watch for route changes
 onMounted(() => {

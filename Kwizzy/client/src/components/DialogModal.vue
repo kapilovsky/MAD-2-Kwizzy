@@ -1,35 +1,25 @@
 <template>
   <div
-    class="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50"
+    class="fixed inset-0 bg-black/30 backdrop-blur-sm flex items-center justify-center z-50"
   >
-    <div class="bg-white rounded-lg max-w-md w-full mx-4">
+    <div class="bg-[#fff9f0] text-orange-600 rounded-3xl max-w-3xl w-full mx-4">
       <!-- Header -->
-      <div class="px-6 py-4 border-b">
-        <h3 class="text-lg font-semibold">
+      <div class="px-6 pt-4 pb-2">
+        <h3 class="text-3xl tracking-tighter font-bold ">
           <slot name="title">Dialog Title</slot>
         </h3>
       </div>
 
       <!-- Content -->
-      <div class="px-6 py-4">
+      <div class="px-6 py-2">
         <slot name="content">Dialog content goes here</slot>
       </div>
 
       <!-- Actions -->
-      <div class="px-6 py-4 bg-gray-50 rounded-b-lg flex justify-end gap-2">
+      <div class="px-6 py-4 pt-0 bg-[#fff9f0] rounded-3xl flex justify-end gap-2">
         <slot name="actions">
-          <button
-            @click="$emit('close')"
-            class="px-4 py-2 text-gray-600 hover:text-gray-800"
-          >
-            Cancel
-          </button>
-          <button
-            @click="$emit('confirm')"
-            class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-          >
-            Confirm
-          </button>
+          <button @click="$emit('close')">Cancel</button>
+          <button @click="$emit('confirm')">Confirm</button>
         </slot>
       </div>
     </div>

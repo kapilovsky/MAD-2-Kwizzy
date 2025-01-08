@@ -31,7 +31,7 @@
           </h2>
         </div>
         <div class="px-2">
-          <table class="w-full chapters">
+          <table class="w-full">
             <thead>
               <tr class="text-left text-sm border-b-2 border-black">
                 <th>Chapter Name</th>
@@ -49,12 +49,10 @@
               <tr
                 v-for="chapter in filteredChapters"
                 :key="chapter.id"
-                class="border-b border-black"
+                class="border-b border-black hover:bg-[#fff9f0]"
               >
                 <td class="py-2">
-                  ▞ &nbsp;<span class="hover:text-[#0000ff]">{{
-                    chapter.name
-                  }}</span>
+                  ▞ &nbsp;<span>{{ chapter.name }}</span>
                 </td>
 
                 <td class="py-2">{{ chapter.description }}</td>

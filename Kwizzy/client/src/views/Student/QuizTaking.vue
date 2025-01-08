@@ -197,156 +197,190 @@ onUnmounted(() => {
 </script>
 
 <template>
-  <div class="container mx-auto px-4 py-8">
+  <div class="min-h-screen bg-[#fbfbff] p-8 rounded-3xl">
     <!-- Loading State -->
     <div
       v-if="quizStore.isLoading"
-      class="flex justify-center items-center h-screen"
+      class="flex justify-center items-center h-64"
     >
       <div class="spinner">Loading...</div>
     </div>
 
     <!-- Error State -->
-    <div v-else-if="quizStore.error" class="text-center">
-      <p class="text-red-600">{{ quizStore.error }}</p>
-      <button
-        @click="router.push('/dashboard')"
-        class="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
-      >
-        Back to Dashboard
-      </button>
+    <div v-else-if="quizStore.error" class="max-w-2xl mx-auto text-center">
+      <div class="bg-red-50 border border-red-200 rounded-3xl p-8">
+        <p class="text-red-600 sohne-mono">{{ quizStore.error }}</p>
+        <button
+          @click="router.push(`/student/${studentId}`)"
+          class="mt-6 px-6 py-3 bg-red-600 text-white rounded-xl hover:bg-red-700 transition-colors sohne-mono"
+        >
+          Back to Dashboard
+        </button>
+      </div>
     </div>
 
     <!-- Quiz Interface -->
     <div
       v-else-if="quizStore.isQuizReady && currentQuestion"
-      class="max-w-3xl mx-auto"
+      class="max-w-4xl mx-auto"
     >
-      <!-- Timer and Progress -->
-      <div class="card mb-4">
-        <div class="card-body">
-          <div class="d-flex justify-content-between align-items-center">
-            <div class="progress" style="width: 70%">
-              <div
-                class="progress-bar"
-                :style="{
-                  width: `${
-                    (questionProgress.current / questionProgress.total) * 100
-                  }%`,
-                }"
-              >
-                Question {{ questionProgress.current }} of
-                {{ questionProgress.total }}
-              </div>
-            </div>
-            <div class="timer" :class="{ 'text-danger': timeRemaining < 300 }">
-              Time Remaining: {{ formatTime(timeRemaining) }}
-            </div>
+      <!-- Quiz Header -->
+      <div class="mb-8 flex justify-between items-center">
+        <div>
+          <h1 class="text-4xl tracking-tighter font-bold">{{ quiz.name }}</h1>
+          <p class="text-gray-600 sohne-mono mt-2">{{ quiz.description }}</p>
+        </div>
+        <!-- Timer Card -->
+        <div
+          class="bg-[#192227] rounded-2xl p-6 min-w-[200px] text-center"
+          :class="{ 'animate-pulse': timeRemaining < 300 }"
+        >
+          <h3
+            class="font-mono uppercase text-sm tracking-wider text-[#e0f2ff] mb-2"
+          >
+            Time Remaining
+          </h3>
+          <div
+            class="text-3xl sohne font-bold"
+            :class="{
+              'text-red-400': timeRemaining < 300,
+              'text-[#e0f2ff]': timeRemaining >= 300,
+            }"
+          >
+            {{ formatTime(timeRemaining) }}
           </div>
+        </div>
+      </div>
+
+      <!-- Progress Bar -->
+      <div class="mb-8">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-sm sohne-mono text-gray-700">
+            Question {{ questionProgress.current }} of
+            {{ questionProgress.total }}
+          </span>
+          <span class="text-sm sohne-mono text-gray-700">
+            {{
+              Math.round(
+                (questionProgress.current / questionProgress.total) * 100
+              )
+            }}% Complete
+          </span>
+        </div>
+        <div class="h-2 bg-gray-100 rounded-full overflow-hidden">
+          <div
+            class="h-full bg-[#192227] transition-all duration-300"
+            :style="{
+              width: `${
+                (questionProgress.current / questionProgress.total) * 100
+              }%`,
+            }"
+          ></div>
         </div>
       </div>
 
       <!-- Question Card -->
-      <div class="card">
-        <div class="card-body">
-          <h4 class="card-title mb-4">{{ currentQuestion.title }}</h4>
-          <p class="card-text">{{ currentQuestion.text }}</p>
+      <div class="bg-white rounded-3xl shadow-sm px-8 py-6 mb-6">
+        <h2 class="text-2xl font-bold mb-6">{{ currentQuestion.title }}</h2>
+        <p class="text-gray-700 mb-8">Q. {{ currentQuestion.text }}</p>
 
-          <!-- Options -->
-          <div class="options-container">
-            <div
-              v-for="option in currentQuestion.options"
-              :key="option.id"
-              class="option mb-3"
-            >
+        <!-- Options -->
+        <div class="space-y-4">
+          <div
+            v-for="option in currentQuestion.options"
+            :key="option.id"
+            @click="selectOption(currentQuestion.id, option.id)"
+            class="px-6 py-5 rounded-2xl border-2 cursor-pointer transition-all duration-200"
+            :class="{
+              'border-[#192227] bg-[#192227] text-white':
+                userAnswers.get(currentQuestion.id) === option.id,
+              'border-gray-200 hover:border-[#192227] hover:bg-gray-50':
+                userAnswers.get(currentQuestion.id) !== option.id,
+            }"
+          >
+            <div class="flex items-center gap-4">
               <div
-                class="option-card p-3"
+                class="w-6 h-6 rounded-full border-2 flex items-center justify-center"
                 :class="{
-                  selected: userAnswers.get(currentQuestion.id) === option.id,
+                  'border-white':
+                    userAnswers.get(currentQuestion.id) === option.id,
+                  'border-gray-400':
+                    userAnswers.get(currentQuestion.id) !== option.id,
                 }"
-                @click="selectOption(currentQuestion.id, option.id)"
               >
-                {{ option.text }}
+                <div
+                  v-if="userAnswers.get(currentQuestion.id) === option.id"
+                  class="w-3 h-3 bg-white rounded-full"
+                ></div>
               </div>
+              <span class="flex-1">{{ option.text }}</span>
             </div>
-          </div>
-
-          <!-- Navigation -->
-          <div class="d-flex justify-content-between mt-4">
-            <button
-              class="btn btn-secondary"
-              @click="previousQuestion"
-              :disabled="isFirstQuestion"
-            >
-              Previous
-            </button>
-
-            <button
-              v-if="!isLastQuestion"
-              class="btn btn-primary"
-              @click="nextQuestion"
-            >
-              Next
-            </button>
-            <button
-              v-else
-              class="btn btn-success"
-              @click="handleSubmit"
-              :disabled="isSubmitting"
-            >
-              {{ isSubmitting ? "Submitting..." : "Submit Quiz" }}
-            </button>
           </div>
         </div>
       </div>
-    </div>
 
-    <!-- Fallback State -->
-    <div v-else class="text-center">
-      <p>Unable to load quiz. Please try again.</p>
-      <button
-        @click="router.push('/dashboard')"
-        class="mt-4 px-4 py-2 bg-blue-600 text-white rounded"
-      >
-        Back to Dashboard
-      </button>
+      <!-- Navigation -->
+      <div class="flex justify-between items-center">
+        <button
+          @click="previousQuestion"
+          :disabled="isFirstQuestion"
+          class="px-6 py-3 rounded-xl sohne-mono text-sm transition-all duration-200"
+          :class="
+            isFirstQuestion
+              ? 'text-gray-400 cursor-not-allowed'
+              : 'text-gray-700 hover:bg-gray-100'
+          "
+        >
+          🡰 Previous
+        </button>
+
+        <div class="flex gap-4">
+          <button
+            v-if="!isLastQuestion"
+            @click="nextQuestion"
+            class="px-6 py-3 bg-[#192227] text-white rounded-xl sohne-mono text-sm hover:bg-[#2a3b44] transition-colors"
+          >
+            Next 🡲
+          </button>
+          <button
+            v-else
+            @click="handleSubmit"
+            :disabled="isSubmitting"
+            class="px-6 py-3 bg-green-600 text-white rounded-xl sohne-mono text-sm hover:bg-green-700 transition-colors disabled:opacity-50"
+          >
+            {{ isSubmitting ? "Submitting..." : "Submit Quiz" }}
+          </button>
+        </div>
+      </div>
     </div>
   </div>
 </template>
 
 <style scoped>
-.quiz-container {
-  max-width: 800px;
-  margin: 0 auto;
-  padding: 20px;
+@keyframes pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.6;
+  }
 }
 
-.timer {
-  font-size: 1.2rem;
-  font-weight: bold;
+.animate-pulse {
+  animation: pulse 2s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
 
-.option-card {
-  border: 2px solid #dee2e6;
-  border-radius: 8px;
-  cursor: pointer;
-  transition: all 0.2s;
+/* Add your existing font classes */
+.sohne {
+  font-family: sohne;
 }
 
-.option-card:hover {
-  background-color: #f8f9fa;
-  border-color: #0d6efd;
+.sohne-mono {
+  font-family: sohne-mono;
 }
 
-.option-card.selected {
-  background-color: #0d6efd;
-  color: white;
-  border-color: #0d6efd;
-}
-
-.question-navigator {
-  display: flex;
-  gap: 8px;
-  flex-wrap: wrap;
+.font-mono {
+  font-family: "IBM Plex Mono";
 }
 </style>

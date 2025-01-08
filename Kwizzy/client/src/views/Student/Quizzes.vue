@@ -53,7 +53,7 @@
               <tr
                 v-for="quiz in filteredQuizzes"
                 :key="quiz.id"
-                class="border-b-2 border-black"
+                class="border-b-2 border-black hover:bg-[#fff9f0]"
               >
                 <td class="py-2 relative">
                   <span class="absolute top-[2px] left-[-10px]">&lhblk;</span>
@@ -92,8 +92,8 @@
   </div>
 </template>
 <script setup>
-import { ref, onMounted, onUnmounted, watch, computed } from "vue";
-import { RouterLink, useRoute, useRouter } from "vue-router";
+import { ref, onMounted, computed } from "vue";
+import { RouterLink, useRoute } from "vue-router";
 import SearchBar from "@/components/Admin/SearchBar.vue";
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;

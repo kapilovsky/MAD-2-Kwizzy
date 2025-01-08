@@ -4,43 +4,65 @@
       <Loader />
     </div>
 
-    <div v-else-if="quiz" class="max-w-2xl mx-auto">
-      <!-- Quiz Details Card -->
-      <div class="bg-white rounded-lg shadow-lg p-6 mb-6">
-        <h1 class="text-3xl font-bold mb-4">{{ quiz.name }}</h1>
-        <p class="text-gray-600 mb-4">{{ quiz.description }}</p>
-
-        <div class="grid grid-cols-2 gap-4 mb-6">
-          <div class="bg-gray-50 p-4 rounded">
-            <p class="text-sm text-gray-500">Duration</p>
-            <p class="text-lg font-semibold">{{ quiz.time_duration }}</p>
+    <div v-else-if="quiz">
+      <div class="bg-[#192227] text-[#fdfcfc] p-6 rounded-2xl shadow">
+        <div class="flex justify-between">
+          <div class="space-y-4">
+            <div>
+              <h1 class="text-3xl font-bold">{{ quiz?.name }}</h1>
+              <p class="text-gray-300 mt-2">{{ quiz?.description }}</p>
+            </div>
+            <div class="flex gap-8">
+              <div>
+                <span class="text-gray-400 sohne-mono text-sm">Duration</span>
+                <p class="text-xl font-semibold">
+                  {{ quiz?.time_duration }}
+                </p>
+              </div>
+              <div>
+                <span class="text-gray-400 sohne-mono text-sm">Price</span>
+                <p class="text-xl font-semibold">
+                  {{ quiz?.price ? `₹${quiz.price}` : "Free" }}
+                </p>
+              </div>
+              <div>
+                <span class="text-gray-400 sohne-mono text-sm">Questions</span>
+                <p class="text-xl font-semibold">
+                  {{ quiz?.questions?.length || 0 }}
+                </p>
+              </div>
+            </div>
           </div>
-          <div class="bg-gray-50 p-4 rounded">
-            <p class="text-sm text-gray-500">Questions</p>
-            <p class="text-lg font-semibold">
-              {{ quiz.questions?.length || 0 }}
-            </p>
+          <div
+            class="text-[560px] absolute bottom-0 right-0 opacity-20 z-1 select-none"
+            style="pointer-events: none"
+          >
+            🡽
           </div>
         </div>
 
-        <!-- Instructions -->
-        <div class="bg-blue-50 p-4 rounded-lg mb-6">
-          <h3 class="font-semibold mb-2">Instructions:</h3>
-          <ul class="list-disc list-inside text-sm text-gray-700">
-            <li>You cannot pause the quiz once started</li>
-            <li>Timer will continue even if you close the browser</li>
-            <li>Each question has only one correct answer</li>
-            <li>You can review your answers before final submission</li>
+        <div>
+          <h3 class="sohne-mono text-lg mb-2">Instructions</h3>
+          <ul class="sohne">
+            <li>🡪 You cannot pause the quiz once started</li>
+            <li>🡪 Timer will continue even if you close the browser</li>
+            <li>🡪 Each question has only one correct answer</li>
+            <li>🡪 You can review your answers before final submission</li>
           </ul>
         </div>
 
-        <!-- Start Quiz Button -->
         <button
           @click="showStartDialog"
-          class="w-full bg-blue-600 text-white py-3 px-6 rounded-lg hover:bg-blue-700 transition-colors disabled:bg-gray-400"
+          class="w-full bg-[#fdfcfc] py-3 rounded-lg transition-colors disabled:bg-gray-400 mt-8 text-right relative group overflow-hidden"
           :disabled="isStarting"
         >
-          {{ isStarting ? "Starting Quiz..." : "Start Quiz" }}
+          <span class="arame text-5xl mr-20 cursor-pointer text-[#192227]"
+            >Start Quiz</span
+          ><span
+            class="absolute text-5xl right-7 top-1/2 transform -translate-y-1/2 text-[#192227] opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all"
+          >
+            🡲
+          </span>
         </button>
       </div>
     </div>
@@ -51,35 +73,39 @@
     </div>
 
     <!-- Start Quiz Dialog -->
-    <DialogModal
-      v-if="isDialogOpen"
-      @close="isDialogOpen = false"
-      @confirm="startQuiz"
-    >
-      <template #title>Start Quiz</template>
-      <template #content>
-        <p>Are you ready to start the quiz? Once started:</p>
-        <ul class="list-disc list-inside mt-2">
-          <li>The timer will begin immediately</li>
-          <li>You cannot pause or restart</li>
-          <li>Make sure you have a stable internet connection</li>
-        </ul>
-      </template>
-      <template #actions>
-        <button
-          @click="isDialogOpen = false"
-          class="px-4 py-2 text-gray-600 hover:text-gray-800"
-        >
-          Cancel
-        </button>
-        <button
-          @click="startQuiz"
-          class="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-        >
-          Start Now
-        </button>
-      </template>
-    </DialogModal>
+    <transition name="fade" mode="out-in">
+      <DialogModal
+        v-if="isDialogOpen"
+        @close="isDialogOpen = false"
+        @confirm="startQuiz"
+      >
+        <template #title>Start Quiz</template>
+        <template #content>
+          <p class="font-mono font-semibold tracking-tighter text-lg">
+            Are you ready to start the quiz? Once started:
+          </p>
+          <ul class="list-disc list-inside font-medium tracking-[-0.5px]">
+            <li>The timer will begin immediately.</li>
+            <li>You cannot pause or restart.</li>
+            <li>Make sure you have a stable internet connection.</li>
+          </ul>
+        </template>
+        <template #actions>
+          <button
+            class="px-4 py-2 text-orange-600 font-bold"
+            @click="isDialogOpen = false"
+          >
+            Cancel
+          </button>
+          <button
+            @click="startQuiz"
+            class="px-4 py-2 bg-orange-200 text-orange-600 rounded-xl hover:bg-[#ffe4bb] hover:text-orange-700 transition-all duration-300 font-bold"
+          >
+            Start Now
+          </button>
+        </template>
+      </DialogModal>
+    </transition>
   </div>
 </template>
 
@@ -136,8 +162,7 @@ const startQuiz = async () => {
     isStarting.value = true;
     isDialogOpen.value = false;
 
-    // Navigate to quiz taking page
-    router.push(`/student/${student_id}/quiz/${route.params.quizId}/take`);
+    router.push(`${route.path}/take`);
   } catch (err) {
     console.error("Error starting quiz:", err);
     toast.error("Failed to start quiz");
@@ -149,3 +174,9 @@ onMounted(() => {
   fetchQuizDetails();
 });
 </script>
+
+<style scoped>
+.arame {
+  font-family: arame;
+}
+</style>
