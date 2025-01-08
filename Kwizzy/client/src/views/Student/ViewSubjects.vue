@@ -1,12 +1,12 @@
 <template>
   <div>
-    <div class="absolute top-6">
-      <div class="w-[450px]">
+    <div class="absolute sm:top-6 top-16 bg-white">
+      <div class="sm:w-[450px] w-[300px]">
         <SearchBar @search="handleSearch" placeholder="Search subjects..." />
       </div>
     </div>
 
-    <div class="mb-6 mt-4 flex flex-col gap-1">
+    <div class="mb-6 sm:mt-4 mt-14 flex flex-col gap-1">
       <h1 class="text-4xl font-bold">Subjects</h1>
 
       <p>

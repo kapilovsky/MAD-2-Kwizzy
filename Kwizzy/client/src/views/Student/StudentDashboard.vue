@@ -18,8 +18,6 @@ const props = defineProps({
   },
 });
 
-
-
 const student = ref(props.student);
 
 const getRecentActivity = async () => {
@@ -72,11 +70,18 @@ onMounted(() => {
       <div class="relative overflow-hidden">
         <div
           v-if="!student.student_info.profile_pic"
-          class="w-36 h-36 rounded-lg bg-[#192227] text-white/20 hover:text-white/40 transition-all duration-200"
+          class="sm:w-36 sm:h-36 w-0 h-0 rounded-lg bg-[#192227] text-white/20 hover:text-white/40 transition-all duration-200"
         >
           <span class="absolute -bottom-6 right-0 text-9xl">{{
             student.student_info.name.charAt(0)
           }}</span>
+        </div>
+        <div v-else>
+          <img
+            :src="student.student_info.profile_pic"
+            alt="Profile Picture"
+            class="sm:w-36 sm:h-36 w-0 h-0 rounded-lg hover-scale"
+          />
         </div>
       </div>
       <div>
@@ -134,7 +139,7 @@ onMounted(() => {
         >
           Last Active
         </h3>
-        <div class="text-5xl sohne font-bold text-orange-600">
+        <div class="sm:text-5xl text-4xl sohne font-bold text-orange-600">
           {{ formatDate(student.student_info.quiz_stats.last_active) }}
         </div>
         <p class="font-mono text-xs text-orange-500 mt-2 uppercase">
@@ -167,35 +172,43 @@ onMounted(() => {
 
     <!-- Recent Activity -->
     <div
-      class="rounded-3xl px-8 py-3 shadow-sm transition-all hover:shadow-lg bg-[#fff9f0]"
+      class="rounded-3xl sm:px-8 px-4 py-6 shadow-sm transition-all hover:shadow-lg bg-[#fff9f0]"
     >
       <div class="flex items-center justify-between mb-6">
-        <h3 class="font-bold text-[48px] text-orange-600 tracking-tighter">
+        <h3
+          class="font-bold sm:text-[48px] text-3xl text-orange-600 tracking-tighter"
+        >
           Recent Activity
         </h3>
-        <span class="text-sm text-orange-600 sohne-mono font-bold"
+        <span class="sm:text-sm text-xs text-orange-600 sohne-mono font-bold"
           >+ VIEW MORE</span
         >
       </div>
       <table class="w-full border-collapse">
         <thead>
-          <tr class="text-left text-orange-600 text-sm border-b-2 border-black">
+          <tr
+            class="text-left text-orange-600 sm:text-sm text-xs border-b-2 border-black"
+          >
             <th class="p-2">Quiz Title</th>
             <th class="p-2">Score</th>
-            <th class="p-2">Accuracy</th>
+            <th class="p-2 sm:block hidden">Accuracy</th>
             <th class="p-2">Completion Date</th>
             <th class="text-right p-2">Action</th>
           </tr>
         </thead>
         <tbody>
-          <tr v-for="quiz in recentQuizzes" :key="quiz.id">
+          <tr
+            class="text-xs sm:text-sm"
+            v-for="quiz in recentQuizzes"
+            :key="quiz.id"
+          >
             <td class="p-2">{{ quiz.quiz_name }}</td>
             <td class="p-2">{{ quiz.marks_scored }}</td>
-            <td class="p-2">{{ quiz.percentage }}%</td>
+            <td class="p-2 sm:block hidden">{{ quiz.percentage }}%</td>
             <td class="p-2">{{ formatDate(quiz.completed_at) }}</td>
             <td class="text-right">
               <button
-                class="text-orange-500 hover:font-bold text-sm sohne-mono bg-orange-200 px-5 py-1 rounded-md"
+                class="text-orange-500 hover:font-bold sm:text-sm text-xs sohne-mono bg-orange-200 sm:px-5 sm:py-1 py-[4px] rounded-md"
               >
                 View Details
               </button>
@@ -226,5 +239,11 @@ tbody tr {
 
 tbody tr:hover {
   background-color: #ffecd0;
+}
+
+@media (max-width: 768px) {
+  .grid {
+    grid-template-columns: 1fr;
+  }
 }
 </style>

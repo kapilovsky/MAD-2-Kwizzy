@@ -1,5 +1,5 @@
 <template>
-  <div class="container mx-auto px-4 py-8">
+  <div class="container mx-auto sm:px-4 py-8">
     <div v-if="isLoading" class="flex justify-center items-center h-64">
       <Loader />
     </div>
@@ -85,7 +85,7 @@
             </div>
           </div>
           <div
-            class="text-[560px] absolute bottom-0 right-0 opacity-20 z-1 select-none"
+            class="text-[560px] absolute sm:bottom-0 bottom-20 -right-10 sm:right-0 opacity-20 z-1 select-none"
             style="pointer-events: none"
           >
             🡽
@@ -93,7 +93,7 @@
         </div>
 
         <div>
-          <h3 class="sohne-mono text-lg mb-2">Instructions</h3>
+          <h3 class="sohne-mono text-lg mb-2 mt-8">Instructions</h3>
           <ul class="sohne">
             <li>🡪 You cannot pause the quiz once started</li>
             <li>🡪 Timer will continue even if you close the browser</li>
@@ -104,13 +104,14 @@
 
         <button
           @click="showStartDialog"
-          class="w-full bg-[#fdfcfc] py-3 rounded-lg transition-colors disabled:bg-gray-400 mt-8 text-right relative group overflow-hidden"
+          class="w-full bg-[#fdfcfc] py-3 rounded-lg transition-colors disabled:bg-gray-400 mt-8 sm:text-right relative group overflow-hidden"
           :disabled="isStarting"
         >
-          <span class="arame text-5xl mr-20 cursor-pointer text-[#192227]"
+          <span
+            class="arame sm:text-5xl text-2xl sm:mr-20 cursor-pointer text-[#192227]"
             >Start Quiz</span
           ><span
-            class="absolute text-5xl right-7 top-1/2 transform -translate-y-1/2 text-[#192227] opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all"
+            class="absolute sm:text-5xl text-2xl right-7 top-1/2 transform -translate-y-1/2 text-[#192227] opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all"
           >
             🡲
           </span>
@@ -135,7 +136,9 @@
           <p class="font-mono font-semibold tracking-tighter text-lg">
             Are you ready to start the quiz? Once started:
           </p>
-          <ul class="list-disc list-inside font-medium tracking-[-0.5px]">
+          <ul
+            class="list-disc list-inside font-medium tracking-[-0.5px] text-sm sm:text-base"
+          >
             <li>The timer will begin immediately.</li>
             <li>You cannot pause or restart.</li>
             <li>Make sure you have a stable internet connection.</li>

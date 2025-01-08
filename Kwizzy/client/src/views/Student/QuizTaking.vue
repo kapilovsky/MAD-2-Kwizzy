@@ -232,7 +232,7 @@ onUnmounted(() => {
         </div>
         <!-- Timer Card -->
         <div
-          class="bg-[#192227] rounded-2xl p-6 min-w-[200px] text-center"
+          class="bg-[#192227] rounded-2xl sm:p-6 sm:min-w-[200px] p-5 text-center"
           :class="{ 'animate-pulse': timeRemaining < 300 }"
         >
           <h3

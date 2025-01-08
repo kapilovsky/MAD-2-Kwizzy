@@ -1,13 +1,13 @@
 <template>
   <Loader v-if="isLoading" />
   <div v-else>
-    <div class="absolute top-6">
-      <div class="w-[450px]">
+    <div class="absolute sm:top-6 top-16">
+      <div class="sm:w-[450px] w-[300px]">
         <SearchBar @search="handleSearch" placeholder="Search chapters..." />
       </div>
     </div>
 
-    <div class="my-4">
+    <div class="sm:mt-4 mt-16">
       <!-- Breadcrumbs -->
       <div class="flex items-center gap-2 text-gray-600 text-sm">
         <RouterLink
@@ -36,11 +36,13 @@
       </div>
 
       <!-- Subject Header -->
-      <div class="flex items-center gap-8 my-4">
+      <div
+        class="flex flex-col sm:flex-row sm:items-center items-start gap-8 my-4"
+      >
         <img
           :src="subject?.image"
           :alt="subject?.name"
-          class="w-[150px] h-[150px] rounded-xl object-cover"
+          class="sm:w-[150px] sm:h-[150px] rounded-xl object-cover"
         />
         <div class="flex flex-col gap-2 justify-between">
           <h1 class="text-4xl font-bold">{{ subject?.name }}</h1>
@@ -49,7 +51,7 @@
           </p>
           <p class="text-gray-600">Total Chapters: {{ subject?.chapters }}</p>
           <p class="text-gray-600 mb-4">
-            Total Students who are enrolled in this subject:
+            Total Students enrolled in this subject:
             {{ subject?.students }}
           </p>
         </div>
@@ -58,7 +60,7 @@
       <div>
         <div>
           <h2
-            class="text-5xl font-semibold sohne tracking-[-1px] mb-4 magnetic"
+            class="sm:text-5xl text-3xl font-semibold sohne tracking-[-1px] mb-4"
           >
             Chapters
           </h2>
@@ -66,9 +68,9 @@
         <div class="px-2">
           <table class="w-full">
             <thead>
-              <tr class="text-left text-sm border-b-2 border-black">
+              <tr class="text-left sm:text-sm text-xs border-b-2 border-black">
                 <th>Chapter Name</th>
-                <th>Description</th>
+                <th class="sm:block hidden">Description</th>
                 <th>Quizzes</th>
                 <th class="text-right px-2">Action</th>
               </tr>
@@ -82,13 +84,13 @@
               <tr
                 v-for="chapter in filteredChapters"
                 :key="chapter.id"
-                class="border-b border-black hover:bg-[#fff9f0]"
+                class="border-b text-sm border-black hover:bg-[#fff9f0]"
               >
                 <td class="py-2">
                   ▞ &nbsp;<span>{{ chapter.name }}</span>
                 </td>
 
-                <td class="py-2">{{ chapter.description }}</td>
+                <td class="py-2 sm:block hidden">{{ chapter.description }}</td>
                 <td class="py-2">
                   {{ chapter.quizzes || 0 }}
                 </td>

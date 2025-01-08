@@ -1,13 +1,13 @@
 <template>
   <Loader v-if="isLoading" />
   <div v-else>
-    <div class="absolute top-6">
-      <div class="w-[450px]">
+    <div class="absolute sm:top-6 top-16">
+      <div class="sm:w-[450px] w-[300px]">
         <SearchBar @search="handleSearch" placeholder="Search chapters..." />
       </div>
     </div>
 
-    <div class="my-4">
+    <div class="sm:mt-4 mt-14">
       <!-- Breadcrumbs -->
       <div class="flex items-center gap-2 text-gray-600 text-sm mb-4">
         <RouterLink
@@ -65,7 +65,11 @@
       </div>
 
       <div class="mb-4">
-        <h2 class="text-5xl font-semibold sohne tracking-[-2px]">Quizzes</h2>
+        <h2
+          class="sm:text-5xl text-3xl font-semibold sohne tracking-tighter sm:tracking-[-2px]"
+        >
+          Quizzes
+        </h2>
       </div>
 
       <!-- Chapter Quizzes -->
@@ -73,10 +77,10 @@
         <div class="px-2">
           <table class="w-full">
             <thead>
-              <tr class="text-left text-sm border-b-2 border-black">
+              <tr class="text-left sm:text-sm text-xs border-b-2 border-black">
                 <th>Quiz Name</th>
                 <th>Questions</th>
-                <th>Time Limit［HH:MM］</th>
+                <th class="sm:block hidden">Time Limit［HH:MM］</th>
                 <th>Price</th>
                 <th class="text-right px-2">Action</th>
               </tr>
@@ -85,7 +89,7 @@
               <tr
                 v-for="quiz in filteredQuizzes"
                 :key="quiz.id"
-                class="border-b-2 border-black hover:bg-[#fff9f0]"
+                class="border-b-2 text-xs sm:text-sm border-black hover:bg-[#fff9f0]"
               >
                 <td class="py-2 relative">
                   <span class="absolute top-[2px] left-[-10px]">&lhblk;</span>
@@ -100,7 +104,7 @@
                 <td class="py-2">
                   <span class="font-medium">{{ quiz.question_count }}</span>
                 </td>
-                <td class="py-2">
+                <td class="py-2 sm:block hidden">
                   <span class="font-medium">{{ quiz.time_duration }}</span>
                 </td>
                 <td class="py-2">
@@ -220,7 +224,7 @@ const handleNavigation = () => {
     subjectId: subjectId.value,
     chapterId: chapterId.value,
   });
-  console.log(chapterName.value, subjectName.value,"before navigation ");
+  console.log(chapterName.value, subjectName.value, "before navigation ");
 };
 
 onMounted(async () => {

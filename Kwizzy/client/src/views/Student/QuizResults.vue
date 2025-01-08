@@ -26,17 +26,21 @@
       <!-- Quiz Header -->
       <div class="bg-[#192227] rounded-3xl p-8 mb-8 text-white">
         <div
-          class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8"
+          class="flex flex-col md:flex-row justify-between items-center md:items-center mb-8"
         >
           <div>
-            <h1 class="text-4xl sohne-mono font-bold mb-2">
+            <h1
+              class="text-4xl sohne-mono font-bold mb-2 text-center md:text-left"
+            >
               {{ quizResult.quiz_name }}
             </h1>
-            <p class="text-gray-400">{{ quizResult.quiz_description }}</p>
+            <p class="text-gray-400 text-center md:text-left">
+              {{ quizResult.quiz_description }}
+            </p>
           </div>
           <div class="mt-4 md:mt-0 text-right">
             <p class="text-sm text-gray-400 font-mono">Completed on</p>
-            <p class="font-medium text-[#e0f2ff]">
+            <p class="font-medium text-[#e0f2ff] text-xs md:text-base">
               {{ quizResult.completed_at_formatted }}
             </p>
           </div>
@@ -88,7 +92,9 @@
 
       <!-- Answer Review -->
       <div class="bg-white rounded-3xl shadow-sm p-8">
-        <h2 class="text-3xl sohne-mono font-bold mb-8">Answer Review</h2>
+        <h2 class="text-3xl sohne-mono font-bold mb-8 text-center md:text-left">
+          Answer Review
+        </h2>
 
         <div class="space-y-6">
           <div
@@ -173,14 +179,13 @@
         >
           ← Back to Dashboard
         </button>
-        <div class="flex gap-4">
-          <button
-            @click="shareResults"
-            class="px-6 py-3 bg-blue-100 text-blue-700 rounded-xl hover:bg-blue-200 transition-colors sohne-mono"
-          >
-            Share Results
-          </button>
-        </div>
+
+        <button
+          @click="shareResults"
+          class="px-6 py-3 bg-blue-100 text-blue-700 rounded-xl hover:bg-blue-200 transition-colors sohne-mono"
+        >
+          Share Results
+        </button>
       </div>
     </div>
   </div>
