@@ -35,13 +35,8 @@ const fetchStudentDetails = async () => {
     const token = localStorage.getItem("access_token");
     if (!token) throw new Error("No access token available");
 
-    const response = await axios.get(`${API_URL}/student/${route.params.id}`, {
-      headers: {
-        Authorization: `Bearer ${token}`,
-      },
-    });
-
-    student.value = response.data.student_info;
+    const response = await studentService.getStudent(route.params.id);
+    student.value = response;
   } catch (error) {
     console.error("Error fetching student details:", error);
   } finally {
@@ -105,17 +100,24 @@ onMounted(() => {
         <div class="bg-white rounded-xl p-6 mb-6">
           <div class="flex items-start gap-6">
             <img
+              v-if="student.student_info.profile_pic"
+              :src="student.student_info.profile_pic"
+              alt="Profile Picture"
+              class="rounded-xl w-[150px] h-[150px]"
+            />
+            <img
+              v-else
               :src="`https://ui-avatars.com/api/?name=${encodeURIComponent(
-                student.name
+                student.student_info.name
               )}&color=7F9CF5&background=EBF4FF&size=150`"
-              :alt="student.name"
+              :alt="student.student_info.name"
               class="rounded-xl w-[150px] h-[150px]"
             />
 
             <div class="flex flex-col gap-4">
               <div class="flex flex-col items-start gap-2">
                 <h2 class="text-3xl font-semibold sohne">
-                  {{ student.name }}
+                  {{ student.student_info.name }}
                 </h2>
                 <p class="text-[#7F9CF5] arame-mono">{{ student.email }}</p>
               </div>
@@ -128,7 +130,7 @@ onMounted(() => {
                   <span
                     class="px-3 py-1 bg-[#EBF4FF] rounded-full text-sm sohne-mono uppercase text-[#7F9CF5] text-center"
                   >
-                    {{ student.qualification }}
+                    {{ student.student_info.qualification }}
                   </span>
                 </div>
 
@@ -139,7 +141,7 @@ onMounted(() => {
                   <p
                     class="px-3 py-1 bg-[#EBF4FF] rounded-full text-sm sohne-mono uppercase text-[#7F9CF5] text-center"
                   >
-                    {{ student.dob }}
+                    {{ student.student_info.dob }}
                   </p>
                 </div>
               </div>
@@ -152,14 +154,14 @@ onMounted(() => {
           <div class="bg-white rounded-xl p-6">
             <h3 class="text-gray-500 text-sm sohne-mono mb-2">Total Quizzes</h3>
             <p class="text-3xl font-bold arame-mono">
-              {{ student.quiz_stats.total_quizzes_attempted }}
+              {{ student.student_info.quiz_stats.total_quizzes_attempted }}
             </p>
           </div>
 
           <div class="bg-white rounded-xl p-6">
             <h3 class="text-gray-500 text-sm sohne-mono mb-2">Last Active</h3>
             <p class="text-3xl font-bold arame-mono">
-              {{ formatDate(student.quiz_stats.last_active) }}
+              {{ formatDate(student.student_info.quiz_stats.last_active) }}
             </p>
           </div>
 
@@ -167,20 +169,20 @@ onMounted(() => {
             <h3 class="text-gray-500 text-sm sohne-mono mb-2">Average Score</h3>
             <div class="flex items-center gap-4">
               <p class="text-3xl font-bold arame-mono">
-                {{ student.quiz_stats.performance_percentage }}%
+                {{ student.student_info.quiz_stats.performance_percentage }}%
               </p>
               <div class="flex-1">
                 <div class="w-full bg-gray-200 rounded-full h-2.5">
                   <div
                     class="h-2.5 rounded-full"
                     :class="[
-                      student.quiz_stats.performance_percentage >= 70
+                      student.student_info.quiz_stats.performance_percentage >= 70
                         ? 'bg-green-600'
-                        : student.quiz_stats.performance_percentage >= 40
+                        : student.student_info.quiz_stats.performance_percentage >= 40
                         ? 'bg-yellow-400'
                         : 'bg-red-600',
                     ]"
-                    :style="`width: ${student.quiz_stats.performance_percentage}%`"
+                    :style="`width: ${student.student_info.quiz_stats.performance_percentage}%`"
                   ></div>
                 </div>
               </div>

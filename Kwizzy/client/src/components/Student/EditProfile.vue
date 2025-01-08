@@ -10,13 +10,10 @@
 
   <Transition name="modal">
     <div v-if="isOpen" class="fixed inset-0 z-50" @click="$emit('close')">
-      <div
-        class="flex items-center justify-center relative min-h-screen"
-        @click.stop
-      >
+      <div class="flex items-center justify-center min-h-screen" @click.stop>
         <div
           ref="modalRef"
-          class="bg-[#fff9f0] text-orange-600 rounded-3xl sm:w-[700px] w-[400px]"
+          class="bg-[#192227] text-[#e0f2ff] rounded-3xl sm:w-[600px] w-[400px]"
         >
           <!-- Header -->
           <div class="sm:px-6 px-4 pt-4 pb-2">
@@ -34,37 +31,44 @@
 
           <!-- Content -->
           <div class="sm:px-6 px-4 py-2">
-            <form @submit.prevent="handleSubmit">
+            <form class="flex flex-col gap-4" @submit.prevent="handleSubmit">
               <div class="mb-4">
-                <label for="name" class="text-sm font-semibold">Name</label>
                 <input
                   v-model="studentData.name"
                   type="text"
                   id="name"
-                  class="w-full bg-[#fff9f0] border-b-2 border-orange-600 focus:outline-none"
+                  class="w-full bg-transparent border-b-2 border-[#e0f2ff] focus:outline-none name-input"
+                  placeholder="Name"
+                  required
                 />
               </div>
 
               <div class="mb-4">
-                <label for="email" class="text-sm font-semibold">Email</label>
                 <input
                   v-model="studentData.email"
                   type="email"
                   id="email"
-                  class="w-full bg-[#fff9f0] border-b-2 border-orange-600 focus:outline-none"
+                  class="w-full bg-transparent border-b-2 border-[#e0f2ff] focus:outline-none name-input"
+                  placeholder="Email"
+                  required
                 />
               </div>
 
               <div class="mb-4">
-                <label for="qualification" class="text-sm font-semibold"
-                  >Qualification</label
-                >
-                <input
+                <select
                   v-model="studentData.qualification"
-                  type="text"
+                  name="qualification"
                   id="qualification"
-                  class="w-full bg-[#fff9f0] border-b-2 border-orange-600 focus:outline-none"
-                />
+                  required
+                  class="w-full bg-transparent border-b-2 border-[#e0f2ff] focus:outline-none name-input"
+                >
+                  <option value="">Qualification</option>
+                  <option value="school">High School</option>
+                  <option value="undergrad">Undergraduate</option>
+                  <option value="postgrad">Postgraduate</option>
+                  <option value="working">Working Professional</option>
+                  <option value="other">Other</option>
+                </select>
               </div>
 
               <div class="mb-4">
@@ -77,7 +81,7 @@
                   ref="fileInput"
                 />
                 <div
-                  class="relative w-40 h-40 border-2 border-dashed border-orange-600 rounded-lg cursor-pointer hover:bg-[#fff9f0]"
+                  class="relative w-40 h-40 border-2 border-dashed border-[#e0f2ff] rounded-lg cursor-pointer hover:bg-[#2f424c]"
                   @click="triggerFileInput"
                 >
                   <button
@@ -112,7 +116,7 @@
                   >
                     <svg
                       xmlns="http://www.w3.org/2000/svg"
-                      class="h-10 w-10 text-[#acacac]"
+                      class="h-10 w-10 text-[#e0f2ff]"
                       fill="none"
                       viewBox="0 0 24 24"
                       stroke="currentColor"
@@ -124,26 +128,24 @@
                         d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"
                       />
                     </svg>
-                    <span class="mt-2 text-sm font-medium text-[#acacac]"
+                    <span class="mt-2 text-sm font-medium text-[#e0f2ff]"
                       >Choose Image</span
                     >
                   </div>
                 </div>
               </div>
               <!-- Actions -->
-              <div
-                class="sm:px-6 px-4 py-4 pt-0 bg-[#fff9f0] rounded-3xl flex justify-end gap-2"
-              >
+              <div class="flex justify-end gap-3 pb-3">
                 <button
                   type="button"
                   @click="$emit('close')"
-                  class="px-4 py-1 rounded-lg text-[12px] border-2 border-black text-black transition-colors duration-200 font-semibold button"
+                  class="px-4 py-1 rounded-lg border-2 border-[#e0f2ff] text-[#e0f2ff] transition-colors duration-200 font-semibold button"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  class="px-4 py-1 rounded-lg text-[12px] bg-black text-white border-2 border-black font-semibold transition-colors duration-200 button"
+                  class="px-4 py-1 rounded-lg bg-[#e0f2ff] text-[#192227] border-2 border-[#e0f2ff] font-semibold transition-colors duration-200 button"
                 >
                   Save Changes
                 </button>
@@ -317,47 +319,23 @@ onUnmounted(() => {
   opacity: 0;
 }
 
-.subject-input {
+.name-input {
   font-size: 18px;
   font-weight: 700;
   font-family: Inter;
   letter-spacing: -0.5px;
 }
-.subject-input::placeholder {
-  color: #acacac;
+.name-input::placeholder {
+  color: #e0f2ff7d;
   font-weight: 700;
   font-family: Inter;
   letter-spacing: -0.5px;
   font-size: 18px;
 }
 
-.description::placeholder {
-  color: #acacac;
-  font-weight: 500;
-  font-family: Inter;
-  letter-spacing: -0.5px;
-  font-size: 15px;
-}
-
-textarea {
-  resize: none;
-  font-size: 15px;
-  font-weight: 500;
-  font-family: Inter;
-  letter-spacing: -0.5px;
-  font-size: 15px;
-}
-
-textarea::-webkit-scrollbar {
-  width: 12px;
-}
-
-textarea::-webkit-scrollbar-track {
-  background: #f1f1f1;
-}
-
-textarea::-webkit-scrollbar-thumb {
-  background: #888;
+option {
+  color: #e0f2ff;
+  background: #192227;
 }
 
 .button {
