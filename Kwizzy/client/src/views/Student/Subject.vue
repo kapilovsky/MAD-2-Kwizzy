@@ -7,7 +7,7 @@
       </div>
     </div>
 
-    <div class="my-8">
+    <div class="my-4">
       <!-- Breadcrumbs -->
       <div class="flex items-center gap-2 text-gray-600 text-sm">
         <RouterLink

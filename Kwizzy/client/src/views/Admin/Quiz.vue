@@ -16,9 +16,9 @@ const quiz = ref(null);
 const subjectName = ref(null);
 const chapterName = ref(null);
 
-const subjectId = route.params.subjectId;
-const chapterId = route.params.chapterId;
-const quizId = route.params.quizId;
+const subjectId = ref(route.params.subjectId);
+const chapterId = ref(route.params.chapterId);
+const quizId = ref(route.params.quizId);
 
 const fetchData = async () => {
   try {
@@ -28,13 +28,13 @@ const fetchData = async () => {
 
     // Fetch all data concurrently
     const [quizRes, subjectRes, chapterRes] = await Promise.all([
-      axios.get(`${API_URL}/quizzes/${quizId}?include_answers=true`, {
+      axios.get(`${API_URL}/quizzes/${quizId.value}?include_answers=true`, {
         headers: { Authorization: `Bearer ${token}` },
       }),
-      axios.get(`${API_URL}/subject/${subjectId}`, {
+      axios.get(`${API_URL}/subject/${subjectId.value}`, {
         headers: { Authorization: `Bearer ${token}` },
       }),
-      axios.get(`${API_URL}/chapter/${chapterId}`, {
+      axios.get(`${API_URL}/chapter/${chapterId.value}`, {
         headers: { Authorization: `Bearer ${token}` },
       }),
     ]);

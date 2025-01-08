@@ -138,7 +138,7 @@ const submit = async () => {
 
       <footer class="mt-4">
         <p>
-          By signing up, you agree to our
+          By signing up, you agree to my
           <span class="text-blue-600">Terms of Service</span> and
           <span class="text-blue-600">Privacy Policy</span>.
         </p>

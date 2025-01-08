@@ -2,6 +2,8 @@ import LandingPage from "../views/LandingPage.vue";
 import Login from "../views/Login.vue";
 import Signup from "../views/Signup.vue";
 const PageNotFound = () => import("../views/404.vue");
+const PrivacyPolicy = () => import("../views/PrivacyPolicy.vue");
+const TermsOfService = () => import("../views/TermsOfService.vue");
 
 const AuthRoutes = [
   {
@@ -21,6 +23,18 @@ const AuthRoutes = [
     name: "Signup",
     component: Signup,
     meta: { title: "Signup" },
+  },
+  {
+    path: "/privacy-policy",
+    name: "PrivacyPolicy",
+    component: PrivacyPolicy,
+    meta: { title: "Privacy Policy" },
+  },
+  {
+    path: "/terms-of-service",
+    name: "TermsOfService",
+    component: TermsOfService,
+    meta: { title: "Terms of Service" },
   },
   {
     path: "/:pathMatch(.*)*",

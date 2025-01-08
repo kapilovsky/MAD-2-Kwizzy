@@ -96,9 +96,14 @@ const handleLogin = async () => {
 
       <footer class="mt-24">
         <p>
-          By logging in, you agree to our
-          <span class="text-blue-600">Terms of Service</span> and
-          <span class="text-blue-600">Privacy Policy</span>.
+          By logging in, you agree to my
+          <RouterLink class="text-blue-600" to="/terms-of-service"
+            >Terms of Service</RouterLink
+          >
+          and
+          <RouterLink class="text-blue-600" to="/privacy-policy"
+            >Privacy Policy</RouterLink
+          >.
         </p>
       </footer>
     </div>
