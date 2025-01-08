@@ -6,10 +6,12 @@ import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 import arrow from "../../assets/images/icons/Arrow.png";
 import check from "../../assets/images/icons/check.svg";
+import EditProfile from "@/components/Student/EditProfile.vue";
 
 const route = useRoute();
 const isLoading = ref(true);
 const recentQuizzes = ref([]);
+const isEditProfileModalOpen = ref(false);
 
 const props = defineProps({
   student: {
@@ -17,6 +19,25 @@ const props = defineProps({
     required: true,
   },
 });
+
+const fetchStudentData = async () => {
+  try {
+    isLoading.value = true;
+    // Assuming you have an API endpoint to get student data
+    const response = await studentService.getStudent(
+      props.student.student_info.id
+    );
+    student.value = response;
+  } catch (error) {
+    console.error("Error fetching student data:", error);
+  } finally {
+    isLoading.value = false;
+  }
+};
+
+const openEditModal = () => {
+  isEditProfileModalOpen.value = true;
+};
 
 const student = ref(props.student);
 
@@ -58,9 +79,16 @@ const formatDate = (dateString) => {
   });
 };
 
+const handleProfileUpdated = (updatedStudent) => {
+  student.value = updatedStudent;
+  isEditProfileModalOpen.value = false;
+  fetchStudentData();
+};
+
 onMounted(() => {
   getRecentActivity();
-  console.log("student ", student.value);
+  // console.log("student ", student.value);
+  console.log("student from service", student.value);
 });
 </script>
 
@@ -70,7 +98,7 @@ onMounted(() => {
       <div class="relative overflow-hidden">
         <div
           v-if="!student.student_info.profile_pic"
-          class="sm:w-36 sm:h-36 w-0 h-0 rounded-lg bg-[#192227] text-white/20 hover:text-white/40 transition-all duration-200"
+          class="sm:w-40 sm:h-40 w-0 h-0 rounded-lg bg-[#192227] text-white/20 hover:text-white/40 transition-all duration-200 hover-scale"
         >
           <span class="absolute -bottom-6 right-0 text-9xl">{{
             student.student_info.name.charAt(0)
@@ -80,7 +108,7 @@ onMounted(() => {
           <img
             :src="student.student_info.profile_pic"
             alt="Profile Picture"
-            class="sm:w-36 sm:h-36 w-0 h-0 rounded-lg hover-scale"
+            class="sm:w-40 sm:h-40 w-0 h-0 rounded-lg hover-scale"
           />
         </div>
       </div>
@@ -91,8 +119,16 @@ onMounted(() => {
         <p class="text-neutral-600 sohne-mono text-sm">
           {{ getCurrentTimeGreeting() }} • {{ getCurrentDate() }}
         </p>
-        <div class="font-mono text-xs text-gray-400 mt-2">
-          {{ student.student_info.qualification.toUpperCase() }}
+        <div>
+          <button
+            class="sohne-mono text-xs text-neutral-600 mt-2 uppercase"
+            @click="openEditModal"
+          >
+            Edit Profile
+          </button>
+        </div>
+        <div class="font-mono text-xs text-gray-400 mt-2 uppercase">
+          {{ student.student_info.qualification }}
         </div>
         <div class="font-mono text-xs text-gray-400 mt-2">
           ID: #{{ student.student_info.id.toString().padStart(4, "0") }}
@@ -217,6 +253,14 @@ onMounted(() => {
         </tbody>
       </table>
     </div>
+
+    <EditProfile
+      v-if="isEditProfileModalOpen"
+      :is-open="isEditProfileModalOpen"
+      :student="student.student_info"
+      @close="isEditProfileModalOpen = false"
+      @update="handleProfileUpdated"
+    />
   </div>
 </template>
 

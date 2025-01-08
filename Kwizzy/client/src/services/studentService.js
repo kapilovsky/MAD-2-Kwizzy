@@ -33,8 +33,18 @@ export const studentService = {
           order,
         },
       });
+
+      const students = response.data.students.map((student) => ({
+        ...student,
+        profile_pic: student.profile_pic
+          ? `${API_URL}/uploads/subjects/students/${student.profile_pic}`
+          : null,
+      }));
+
       return {
-        ...response.data,
+        students,
+        pages: response.data.pages,
+        total: response.data.total,
         pagination: {
           total: parseInt(response.headers["x-total-count"] || "0"),
           pages: parseInt(response.headers["x-total-pages"] || "0"),
@@ -59,7 +69,18 @@ export const studentService = {
           Authorization: `Bearer ${token}`,
         },
       });
-      return response.data;
+
+      const studentData = {
+        ...response.data,
+        student_info: {
+          ...response.data.student_info,
+          profile_pic: response.data.student_info.profile_pic
+            ? `${API_URL}/uploads/subjects/students/${response.data.student_info.profile_pic}`
+            : null,
+        },
+      };
+
+      return studentData;
     } catch (error) {
       console.error("Error fetching student:", error);
       throw error;
@@ -95,5 +116,11 @@ export const studentService = {
       console.error("Error fetching statistics:", error);
       throw error;
     }
+  },
+
+  formatProfilePicUrl(profilePic) {
+    return profilePic
+      ? `${API_URL}/uploads/subjects/students/${profilePic}`
+      : null;
   },
 };

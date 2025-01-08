@@ -6,6 +6,7 @@ import axios from "axios";
 import Sidebar from "@/components/Admin/Sidebar.vue";
 import Loader from "@/components/Loader.vue";
 import logo from "@/assets/images/landing-page/white logo.png";
+import { studentService } from "@/services/studentService";
 
 const route = useRoute();
 const router = useRouter();
@@ -13,6 +14,20 @@ const API_URL = import.meta.env.VITE_API_URL;
 
 const student = ref(null);
 const loading = ref(true);
+const recentQuizzes = ref([]);
+
+const getRecentActivity = async () => {
+  try {
+    loading.value = true;
+    recentQuizzes.value = await studentService.getRecentActivity(
+      route.params.id
+    );
+  } catch (error) {
+    console.error("Error:", error);
+  } finally {
+    loading.value = false;
+  }
+};
 
 const fetchStudentDetails = async () => {
   try {
@@ -36,14 +51,16 @@ const fetchStudentDetails = async () => {
 
 const formatDate = (dateString) => {
   return new Date(dateString).toLocaleDateString("en-US", {
-    year: "numeric",
     month: "short",
     day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
   });
 };
 
 onMounted(() => {
   fetchStudentDetails();
+  getRecentActivity();
 });
 </script>
 
@@ -122,7 +139,7 @@ onMounted(() => {
                   <p
                     class="px-3 py-1 bg-[#EBF4FF] rounded-full text-sm sohne-mono uppercase text-[#7F9CF5] text-center"
                   >
-                    {{ formatDate(student.dob) }}
+                    {{ student.dob }}
                   </p>
                 </div>
               </div>
@@ -140,9 +157,9 @@ onMounted(() => {
           </div>
 
           <div class="bg-white rounded-xl p-6">
-            <h3 class="text-gray-500 text-sm sohne-mono mb-2">Completed</h3>
+            <h3 class="text-gray-500 text-sm sohne-mono mb-2">Last Active</h3>
             <p class="text-3xl font-bold arame-mono">
-              {{ student.quiz_stats.quizzes_completed }}
+              {{ formatDate(student.quiz_stats.last_active) }}
             </p>
           </div>
 
@@ -150,20 +167,20 @@ onMounted(() => {
             <h3 class="text-gray-500 text-sm sohne-mono mb-2">Average Score</h3>
             <div class="flex items-center gap-4">
               <p class="text-3xl font-bold arame-mono">
-                {{ student.quiz_stats.average_score }}%
+                {{ student.quiz_stats.performance_percentage }}%
               </p>
               <div class="flex-1">
                 <div class="w-full bg-gray-200 rounded-full h-2.5">
                   <div
                     class="h-2.5 rounded-full"
                     :class="[
-                      student.quiz_stats.average_score >= 70
+                      student.quiz_stats.performance_percentage >= 70
                         ? 'bg-green-600'
-                        : student.quiz_stats.average_score >= 40
+                        : student.quiz_stats.performance_percentage >= 40
                         ? 'bg-yellow-400'
                         : 'bg-red-600',
                     ]"
-                    :style="`width: ${student.quiz_stats.average_score}%`"
+                    :style="`width: ${student.quiz_stats.performance_percentage}%`"
                   ></div>
                 </div>
               </div>
@@ -174,27 +191,38 @@ onMounted(() => {
         <!-- Recent Activity -->
         <div class="bg-white rounded-xl p-6 mb-6">
           <h3 class="text-xl font-semibold sohne-mono mb-4">Recent Activity</h3>
-          <div class="space-y-4">
-            <div
-              v-for="(quiz, index) in student.quiz_stats.recent_quizzes"
-              :key="index"
-              class="flex items-center justify-between py-3 border-b border-gray-100 last:border-0"
-            >
-              <div>
-                <p class="arame-mono">{{ quiz.name }}</p>
-                <p class="text-sm text-gray-500 sohne-mono">
-                  {{ formatDate(quiz.completed_at) }}
-                </p>
-              </div>
-              <div class="flex items-center gap-4">
-                <span
-                  class="text-[#7F9CF5] bg-[#EBF4FF] px-3 py-1 rounded sohne-mono"
-                >
-                  {{ quiz.score }}%
-                </span>
-              </div>
-            </div>
-          </div>
+          <table class="w-full border-collapse">
+            <thead>
+              <tr
+                class="text-left text-[#7F9CF5] sm:text-sm text-xs border-b-2 border-black"
+              >
+                <th class="p-2">Quiz Title</th>
+                <th class="p-2">Score</th>
+                <th class="p-2 sm:block hidden">Accuracy</th>
+                <th class="p-2">Completion Date</th>
+                <th class="text-right p-2">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr
+                class="text-xs sm:text-sm"
+                v-for="quiz in recentQuizzes"
+                :key="quiz.id"
+              >
+                <td class="p-2">{{ quiz.quiz_name }}</td>
+                <td class="p-2">{{ quiz.marks_scored }}</td>
+                <td class="p-2 sm:block hidden">{{ quiz.percentage }}%</td>
+                <td class="p-2">{{ formatDate(quiz.completed_at) }}</td>
+                <td class="text-right">
+                  <button
+                    class="text-[#7F9CF5] hover:font-bold sm:text-sm text-xs sohne-mono bg-[#EBF4FF] sm:px-5 sm:py-1 py-[4px] rounded-md"
+                  >
+                    View Details
+                  </button>
+                </td>
+              </tr>
+            </tbody>
+          </table>
         </div>
 
         <!-- Performance Chart could be added here -->
