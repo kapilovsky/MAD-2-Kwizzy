@@ -151,18 +151,17 @@ onMounted(async () => {
           chapter?.total_quizzes || 0
         }}</span>
       </div>
-
-      <div class="flex items-center gap-2 text-sm">
-        <span class="text-gray-500 sohne-mono">Students:</span>
-        <span class="font-medium sohne-mono">{{ chapter?.students || 0 }}</span>
-      </div>
     </div>
 
     <div class="flex justify-between items-center mb-4">
-      <h2 class="text-5xl font-semibold sohne tracking-[-2px]">Quizzes</h2>
+      <h2
+        class="sm:text-5xl text-3xl font-semibold sohne tracking-tighter sm:tracking-[-2px]"
+      >
+        Quizzes
+      </h2>
       <RouterLink
         :to="`/admin/subject/${subjectId}/chapter/${chapterId}/quiz/create`"
-        class="px-4 py-2 bg-black text-white rounded-lg hover:bg-[#161616] hover:scale-95 transition-all duration-200 flex items-center gap-2 font-semibold"
+        class="px-4 py-2 bg-black text-white rounded-lg hover:bg-[#161616] hover:scale-95 transition-all duration-200 flex items-center gap-2 font-semibold sm:text-base text-sm"
       >
         <component :is="AddIcon" class="w-5 h-5" />
         Create Quiz
@@ -174,42 +173,42 @@ onMounted(async () => {
       <div class="px-2">
         <table class="w-full">
           <thead>
-            <tr class="text-left text-sm border-b-2 border-black">
+            <tr class="text-left sm:text-sm text-xs border-b-2 border-black">
               <th>Quiz Name</th>
-              <th>Questions</th>
-              <th>Time Limit［HH:MM］</th>
-              <th>Price</th>
-              <th>Actions</th>
+              <th class="px-2">Questions</th>
+              <th class="sm:block hidden">Time Limit［HH:MM］</th>
+              <th class="px-2">Price</th>
+              <th class="text-right px-2">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr
               v-for="quiz in filteredQuizzes"
               :key="quiz.id"
-              class="border-b-2 border-black"
+              class="border-b-2 border-black text-xs sm:text-sm"
             >
               <td class="py-2 relative">
-                <span class="absolute top-[2px] left-[-10px]">&lhblk;</span>
+                <span class="absolute top-[5px] left-[-18px] sm:block hidden"
+                  >&lhblk;</span
+                >
                 <RouterLink
                   :to="`/admin/subject/${subjectId}/chapter/${chapterId}/quiz/${quiz.id}`"
                 >
-                  &nbsp;&nbsp;<span class="hover:text-[#0000ff]">{{
-                    quiz.name
-                  }}</span>
+                  <span class="hover:text-[#0000ff]">{{ quiz.name }}</span>
                 </RouterLink>
               </td>
-              <td class="py-2">
+              <td class="py-2 px-2">
                 <span class="font-medium">{{ quiz.question_count }}</span>
               </td>
-              <td class="py-2">
+              <td class="py-2 sm:block hidden">
                 <span class="font-medium">{{ quiz.time_duration }}</span>
               </td>
-              <td class="py-2">
+              <td class="py-2 px-2">
                 <span class="font-medium">{{ quiz.price || "Free" }}</span>
               </td>
 
               <td class="py-2">
-                <div class="flex items-center gap-2">
+                <div class="flex items-center justify-end gap-2 px-2">
                   <RouterLink
                     class="py-[2px] px-1 text-gray-600 hover:text-[#0000ff] sohne-mono text-[12px] border-dotted border border-gray-400"
                     :to="`/admin/subject/${subjectId}/chapter/${chapterId}/quiz/${quiz.id}/edit`"

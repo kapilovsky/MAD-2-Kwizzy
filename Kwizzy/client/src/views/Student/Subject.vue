@@ -84,7 +84,7 @@
               <tr
                 v-for="chapter in filteredChapters"
                 :key="chapter.id"
-                class="border-b text-sm border-black hover:bg-[#fff9f0]"
+                class="border-b text-sm sm:text-base border-black hover:bg-[#fff9f0]"
               >
                 <td class="py-2">
                   ▞ &nbsp;<span>{{ chapter.name }}</span>

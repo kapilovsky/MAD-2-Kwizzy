@@ -187,11 +187,14 @@ onMounted(() => {
 <template>
   <Loader v-if="isLoading" />
   <Sidebar v-else>
-    <header ref="headerRef" class="h-16 bg-white flex items-center justify-between gap-6 mb-2">
+    <header
+      ref="headerRef"
+      class="h-16 bg-white flex sm:relative sticky top-0 items-center justify-between gap-6 mb-2"
+    >
       <div class="flex items-center flex-1">
-        <div class="flex-1 max-w-lg">
-          <h2 class="text-3xl font-bold sohne-mono">
-            <span class="text-[34px]">🡲</span> Edit Quiz
+        <div class="flex-1 sm:max-w-lg">
+          <h2 class="sm:text-3xl text-xl sm:ml-0 ml-12 font-bold sohne-mono">
+            <span class="sm:text-[34px]">🡲</span> Edit Quiz
           </h2>
         </div>
       </div>
@@ -208,7 +211,7 @@ onMounted(() => {
       </div>
     </header>
 
-    <div class="py-4 px-4">
+    <div class="py-4 sm:px-4 px-1 overflow-hidden">
       <!-- Breadcrumbs -->
       <div class="flex items-center gap-2 text-sm mb-6">
         <RouterLink
@@ -246,7 +249,7 @@ onMounted(() => {
       <form @submit.prevent="handleSubmit" class="space-y-8">
         <!-- Quiz Details Section -->
         <div
-          class="flex items-center justify-between bg-[#192227] text-[#fdfcfc] px-6 py-4 rounded-2xl shadow"
+          class="flex relative items-center justify-between bg-[#192227] text-[#fdfcfc] px-6 py-8 rounded-2xl shadow"
         >
           <div class="flex-1 flex flex-col gap-12">
             <div>
@@ -269,7 +272,7 @@ onMounted(() => {
               ></textarea>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="sm:grid sm:grid-cols-2 flex flex-col gap-8 sm:gap-4">
               <div class="mt-2 flex flex-col gap-1">
                 <label class="block sohne-mono font-medium"
                   >Time Duration［HH:MM］</label
@@ -297,23 +300,26 @@ onMounted(() => {
               </div>
             </div>
           </div>
-          <div class="text-[160px] mt-[-40px] mb-[-40px]">🡽</div>
+          <div class="text-[200px] mt-[-40px] mb-[-40px] arrow">🡽</div>
         </div>
 
         <!-- Questions Section -->
         <div
-          class="space-y-6 bg-[#192227] text-[#fdfcfc] p-6 rounded-3xl shadow"
+          class="flex flex-col gap-4 bg-[#192227] text-[#fdfcfc] sm:p-6 py-8 px-4 rounded-3xl shadow overflow-hidden"
         >
           <div class="flex justify-between items-center">
-            <h2 class="text-2xl font-bold sohne-mono">
+            <h2 class="sm:text-2xl text-lg font-bold sohne-mono">
               Questions ［{{ quizData.questions.length }}］
             </h2>
             <button
               type="button"
               @click="addQuestion"
-              class="px-4 py-2 bg-[#f9e000] text-[#192227] rounded-lg hover:scale-95 transition-all duration-200 ease-linear sohne-mono font-bold flex items-center gap-2"
+              class="sm:px-4 px-2 py-2 bg-[#f9e000] text-[#192227] rounded-lg hover:scale-95 transition-all duration-200 ease-linear sohne-mono sm:text-base text-sm font-bold flex items-center gap-2"
             >
-              <component :is="AddIcon" class="w-6 h-6 fill-[#192227]" />
+              <component
+                :is="AddIcon"
+                class="sm:w-6 sm:h-6 w-4 h-4 fill-[#192227]"
+              />
               New Question
             </button>
           </div>
@@ -322,14 +328,14 @@ onMounted(() => {
           <div
             v-for="(question, qIndex) in quizData.questions"
             :key="qIndex"
-            class="bg-[#192227] p-6 rounded-lg shadow space-y-4"
+            class="bg-[#192227] sm:p-6 rounded-lg shadow sm:space-y-12 space-y-8"
           >
             <div class="flex justify-between items-start">
               <h3 class="font-medium text-lg">Question {{ qIndex + 1 }}.</h3>
               <button
                 type="button"
                 @click="removeQuestion(qIndex)"
-                class="px-2 py-2 flex items-center gap-2 text-[#f9e000] bg-[#192227] rounded-lg transition-all hover:scale-95 duration-200 sohne-mono font-bold"
+                class="px-2 py-2 sm:text-base text-xs flex items-center gap-2 text-[#f9e000] bg-[#192227] rounded-lg transition-all hover:scale-95 duration-200 sohne-mono font-bold"
                 :disabled="quizData.questions.length === 1"
               >
                 <component
@@ -341,7 +347,7 @@ onMounted(() => {
             </div>
 
             <div>
-              <label class="block text-sm font-medium sohne-mono"
+              <label class="block text-sm font-medium sohne-mono "
                 >Question Title (Optional)</label
               >
               <input
@@ -352,7 +358,7 @@ onMounted(() => {
             </div>
 
             <div>
-              <label class="block text-sm font-medium sohne-mono"
+              <label class="block text-sm font-medium sohne-mono "
                 >Question Text *</label
               >
               <textarea
@@ -413,23 +419,25 @@ onMounted(() => {
         </div>
 
         <!-- Action Buttons -->
-        <div class="flex justify-end gap-4">
+        <div class="flex sm:justify-end justify-between gap-4">
           <button
             type="button"
             @click="scrollToTop"
-            class="px-6 py-2 border-2 border-[#192227] text-[#192227] rounded-lg hover:bg-gray-100 sohne-mono"
-          >Back to Top</button>
+            class="sm:px-6 px-3 text-sm sm:text-base py-2 border-2 border-[#192227] text-[#192227] rounded-lg hover:bg-gray-100 sohne-mono"
+          >
+            Back to Top
+          </button>
           <button
             type="button"
             @click="router.back()"
-            class="px-6 py-2 border-2 border-[#192227] text-[#192227] rounded-lg hover:bg-gray-100 sohne-mono"
+            class="sm:px-6 py-2 px-3 text-sm sm:text-base border-2 border-[#192227] text-[#192227] rounded-lg hover:bg-gray-100 sohne-mono"
           >
             Cancel
           </button>
           <button
             type="submit"
             :disabled="isLoading"
-            class="px-6 py-2 bg-[#192227] text-white rounded-lg hover:bg-gray-800 sohne-mono"
+            class="sm:px-6 py-2 px-3 text-sm sm:text-base bg-[#192227] text-white rounded-lg hover:bg-gray-800 sohne-mono"
           >
             Save Changes
           </button>
@@ -458,5 +466,18 @@ label {
 
 .option-input::placeholder {
   font-size: 16px;
+}
+
+@media (max-width: 768px) {
+  .arrow {
+    position: absolute;
+    opacity: 0.2;
+    right: 0;
+    scale: 3;
+  }
+
+  input {
+    font-size: 18px;
+  }
 }
 </style>

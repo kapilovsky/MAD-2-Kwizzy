@@ -63,12 +63,12 @@ onMounted(() => {
   <Sidebar v-else>
     <header
       ref="headerRef"
-      class="h-16 bg-white flex items-center justify-between gap-6 mb-2"
+      class="h-16 bg-white sm:relative sticky top-0 flex items-center justify-between gap-6 mb-2"
     >
       <div ref="topMarker" class="flex items-center flex-1">
-        <div class="flex-1 max-w-lg">
-          <h2 class="text-3xl font-bold sohne-mono">
-            <span class="text-[34px]">🡲</span> Quiz Details
+        <div class="flex-1 max-w-lg sm:ml-0 ml-8">
+          <h2 class="sm:text-3xl text-xl font-bold sohne-mono">
+            <span class="sm:text-[34px]">🡲</span> Quiz Details
           </h2>
         </div>
       </div>
@@ -85,7 +85,7 @@ onMounted(() => {
       </div>
     </header>
 
-    <div class="py-4 px-4">
+    <div class="py-4 px-4 overflow-hidden">
       <!-- Breadcrumbs -->
       <div class="flex items-center gap-2 text-sm mb-6">
         <RouterLink
@@ -115,8 +115,8 @@ onMounted(() => {
       <!-- Quiz Details -->
       <div class="space-y-8">
         <!-- Quiz Info Card -->
-        <div class="bg-[#192227] text-[#fdfcfc] p-6 rounded-2xl shadow">
-          <div class="flex justify-between">
+        <div class="bg-[#192227] text-[#fdfcfc] sm:p-6 p-4 rounded-2xl shadow">
+          <div class="flex justify-between relative">
             <div class="space-y-4">
               <div>
                 <h1 class="text-3xl font-bold">{{ quiz?.name }}</h1>
@@ -145,7 +145,7 @@ onMounted(() => {
                 </div>
               </div>
             </div>
-            <div class="text-[160px] mt-[-40px] mb-[-40px]">🡽</div>
+            <div class="text-[160px] mt-[-40px] mb-[-40px] arrow">🡽</div>
           </div>
         </div>
 
@@ -222,5 +222,14 @@ onMounted(() => {
 <style scoped>
 .shadow {
   box-shadow: 0 1px 3px 0 rgb(0 0 0 / 0.1), 0 1px 2px -1px rgb(0 0 0 / 0.1);
+}
+
+@media (max-width: 768px) {
+  .arrow {
+    position: absolute;
+    opacity: 0.2;
+    right: 0;
+    scale: 3;
+  }
 }
 </style>

@@ -213,11 +213,11 @@ const handleSearch = (query) => {
     </div>
 
     <!-- Subject Header -->
-    <div class="flex items-start gap-8 mb-8">
+    <div class="flex items-start flex-col sm:flex-row sm:gap-8 gap-4 mb-8">
       <img
         :src="subject?.image"
         :alt="subject?.name"
-        class="w-[150px] h-[150px] rounded-xl object-cover"
+        class="sm:w-[150px] sm:h-[150px] rounded-xl object-cover"
       />
       <div>
         <h1 class="text-4xl font-bold mb-2 magnetic">{{ subject?.name }}</h1>
@@ -243,7 +243,7 @@ const handleSearch = (query) => {
           Add Chapter
         </button>
       </div>
-      <div class="flex items-start gap-[80px]">
+      <div class="flex items-start sm:mt-0 mt-4 gap-[80px]">
         <button
           @click="editSubject(subject)"
           class="px-4 py-2 text-sm text-black rounded-lg hover:text-[#0000ff] transition-colors sohne-mono focus:outline-none"
@@ -271,35 +271,37 @@ const handleSearch = (query) => {
     <!-- Chapters Table -->
     <div>
       <div>
-        <h2 class="text-5xl font-semibold sohne tracking-[-1px] mb-4 magnetic">
+        <h2
+          class="sm:text-5xl text-3xl font-semibold sohne tracking-[-1px] mb-4 magnetic"
+        >
           Chapters
         </h2>
       </div>
       <div class="px-2">
         <table class="w-full chapters">
           <thead>
-            <tr class="text-left text-sm border-b-2 border-black">
+            <tr class="text-left sm:text-sm text-xs border-b-2 border-black">
               <th>Chapter Name</th>
               <th>Description</th>
-              <th>Quizzes</th>
-              <th>Actions</th>
+              <th class="sm:block hidden">Quizzes</th>
+              <th class="text-right px-2">Actions</th>
             </tr>
           </thead>
           <tbody>
             <tr v-if="chapters.length === 0">
               <td colspan="4" class="py-4 text-center sohne text-gray-500">
-                No chapters found. Add your first chapter!
+                No chapters found. Add first chapter!
               </td>
             </tr>
             <tr
               v-for="chapter in filteredChapters"
               :key="chapter.id"
-              class="border-b border-black"
+              class="border-b text-sm border-black"
             >
               <RouterLink
                 :to="`/admin/subject/${subject.id}/chapter/${chapter.id}`"
               >
-                <td class="py-2">
+                <td class="py-2 block">
                   ▞ &nbsp;<span class="hover:text-[#0000ff]">{{
                     chapter.name
                   }}</span>
@@ -307,11 +309,11 @@ const handleSearch = (query) => {
               </RouterLink>
 
               <td class="py-2">{{ chapter.description }}</td>
-              <td class="py-2">
+              <td class="py-2 sm:block hidden">
                 {{ chapter.quizzes || 0 }}
               </td>
               <td class="py-2">
-                <div class="flex items-center gap-2">
+                <div class="flex items-center justify-end gap-2 px-2">
                   <button
                     @click="openEditModal(chapter)"
                     class="py-[2px] px-1 text-gray-600 hover:text-[#0000ff] sohne-mono text-[12px] border-dotted border border-gray-400 link-hover"
