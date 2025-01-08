@@ -66,44 +66,6 @@ const StudentRoutes = [
         },
       },
       {
-        path: "subject/:subjectId/chapter/:chapterId/quiz/:quizId/take",
-        name: "quiz-take",
-        component: QuizTaking,
-        meta: {
-          requiresAuth: true,
-          title: "Taking Quiz",
-          preventRefresh: true, // to handle refresh warnings
-        },
-        beforeEnter: async (to, from, next) => {
-          const quizStore = useQuizStore();
-
-          try {
-            // Check if quiz is in progress
-            const quizStartTime = localStorage.getItem("quizStartTime");
-            const isInProgress =
-              quizStartTime &&
-              (await quizStore.checkQuizStatus(to.params.quizId));
-
-            if (!isInProgress && from.name !== "quiz") {
-              // If quiz is not in progress and not coming from quiz details page
-              next({
-                name: "quiz",
-                params: {
-                  id: to.params.id,
-                  quizId: to.params.quizId,
-                },
-              });
-              return;
-            }
-
-            next();
-          } catch (error) {
-            console.error("Error checking quiz status:", error);
-            next({ name: "error" });
-          }
-        },
-      },
-      {
         path: "quiz/:quizId/results",
         name: "quiz-results",
         component: QuizResults,
@@ -142,6 +104,43 @@ const StudentRoutes = [
         },
       },
     ],
+  },
+  {
+    path: "/student/:id/subject/:subjectId/chapter/:chapterId/quiz/:quizId/take",
+    name: "quiz-take",
+    component: QuizTaking,
+    meta: {
+      requiresAuth: true,
+      title: "Taking Quiz",
+      preventRefresh: true, // to handle refresh warnings
+    },
+    beforeEnter: async (to, from, next) => {
+      const quizStore = useQuizStore();
+
+      try {
+        // Check if quiz is in progress
+        const quizStartTime = localStorage.getItem("quizStartTime");
+        const isInProgress =
+          quizStartTime && (await quizStore.checkQuizStatus(to.params.quizId));
+
+        if (!isInProgress && from.name !== "quiz") {
+          // If quiz is not in progress and not coming from quiz details page
+          next({
+            name: "quiz",
+            params: {
+              id: to.params.id,
+              quizId: to.params.quizId,
+            },
+          });
+          return;
+        }
+
+        next();
+      } catch (error) {
+        console.error("Error checking quiz status:", error);
+        next({ name: "error" });
+      }
+    },
   },
 ];
 
