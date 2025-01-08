@@ -31,7 +31,7 @@ const StudentRoutes = [
       },
       {
         path: "subjects",
-        name: "ViewSubjects",
+        name: "view-subjects",
         component: ViewSubjects,
         meta: {
           requiresAuth: true,

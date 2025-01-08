@@ -5,6 +5,57 @@
     </div>
 
     <div v-else-if="quiz">
+      <!-- Breadcrumbs -->
+      <div class="flex items-center gap-2 text-gray-600 text-sm mb-4">
+        <RouterLink
+          :to="{
+            name: 'student-dashboard',
+            params: {
+              id: studentId,
+            },
+          }"
+          class="text-gray-500 hover:text-black sohne-mono"
+          >Dashboard</RouterLink
+        >
+        <span>/</span>
+        <RouterLink
+          :to="{
+            name: 'view-subjects',
+            params: {
+              id: studentId,
+            },
+          }"
+          class="text-gray-500 hover:text-black sohne-mono"
+          >Subjects</RouterLink
+        >
+        <span>/</span>
+        <RouterLink
+          :to="{
+            name: 'subject',
+            params: {
+              id: studentId,
+              subjectId: subjectId,
+            },
+          }"
+          class="text-gray-500 hover:text-black sohne-mono"
+          >{{ subjectName }}</RouterLink
+        >
+
+        <span>/</span>
+        <RouterLink
+          :to="{
+            name: 'chapter',
+            params: {
+              id: studentId,
+              subjectId: subjectId,
+              chapterId: chapterId,
+            },
+          }"
+          class="text-black sohne-mono"
+          >{{ chapterName }}</RouterLink
+        >
+      </div>
+
       <div class="bg-[#192227] text-[#fdfcfc] p-6 rounded-2xl shadow">
         <div class="flex justify-between">
           <div class="space-y-4">
@@ -110,12 +161,16 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
+import { storeToRefs } from "pinia";
 import { useRouter, useRoute } from "vue-router";
 import axios from "axios";
 import { useToast } from "@/composables/useToast";
 import DialogModal from "@/components/DialogModal.vue";
 import Loader from "@/components/Loader.vue";
+import { BreadcrumbsStore } from "@/stores/breadcrumbsStore";
+const breadcrumbStore = BreadcrumbsStore();
+const { subjectName, chapterName } = storeToRefs(breadcrumbStore);
 const API_URL = import.meta.env.VITE_API_URL;
 const router = useRouter();
 const route = useRoute();
@@ -126,7 +181,9 @@ const error = ref(null);
 const isLoading = ref(true);
 const isStarting = ref(false);
 const isDialogOpen = ref(false);
-const student_id = route.params.id;
+const studentId = route.params.id;
+const subjectId = route.params.subjectId;
+const chapterId = route.params.chapterId;
 
 const fetchQuizDetails = async () => {
   try {
@@ -172,6 +229,11 @@ const startQuiz = async () => {
 
 onMounted(() => {
   fetchQuizDetails();
+  console.log(chapterName.value, subjectName.value);
+});
+
+onUnmounted(() => {
+  breadcrumbStore.clearBreadcrumbs();
 });
 </script>
 

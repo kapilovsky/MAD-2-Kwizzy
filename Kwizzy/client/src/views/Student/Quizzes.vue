@@ -7,7 +7,46 @@
       </div>
     </div>
 
-    <div class="my-8">
+    <div class="my-4">
+      <!-- Breadcrumbs -->
+      <div class="flex items-center gap-2 text-gray-600 text-sm mb-4">
+        <RouterLink
+          :to="{
+            name: 'student-dashboard',
+            params: {
+              id: studentId,
+            },
+          }"
+          class="text-gray-500 hover:text-black sohne-mono"
+          >Dashboard</RouterLink
+        >
+        <span>/</span>
+        <RouterLink
+          :to="{
+            name: 'view-subjects',
+            params: {
+              id: studentId,
+            },
+          }"
+          class="text-gray-500 hover:text-black sohne-mono"
+          >Subjects</RouterLink
+        >
+        <span>/</span>
+        <RouterLink
+          :to="{
+            name: 'subject',
+            params: {
+              id: studentId,
+              subjectId: subjectId,
+            },
+          }"
+          class="text-gray-500 hover:text-black sohne-mono"
+          >{{ subject?.name }}</RouterLink
+        >
+
+        <span>/</span>
+        <span class="text-black sohne-mono">{{ chapter?.name }}</span>
+      </div>
       <!-- Chapter Details -->
       <div class="flex items-center gap-2 text-sm mb-2">
         <span class="font-bold sohne-mono text-3xl">{{ chapter?.name }}</span>
@@ -21,13 +60,6 @@
           <span class="text-gray-500 sohne-mono">Quizzes:</span>
           <span class="font-medium sohne-mono">{{
             chapter?.total_quizzes || 0
-          }}</span>
-        </div>
-
-        <div class="flex items-center gap-2 text-sm">
-          <span class="text-gray-500 sohne-mono">Students:</span>
-          <span class="font-medium sohne-mono">{{
-            chapter?.students || 0
           }}</span>
         </div>
       </div>
@@ -78,7 +110,17 @@
                 <td class="p-2 text-right">
                   <RouterLink
                     class="py-[2px] px-1 text-gray-600 hover:text-[#0000ff] sohne-mono text-[12px] border-dotted border border-gray-400 text-right"
-                    :to="`${route.path}/quiz/${quiz.id}`"
+                    @click="handleNavigation"
+                    :to="{
+                      name: 'quiz',
+
+                      params: {
+                        id: route.params.id,
+                        quizId: quiz.id,
+                        subjectId: subjectId,
+                        chapterId: chapterId,
+                      },
+                    }"
                   >
                     VIEW
                   </RouterLink>
@@ -98,6 +140,9 @@ import SearchBar from "@/components/Admin/SearchBar.vue";
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 import Loader from "@/components/Loader.vue";
+import { BreadcrumbsStore } from "@/stores/breadcrumbsStore";
+
+const breadcrumbStore = BreadcrumbsStore();
 
 const isLoading = ref(false);
 const route = useRoute();
@@ -107,6 +152,18 @@ const subject = ref(null);
 const chapter = ref(null);
 const quizzes = ref([]);
 const searchQuery = ref("");
+const subjectName = ref(null);
+const chapterName = ref(null);
+
+const props = defineProps({
+  student: {
+    type: Object,
+    required: true,
+  },
+});
+
+const student = ref(props.student);
+const studentId = student.value.id;
 
 const fetchData = async () => {
   try {
@@ -132,8 +189,9 @@ const fetchData = async () => {
     // Set data
     chapter.value = chapterRes.data;
     subject.value = subjectRes.data;
+    chapterName.value = chapterRes.data.name;
+    subjectName.value = subjectRes.data.name;
     quizzes.value = quizzesRes.data.quizzes;
-    console.log("Quizzes:", quizzes.value);
   } catch (error) {
     console.error("Error fetching data:", error);
   } finally {
@@ -155,7 +213,18 @@ const handleSearch = (query) => {
   searchQuery.value = query;
 };
 
+const handleNavigation = () => {
+  breadcrumbStore.setBreadcrumbs({
+    subjectName: subjectName.value,
+    chapterName: chapterName.value,
+    subjectId: subjectId.value,
+    chapterId: chapterId.value,
+  });
+  console.log(chapterName.value, subjectName.value,"before navigation ");
+};
+
 onMounted(async () => {
   await fetchData();
+  console.log(chapterName.value, subjectName.value);
 });
 </script>

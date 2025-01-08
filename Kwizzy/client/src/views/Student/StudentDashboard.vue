@@ -18,6 +18,8 @@ const props = defineProps({
   },
 });
 
+
+
 const student = ref(props.student);
 
 const getRecentActivity = async () => {

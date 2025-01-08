@@ -7,18 +7,51 @@
       </div>
     </div>
 
-    <div>
+    <div class="my-8">
+      <!-- Breadcrumbs -->
+      <div class="flex items-center gap-2 text-gray-600 text-sm">
+        <RouterLink
+          :to="{
+            name: 'student-dashboard',
+            params: {
+              id: studentId,
+            },
+          }"
+          class="text-gray-500 hover:text-black sohne-mono"
+          >Dashboard</RouterLink
+        >
+        <span>/</span>
+        <RouterLink
+          :to="{
+            name: 'view-subjects',
+            params: {
+              id: studentId,
+            },
+          }"
+          class="text-gray-500 hover:text-black sohne-mono"
+          >Subjects</RouterLink
+        >
+        <span>/</span>
+        <span class="text-black sohne-mono">{{ subject?.name }}</span>
+      </div>
+
       <!-- Subject Header -->
-      <div class="flex items-start gap-8 my-8">
+      <div class="flex items-center gap-8 my-4">
         <img
           :src="subject?.image"
           :alt="subject?.name"
           class="w-[150px] h-[150px] rounded-xl object-cover"
         />
-        <div>
-          <h1 class="text-4xl font-bold mb-2 magnetic">{{ subject?.name }}</h1>
-          <p class="text-gray-600 max-w-xl">{{ subject?.description }}</p>
-          <p class="text-gray-600 mb-4">{{ subject?.chapters }} Chapters</p>
+        <div class="flex flex-col gap-2 justify-between">
+          <h1 class="text-4xl font-bold">{{ subject?.name }}</h1>
+          <p class="text-gray-600 max-w-xl text-lg">
+            {{ subject?.description }}
+          </p>
+          <p class="text-gray-600">Total Chapters: {{ subject?.chapters }}</p>
+          <p class="text-gray-600 mb-4">
+            Total Students who are enrolled in this subject:
+            {{ subject?.students }}
+          </p>
         </div>
       </div>
       <!-- Chapters Table -->
@@ -91,6 +124,16 @@ const subjectId = route.params.id;
 const subject = ref(null);
 const chapters = ref([]);
 const searchQuery = ref("");
+
+const props = defineProps({
+  student: {
+    type: Object,
+    required: true,
+  },
+});
+
+const student = ref(props.student);
+const studentId = student.value.id;
 
 const fetchSubjectDetails = async () => {
   try {
