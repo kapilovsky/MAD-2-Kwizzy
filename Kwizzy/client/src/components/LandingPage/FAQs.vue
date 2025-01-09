@@ -15,7 +15,7 @@ const items = [
   {
     question: "What if I forget my password?",
     answer:
-      "First, try 'password123' because let's be honest, that was probably it. If that fails, we have a fancy 'Forgot Password' button that's been waiting for its moment to shine.",
+      "First, try 'password123' because let's be honest, that was probably it. If that fails, I have a fancy 'Forgot Password' button that's been waiting for its moment to shine.",
   },
   {
     question: "What if I fail all the quizzes?",
@@ -30,12 +30,21 @@ const items = [
   {
     question: "Can Kwizzy help me impress my crush?",
     answer:
-      "Absolutely! Just casually mention your latest quiz score and watch the sparks fly. Or not. We can’t guarantee anything.",
+      "Absolutely! Just casually mention your latest quiz score and watch the sparks fly. Or not. I can’t guarantee anything.",
   },
   {
     question: "Can I cheat?",
     answer:
-      "Well, Kwizzy doesn’t judge… but remember, cheaters never prosper. Plus, the only person you’re fooling is your own ego. We recommend winning with your brains, not your browser tabs!",
+      "Well, Kwizzy doesn’t judge… but remember, cheaters never prosper. Plus, the only person you’re fooling is your own ego. I recommend winning with your brains, not your browser tabs!",
+  },
+  {
+    question: "What if I find a bug?",
+    answer:
+      "I don't like killing bugs, let that bug live. BLM [BUGS LIVE MATTER] ! But seriously, report it and I’ll try to fix it as soon as I can.",
+  },
+  {
+    question: "Can I suggest a feature?",
+    answer: "Absolutely! Shoot me a DM.",
   },
 ];
 

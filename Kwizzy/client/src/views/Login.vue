@@ -87,10 +87,10 @@ const handleLogin = async () => {
         </p>
 
         <button
-          class="py-[10px] font-medium text-white bg-black rounded-lg hover:bg-black/90 transition-all ease-linear active:scale-95 flex items-center justify-center gap-2"
+          class="py-[10px] font-medium text-white bg-black rounded-lg hover:bg-black/90 transition-all ease-linear active:scale-95 flex items-center justify-center gap-2 group"
           type="submit"
         >
-          Login <ion-icon name="arrow-forward-sharp"></ion-icon>
+          Login <span>🡲</span>
         </button>
       </form>
 
@@ -142,14 +142,14 @@ form input {
   font-size: 17px;
 }
 
-button[type="submit"] ion-icon {
+button[type="submit"] span {
   font-size: 18px;
   transform: translateX(-4px);
   opacity: 0;
   transition: all 0.2s ease;
 }
 
-button[type="submit"]:hover ion-icon {
+button[type="submit"]:hover span {
   opacity: 1;
   transform: translateX(4px);
 }

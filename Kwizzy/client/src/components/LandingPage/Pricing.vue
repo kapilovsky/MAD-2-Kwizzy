@@ -1,4 +1,5 @@
 <script setup>
+import check from "../../assets/images/icons/check.svg";
 const plans = [
   {
     name: "Basic",
@@ -21,7 +22,7 @@ const plans = [
       "Extra laughs included",
       "Premium progress insights",
       "Still completely free",
-      "Priority support (when we build it)",
+      "Priority support (when I build it)",
     ],
     popular: true,
   },
@@ -34,7 +35,7 @@ const plans = [
       "Everything in Premium",
       "Early access to new features",
       "Advanced analytics",
-      "Did we mention it's free?",
+      "Did I mention it's free?",
     ],
   },
 ];
@@ -48,11 +49,11 @@ const plans = [
     <div class="container">
       <!-- Header -->
       <h2 class="text-5xl font-bold tracking-tighter text-center sm:text-6xl">
-        Free Forever. Because We're Nice Like That.
+        Free Forever. Because Why Not.
       </h2>
       <div class="max-w-xl mx-auto">
         <p class="mt-5 text-xl text-center text-white/70">
-          Choose your flavor of free. Yes, they're all free. We just made
+          Choose your flavor of free. Yes, they're all free. I just made
           multiple tiers to look professional.
         </p>
       </div>
@@ -95,10 +96,11 @@ const plans = [
                 :key="featureIndex"
                 class="flex items-center text-white/80"
               >
-                <ion-icon
+                <!-- <ion-icon
                   name="checkmark-sharp"
                   class="mr-3 text-green-400"
-                ></ion-icon>
+                ></ion-icon> -->
+                <component :is="check" class="mr-3 fill-[##4ade80]" />
                 {{ feature }}
               </li>
             </ul>

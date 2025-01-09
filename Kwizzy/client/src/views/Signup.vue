@@ -9,7 +9,7 @@ const email = ref("");
 const dob = ref("");
 const qualification = ref("");
 const password = ref("");
-const role = ref("");
+// const role = ref("");
 const API_URL = import.meta.env.VITE_API_URL;
 
 const router = useRouter();
@@ -34,7 +34,7 @@ const submit = async () => {
       email: email.value,
       dob: dob.value,
       qualification: qualification.value,
-      role: role.value,
+      // role: role.value,
       password: password.value,
     });
     if (response.data) {
@@ -85,10 +85,10 @@ const submit = async () => {
           <input v-model="dob" type="date" name="dob" id="dob" required />
         </div>
 
-        <div class="flex flex-col gap-1">
+        <!-- <div class="flex flex-col gap-1">
           <label for="role">Role</label>
           <input v-model="role" type="text" name="role" id="role" required />
-        </div>
+        </div> -->
 
         <div class="flex flex-col gap-1">
           <label for="qualification"> Qualification</label>
@@ -132,17 +132,17 @@ const submit = async () => {
           class="py-[10px] font-medium text-white bg-black rounded-lg hover:bg-black/90 transition-all ease-linear active:scale-95 flex items-center justify-center gap-2"
           type="submit"
         >
-          Sign Up <ion-icon name="arrow-forward-sharp"></ion-icon>
+          Sign Up <span>🡲</span>
         </button>
       </form>
 
-      <!-- <footer class="mt-4">
+      <footer class="mt-4">
         <p>
           By signing up, you agree to my
           <span class="text-blue-600">Terms of Service</span> and
           <span class="text-blue-600">Privacy Policy</span>.
         </p>
-      </footer> -->
+      </footer>
     </div>
     <div class="login-image">
       <div class="img-wrapper w-[720px]">
@@ -185,14 +185,14 @@ form select {
   font-size: 17px;
 }
 
-button[type="submit"] ion-icon {
+button[type="submit"] span {
   font-size: 18px;
   transform: translateX(-4px);
   opacity: 0;
   transition: all 0.2s ease;
 }
 
-button[type="submit"]:hover ion-icon {
+button[type="submit"]:hover span {
   opacity: 1;
   transform: translateX(4px);
 }

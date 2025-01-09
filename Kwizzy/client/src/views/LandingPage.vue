@@ -206,9 +206,9 @@ const handleScroll = (sectionId) => {
               href="#"
               class="inline-flex gap-4 px-2 py-1 border rounded-lg border-white/70"
             >
-              <span class="rainbow-text animated-gradient">
+              <p class="rainbow-text animated-gradient">
                 Because Traditional Studying is so 2010
-              </span>
+              </p>
             </a>
           </div>
           <div class="hero-content">
@@ -216,7 +216,7 @@ const handleScroll = (sectionId) => {
               Prep Smart<br />Stand Apart
             </h1>
             <p class="mt-8 text-lg text-center">
-              From conquering chapters to crushing quizzes, we’ve got you
+              From conquering chapters to crushing quizzes, I’ve got you
               covered.
               <br />
               Perfect for students, procrastinators, and that one overachiever
@@ -266,7 +266,7 @@ const handleScroll = (sectionId) => {
           <div class="mt-8">
             <RouterLink to="/login">
               <button class="px-4 py-2 bg-white text-black rounded-lg">
-                Start Your Journey Now
+                Start Your Journey Now <span>🡲</span>
               </button>
             </RouterLink>
           </div>
@@ -310,7 +310,7 @@ const handleScroll = (sectionId) => {
   );
 }
 
-ion-icon {
+a span {
   /* margin-top: 2px; */
   font-size: 20px;
   opacity: 0;
@@ -318,14 +318,9 @@ ion-icon {
   transition: all 0.3s ease;
 }
 
-a:hover ion-icon {
+a:hover span {
   opacity: 1;
   transform: translateX(8px);
-}
-
-.hamburger ion-icon {
-  color: white;
-  font-size: 2rem;
 }
 
 .rainbow-text {

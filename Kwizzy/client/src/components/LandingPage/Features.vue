@@ -7,7 +7,7 @@ const features = [
     emoji: "📚",
     title: "Multi-Course Magic",
     description:
-      "Jump between subjects like a academic ninja. Physics to Literature? We've got you covered. Just don't try them simultaneously - we're not responsible for brain explosions.",
+      "Jump between subjects like a academic ninja. Physics to Literature? I've got you covered. Just don't try them simultaneously - I am not responsible for brain explosions.",
   },
   {
     emoji: "👩‍🏫",
