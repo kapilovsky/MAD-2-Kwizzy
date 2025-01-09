@@ -49,6 +49,8 @@ class Student(Resource):
 
             return [
                 {
+                    "quiz_id": result.quiz_id,
+                    "quiz_result_id": result.id,
                     "quiz_name": result.quiz.name,
                     "marks_scored": result.marks_scored,
                     "total_marks": result.total_marks,
@@ -119,14 +121,13 @@ class Student(Resource):
                 )
                 quiz_details.append(
                     {
+                        "quiz_result_id": result.id,
                         "quiz_id": result.quiz_id,
                         "quiz_name": result.quiz.name,
                         "marks_scored": result.marks_scored,
                         "total_marks": result.total_marks,
                         "percentage": round(percentage, 2),
-                        "completed_at": result.completed_at.strftime(
-                            "%Y-%m-%d %H:%M"
-                        ),
+                        "completed_at": result.completed_at.strftime("%Y-%m-%d %H:%M"),
                         "answers_breakdown": {
                             "total_questions": len(result.user_answers),
                             "correct_answers": len(

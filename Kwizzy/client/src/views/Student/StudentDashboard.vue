@@ -245,11 +245,21 @@ onMounted(() => {
             <td class="p-2 sm:block hidden">{{ quiz.percentage }}%</td>
             <td class="p-2">{{ formatDate(quiz.completed_at) }}</td>
             <td class="text-right">
-              <button
+              <RouterLink
+                :to="{
+                  name: 'quiz-results',
+                  params: {
+                    id: route.params.id,
+                    quizId: quiz.quiz_id,
+                  },
+                  query: {
+                    resultId: quiz.quiz_result_id,
+                  },
+                }"
                 class="text-orange-500 hover:font-bold sm:text-sm text-xs sohne-mono bg-orange-200 sm:px-5 sm:py-1 py-[4px] rounded-md"
               >
                 View Details
-              </button>
+              </RouterLink>
             </td>
           </tr>
         </tbody>
