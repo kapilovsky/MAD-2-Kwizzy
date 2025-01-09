@@ -70,7 +70,7 @@ const handleLogout = () => {
           <img :src="logo" alt="Logo" class="w-8 h-8 mix-blend-difference" />
           <Transition name="fade">
             <span v-if="isOpen" class="ml-3 text-neutral-700 font-bold">
-              Dashboard
+              Kwizzy
             </span>
           </Transition>
         </div>

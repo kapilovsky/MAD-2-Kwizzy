@@ -1,5 +1,5 @@
 <script setup>
-import { useRoute } from "vue-router";
+import { useRoute, RouterLink } from "vue-router";
 import { studentService } from "@/services/studentService";
 import { ref, onMounted, computed } from "vue";
 import axios from "axios";
@@ -216,9 +216,11 @@ onMounted(() => {
         >
           Recent Activity
         </h3>
-        <span class="sm:text-sm text-xs text-orange-600 sohne-mono font-bold"
-          >+ VIEW MORE</span
-        >
+        <RouterLink :to="`${route.path}/quiz/history`">
+          <span class="sm:text-sm text-xs text-orange-600 sohne-mono font-bold"
+            >+ VIEW MORE</span
+          >
+        </RouterLink>
       </div>
       <table class="w-full border-collapse">
         <thead>

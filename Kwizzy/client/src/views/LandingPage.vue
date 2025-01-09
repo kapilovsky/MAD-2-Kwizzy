@@ -195,7 +195,7 @@ const handleScroll = (sectionId) => {
       </div>
 
       <div
-        class="text-white bg-black py-[72px] sm:py-24 relative overflow-clip hero"
+        class="text-white bg-black py-[72px] sm:py-20 relative overflow-clip hero"
       >
         <div
           class="absolute h-[375px] w-[750px] rounded-[100%] bg-black left-1/2 -translate-x-1/2 border-[#b48cde] top-[calc(100%-96px)] sm:w-[3000px] sm:h-[720px] sm:top-[calc(100%-120px)] ellipse"

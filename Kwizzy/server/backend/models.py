@@ -157,11 +157,23 @@ class UserAnswer(db.Model):
     quiz_result = relationship("QuizResult", back_populates="user_answers")
 
     def to_dict(self):
+        selected_option_text = (
+            Option.query.filter_by(id=self.selected_option).first().text
+            if self.selected_option
+            else None
+        )
+        correct_option_text = (
+            Option.query.filter_by(question_id=self.question_id, is_correct=True)
+            .first()
+            .text
+        )
         return {
             "id": self.id,
             "result_id": self.result_id,
             "question_id": self.question_id,
             "selected_option": self.selected_option,
+            "selected_option_text": selected_option_text,
+            "correct_option_text": correct_option_text,
             "is_correct": self.is_correct,
         }
 

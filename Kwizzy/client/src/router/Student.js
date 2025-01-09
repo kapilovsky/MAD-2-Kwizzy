@@ -8,6 +8,8 @@ const QuizResults = () => import("../views/Student/QuizResults.vue");
 const Quizzes = () => import("../views/Student/Quizzes.vue");
 import ViewSubjects from "../views/Student/ViewSubjects.vue";
 import Subject from "../views/Student/Subject.vue";
+const DetailedPerformance = () =>
+  import("../views/Student/DetailedPerformance.vue");
 
 const StudentRoutes = [
   {
@@ -63,6 +65,15 @@ const StudentRoutes = [
         meta: {
           requiresAuth: true,
           title: "Quiz Details",
+        },
+      },
+      {
+        path: "quiz/history",
+        name: "quiz-history",
+        component: DetailedPerformance,
+        meta: {
+          requiresAuth: true,
+          title: "Quiz History",
         },
       },
       {

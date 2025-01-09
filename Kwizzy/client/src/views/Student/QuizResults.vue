@@ -155,14 +155,16 @@
                   <p class="text-sm text-gray-500 font-mono uppercase mb-2">
                     Your Answer
                   </p>
-                  <p class="font-medium">Option {{ answer.selected_option }}</p>
+                  <p class="font-medium">
+                    Option {{ answer.selected_option_text }}
+                  </p>
                 </div>
                 <div v-if="!answer.is_correct">
                   <p class="text-sm text-gray-500 font-mono uppercase mb-2">
                     Correct Answer
                   </p>
                   <p class="font-medium text-green-600">
-                    Option {{ answer.correct_option }}
+                    Option {{ answer.correct_option_text }}
                   </p>
                 </div>
               </div>
@@ -172,19 +174,12 @@
       </div>
 
       <!-- Action Buttons -->
-      <div class="flex flex-col md:flex-row justify-between gap-4 mt-8">
+      <div class="flex justify-end mt-8">
         <button
           @click="backToDashboard"
           class="px-6 py-3 bg-[#192227] text-white rounded-xl hover:bg-[#2a3b44] transition-colors sohne-mono"
         >
           ← Back to Dashboard
-        </button>
-
-        <button
-          @click="shareResults"
-          class="px-6 py-3 bg-blue-100 text-blue-700 rounded-xl hover:bg-blue-200 transition-colors sohne-mono"
-        >
-          Share Results
         </button>
       </div>
     </div>
@@ -261,27 +256,6 @@ const fetchQuizResult = async () => {
   }
 };
 
-const shareResults = () => {
-  if (!quizResult.value) return;
-
-  const text = `I scored ${quizResult.value.marks_scored}/${quizResult.value.total_marks} (${percentage.value}%) in ${quizResult.value.quiz_name}!`;
-
-  if (navigator.share) {
-    navigator
-      .share({
-        title: "Quiz Results",
-        text: text,
-        url: window.location.href,
-      })
-      .catch(console.error);
-  } else {
-    navigator.clipboard
-      .writeText(text)
-      .then(() => toast.success("Results copied to clipboard!"))
-      .catch(() => toast.error("Failed to copy results"));
-  }
-};
-
 watch(
   [() => route.query.resultId, currentResult],
   ([newResultId, newResult]) => {
@@ -297,26 +271,22 @@ watch(
 const backToDashboard = async () => {
   try {
     await router.push(`/student/${route.params.id}`);
-    window.location.reload(); // Force reload after navigation
+    window.location.reload();
   } catch (error) {
     console.error("Navigation error:", error);
     toast.error("Error returning to dashboard");
   }
 };
 
-// Use both onMounted and watch for route changes
 onMounted(() => {
-  // Remove any existing beforeunload handlers
   window.onbeforeunload = null;
   fetchQuizResult();
 });
 
 onUnmounted(() => {
-  // Clean up
   quizResultStore.clearResult();
 });
 
-// Watch for route changes
 watch(
   () => route.query.resultId,
   (newResultId) => {

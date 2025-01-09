@@ -3141,6 +3141,11 @@ button:focus {
     padding-bottom: 1.25rem;
   }
 
+  .sm\:py-20 {
+    padding-top: 5rem;
+    padding-bottom: 5rem;
+  }
+
   .sm\:text-right {
     text-align: right;
   }
