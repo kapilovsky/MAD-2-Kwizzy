@@ -1,19 +1,13 @@
 <script setup>
 import Sidebar from "@/components/Admin/Sidebar.vue";
 import SubjectCard from "@/components/Admin/SubjectCard.vue";
-import { ref, onMounted, computed, watch } from "vue";
-import axios from "axios";
-const API_URL = import.meta.env.VITE_API_URL;
+import { ref, onMounted, computed } from "vue";
 import CreateSubject from "@/components/Admin/AddSubject.vue";
 import SearchBar from "@/components/Admin/SearchBar.vue";
 import logo from "../../assets/images/landing-page/white logo.png";
-import Loader from "@/components/Loader.vue";
 import { useToast } from "@/composables/useToast";
 import { useSubjectStore } from "@/stores/subjectStore";
 const subjectStore = useSubjectStore();
-
-const toast = useToast();
-
 const searchQuery = ref("");
 const isCreateModalOpen = ref(false);
 
@@ -76,7 +70,10 @@ onMounted(() => {
         <p>Manage and organize the subjects</p>
       </div>
 
-      <SubjectCard :subjects="filteredSubjects" :loading="subjectStore.isLoading" />
+      <SubjectCard
+        :subjects="filteredSubjects"
+        :loading="subjectStore.isLoading"
+      />
       <CreateSubject
         :is-open="isCreateModalOpen"
         @close="isCreateModalOpen = false"

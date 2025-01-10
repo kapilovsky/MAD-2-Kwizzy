@@ -11,7 +11,7 @@ from .. import db, cache
 class ChartDataApi(Resource):
     @jwt_required()
     @role_required("admin")
-    @cache.memoize(timeout=300)  # Cache for 5 minutes
+    # @cache.memoize(timeout=300)  
     def get(self, chart_type=None):
         try:
             if chart_type == "performance":

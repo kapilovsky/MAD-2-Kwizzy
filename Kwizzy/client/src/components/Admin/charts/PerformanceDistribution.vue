@@ -1,4 +1,4 @@
-<!-- components/charts/PerformanceDistributionChart.vue -->
+<!-- components/charts/PerformanceDistribution.vue -->
 <template>
   <div class="bg-white rounded-xl p-6">
     <h3 class="text-xl font-semibold mb-4">Performance Distribution</h3>
