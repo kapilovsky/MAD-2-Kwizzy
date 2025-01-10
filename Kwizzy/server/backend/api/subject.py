@@ -192,7 +192,7 @@ class SubjectApi(Resource):
                 if subject.subject_image:
                     try:
                         old_image_path = os.path.join(
-                            app.config["UPLOAD_FOLDER"],
+                            app.config["UPLOAD_FOLDER"], 
                             "subjects",
                             subject.subject_image,
                         )
