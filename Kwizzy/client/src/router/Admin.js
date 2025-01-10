@@ -9,6 +9,8 @@ const CreateQuiz = () =>
 const EditQuiz = () =>
   import(/* webpackPrefetch: true */ "@/views/Admin/EditQuiz.vue");
 const StudentDetails = () => import("@/views/Admin/StudentDetails.vue");
+const Summary = () =>
+  import(/* webpackPrefetch: true */ "@/views/Admin/Summary.vue");
 
 const AdminRoutes = [
   {
@@ -18,7 +20,7 @@ const AdminRoutes = [
     meta: {
       requiresAuth: true,
       title: "Admin Dashboard",
-      roles: ['admin']
+      roles: ["admin"],
     },
   },
   {
@@ -27,7 +29,7 @@ const AdminRoutes = [
     meta: {
       requiresAuth: true,
       title: "Admin Dashboard",
-      roles: ['admin']
+      roles: ["admin"],
     },
   },
   {
@@ -37,7 +39,7 @@ const AdminRoutes = [
     meta: {
       requiresAuth: true,
       title: "Subject",
-      roles: ['admin']
+      roles: ["admin"],
     },
   },
   {
@@ -47,7 +49,7 @@ const AdminRoutes = [
     meta: {
       requiresAuth: true,
       title: "Chapter",
-      roles: ['admin']
+      roles: ["admin"],
     },
   },
   {
@@ -57,7 +59,7 @@ const AdminRoutes = [
     meta: {
       requiresAuth: true,
       title: "Users",
-      roles: ['admin']
+      roles: ["admin"],
     },
   },
   {
@@ -67,7 +69,7 @@ const AdminRoutes = [
     meta: {
       requiresAuth: true,
       title: "Create Quiz",
-      roles: ['admin']
+      roles: ["admin"],
     },
   },
   {
@@ -77,7 +79,7 @@ const AdminRoutes = [
     meta: {
       requiresAuth: true,
       title: "Quiz",
-      roles: ['admin']
+      roles: ["admin"],
     },
   },
   {
@@ -87,7 +89,7 @@ const AdminRoutes = [
     meta: {
       requiresAuth: true,
       title: "Edit Quiz",
-      roles: ['admin']
+      roles: ["admin"],
     },
   },
   {
@@ -97,7 +99,17 @@ const AdminRoutes = [
     meta: {
       requiresAuth: true,
       title: "Student Details",
-      roles: ['admin']
+      roles: ["admin"],
+    },
+  },
+  {
+    path: "/admin/summary",
+    name: "Summary",
+    component: Summary,
+    meta: {
+      requiresAuth: true,
+      title: "Summary",
+      roles: ["admin"],
     },
   },
 ];
