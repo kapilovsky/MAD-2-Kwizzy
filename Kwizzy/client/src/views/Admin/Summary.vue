@@ -1,6 +1,7 @@
 <!-- views/Admin/Dashboard.vue -->
 <template>
-  <div class="p-6">
+  <Loader v-if="isLoading" />
+  <div v-else class="p-6">
     <h2 class="text-2xl font-bold mb-6">Dashboard Overview</h2>
 
     <!-- Stats Cards -->
@@ -14,10 +15,10 @@
 
     <!-- Charts Grid -->
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <!-- <PerformanceDistribution :data="performance_distribution" />
+      <PerformanceDistribution :data="performance_distribution" />
 
-      <QualificationChart :data="qualification_distribution" />
-
+      <!-- <QualificationChart :data="qualification_distribution" /> -->
+      <!-- 
       <ActivityChart
         :active-students="active_students"
         :inactive-students="inactive_students"
@@ -29,6 +30,7 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import axios from "axios";
+import Loader from "@/components/Loader.vue";
 import PerformanceDistribution from "@/components/Admin/charts/PerformanceDistribution.vue";
 import QualificationChart from "@/components/Admin/charts/QualificationChart.vue";
 import ActivityChart from "@/components/Admin/charts/ActivityChart.vue";
@@ -42,17 +44,25 @@ const total_students = ref(null);
 
 const API_URL = import.meta.env.VITE_API_URL;
 
+const isLoading = ref(true);
+
 const fetchStatistics = async () => {
   try {
-    const token = localStorage.getItem("token");
+    const token = localStorage.getItem("access_token");
     if (!token) {
       throw new Error("Token not found");
     }
-    const response = await axios.get(`${API_URL}/charts`);
+    const response = await axios.get(`${API_URL}/charts`, {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
     statistics.value = response.data;
-    console.log("statistics", statistics.value);
+    performance_distribution.value = response.data.performance;
   } catch (error) {
     console.error("Error fetching statistics:", error);
+  } finally {
+    isLoading.value = false;
   }
 };
 

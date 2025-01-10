@@ -2,12 +2,14 @@
 <template>
   <div class="bg-white rounded-xl p-6">
     <h3 class="text-xl font-semibold mb-4">Performance Distribution</h3>
-    <Bar v-if="chartData" :data="chartData" :options="chartOptions" />
+    <div class="h-[400px] w-[400px]">
+      <Bar v-if="chartData" :data="chartData" :options="chartOptions" />
+    </div>
   </div>
 </template>
 
 <script setup>
-import { computed } from "vue";
+import { computed, onMounted } from "vue";
 import { Bar } from "vue-chartjs";
 import {
   Chart as ChartJS,
@@ -35,38 +37,32 @@ const props = defineProps({
   },
 });
 
-const chartData = computed(() => ({
-  labels: [
-    "Excellent (90-100%)",
-    "Good (70-89%)",
-    "Average (50-69%)",
-    "Below Average (0-49%)",
-  ],
-  datasets: [
-    {
-      label: "Number of Students",
-      data: [
-        props.data.excellent,
-        props.data.good,
-        props.data.average,
-        props.data.below_average,
-      ],
-      backgroundColor: [
-        "rgba(34, 197, 94, 0.5)", // green
-        "rgba(59, 130, 246, 0.5)", // blue
-        "rgba(234, 179, 8, 0.5)", // yellow
-        "rgba(239, 68, 68, 0.5)", // red
-      ],
-      borderColor: [
-        "rgb(34, 197, 94)",
-        "rgb(59, 130, 246)",
-        "rgb(234, 179, 8)",
-        "rgb(239, 68, 68)",
-      ],
-      borderWidth: 1,
-    },
-  ],
-}));
+const chartData = computed(() => {
+  if (!props.data) return null;
+
+  return {
+    labels: props.data.labels,
+    datasets: [
+      {
+        label: "Number of Students",
+        data: props.data.data,
+        backgroundColor: [
+          "rgba(34, 197, 94, 0.5)", // green
+          "rgba(59, 130, 246, 0.5)", // blue
+          "rgba(234, 179, 8, 0.5)", // yellow
+          "rgba(239, 68, 68, 0.5)", // red
+        ],
+        borderColor: [
+          "rgb(34, 197, 94)",
+          "rgb(59, 130, 246)",
+          "rgb(234, 179, 8)",
+          "rgb(239, 68, 68)",
+        ],
+        borderWidth: 1,
+      },
+    ],
+  };
+});
 
 const chartOptions = {
   responsive: true,
@@ -85,4 +81,8 @@ const chartOptions = {
     },
   },
 };
+
+onMounted(() => {
+  console.log("chartData", props.data);
+});
 </script>
