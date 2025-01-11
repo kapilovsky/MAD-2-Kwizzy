@@ -9,9 +9,10 @@
   font-family: Inter;
 }
 
-/* body {
-  background-color: #151515;
-} */
+body {
+  /* background-color: #151515; */
+  cursor: none;
+}
 
 button:focus {
   outline: none;

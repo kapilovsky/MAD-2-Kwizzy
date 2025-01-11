@@ -1031,10 +1031,6 @@ video {
   height: 100vh;
 }
 
-.h-\[600px\] {
-  height: 600px;
-}
-
 .min-h-screen {
   min-height: 100vh;
 }
@@ -1131,16 +1127,17 @@ video {
   width: 90vw;
 }
 
-.w-full {
-  width: 100%;
-}
-
-.w-\[600px\] {
-  width: 600px;
-}
-
 .w-auto {
   width: auto;
+}
+
+.w-fit {
+  width: -moz-fit-content;
+  width: fit-content;
+}
+
+.w-full {
+  width: 100%;
 }
 
 .min-w-0 {
@@ -2636,9 +2633,10 @@ video {
   font-family: Inter;
 }
 
-/* body {
-  background-color: #151515;
-} */
+body {
+  /* background-color: #151515; */
+  cursor: none;
+}
 
 button:focus {
   outline: none;
@@ -2699,6 +2697,11 @@ button:focus {
 .hover\:bg-\[\#2f424c\]:hover {
   --tw-bg-opacity: 1;
   background-color: rgb(47 66 76 / var(--tw-bg-opacity, 1));
+}
+
+.hover\:bg-\[\#b20811\]:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(178 8 17 / var(--tw-bg-opacity, 1));
 }
 
 .hover\:bg-\[\#f0f0ff\]:hover {
@@ -2767,15 +2770,6 @@ button:focus {
 
 .hover\:bg-white\/90:hover {
   background-color: rgb(255 255 255 / 0.9);
-}
-
-.hover\:bg-\[\]:hover {
-  background-color: ;
-}
-
-.hover\:bg-\[\#b20811\]:hover {
-  --tw-bg-opacity: 1;
-  background-color: rgb(178 8 17 / var(--tw-bg-opacity, 1));
 }
 
 .hover\:fill-\[\#de0000\]:hover {

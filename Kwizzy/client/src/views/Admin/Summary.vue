@@ -1,14 +1,21 @@
-<!-- views/Admin/Dashboard.vue -->
 <template>
   <Loader v-if="isLoading" />
 
   <Sidebar v-else>
     <div class="p-6">
-      <h2 class="sm:text-5xl text-3xl mb-6 sohne-mono font-bold">Summary📒</h2>
+      <h2
+        @mouseover="addCursorState('heading-hover')"
+        @mouseout="removeCursorState('heading-hover')"
+        class="sm:text-5xl text-3xl mb-6 sohne-mono font-bold w-fit"
+      >
+        Summary📒
+      </h2>
 
       <!-- Stats Cards -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
         <div
+          @mouseover="addCursorState('hovering')"
+          @mouseout="removeCursorState('hovering')"
           class="bg-white hover:bg-[#b20811] hover:text-white transition-all duration-200 group rounded-xl p-5"
         >
           <h3
@@ -20,6 +27,8 @@
         </div>
         <div
           class="bg-white hover:bg-[#b20811] hover:text-white transition-all duration-200 group rounded-xl p-5"
+          @mouseover="addCursorState('hovering')"
+          @mouseout="removeCursorState('hovering')"
         >
           <h3
             class="text-sm text-gray-500 group-hover:text-white transition-all duration-200 uppercase"
@@ -30,6 +39,8 @@
         </div>
         <div
           class="bg-white hover:bg-[#b20811] hover:text-white transition-all duration-200 group rounded-xl p-5"
+          @mouseover="addCursorState('hovering')"
+          @mouseout="removeCursorState('hovering')"
         >
           <h3
             class="text-sm text-gray-500 group-hover:text-white transition-all duration-200 uppercase"
@@ -40,6 +51,8 @@
         </div>
         <div
           class="bg-white hover:bg-[#b20811] hover:text-white transition-all duration-200 group rounded-xl p-5"
+          @mouseover="addCursorState('hovering')"
+          @mouseout="removeCursorState('hovering')"
         >
           <h3
             class="text-sm text-gray-500 group-hover:text-white transition-all duration-200 uppercase"
@@ -66,6 +79,7 @@
 import { ref, onMounted } from "vue";
 import axios from "axios";
 import Loader from "@/components/Loader.vue";
+import { useCursor } from "@/composables/useCursor";
 import Sidebar from "@/components/Admin/Sidebar.vue";
 import ActivityChart from "@/components/Admin/charts/ActivityChart.vue";
 import QualificationChart from "@/components/Admin/charts/QualificationChart.vue";
@@ -84,6 +98,7 @@ const qualification_distribution = ref(null);
 const API_URL = import.meta.env.VITE_API_URL;
 const isLoading = ref(true);
 
+const { addCursorState, removeCursorState } = useCursor();
 const fetchStatistics = async () => {
   try {
     const token = localStorage.getItem("access_token");

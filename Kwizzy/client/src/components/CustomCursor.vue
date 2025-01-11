@@ -127,7 +127,7 @@ onUnmounted(() => {
   </div>
 </template>
 
-<style scoped>
+<style>
 .cursor-wrapper {
   pointer-events: none;
 }
@@ -147,8 +147,8 @@ onUnmounted(() => {
 }
 
 .cursor-outline {
-  width: 30px;
-  height: 30px;
+  width: 20px;
+  height: 20px;
   border: 2px solid rgb(255, 255, 255);
   mix-blend-mode: difference;
   position: fixed;
@@ -171,9 +171,21 @@ onUnmounted(() => {
 
 .cursor-dot.hovering {
   transform: translate(-50%, -50%) scale(1.75);
+  background-color: rgb(255, 0, 0);
 }
 
 .cursor-outline.hovering {
-  transform: translate(-50%, -50%) scale(1.5);
+  transform: translate(-50%, -50%) scale(2);
+  border-color: rgb(255, 0, 0);
+}
+
+.cursor-dot.heading-hover {
+  transform: translate(-50%, -50%) scale(2.5);
+  background-color: #ffffff;
+}
+
+.cursor-outline.heading-hover {
+  transform: translate(-50%, -50%) scale(3);
+  border-color: #ffffff;
 }
 </style>
