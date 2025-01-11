@@ -8,7 +8,7 @@ from .. import db
 
 class QuizApi(Resource):
     @jwt_required()
-    def get(self, quiz_id=None):
+    def get(self, quiz_id=None, chapter_id=None):
         try:
             # Get specific quiz
             if quiz_id:
@@ -46,6 +46,30 @@ class QuizApi(Resource):
                     ],
                 }, 200
 
+            if chapter_id:
+                # Get all quizzes in a chapter
+                quizzes = Quiz.query.filter(Quiz.chapter_id == chapter_id).all()
+                for quiz in quizzes:
+                    time_in_seconds = quiz.time_duration
+                    hours = time_in_seconds // 3600
+                    minutes = (time_in_seconds % 3600) // 60
+                    formatted_time = f"{hours:02d}:{minutes:02d}"
+                    quiz.time_duration = formatted_time
+
+                return {
+                    "quizzes": [
+                        {
+                            "id": quiz.id,
+                            "name": quiz.name,
+                            "description": quiz.description,
+                            "price": quiz.price,
+                            "chapter_id": quiz.chapter_id,
+                            "time_duration": quiz.time_duration,
+                            "question_count": len(quiz.questions),
+                        }
+                        for quiz in quizzes
+                    ]
+                }, 200
             # Get all quizzes with filters
             chapter_id = request.args.get("chapter_id")
 

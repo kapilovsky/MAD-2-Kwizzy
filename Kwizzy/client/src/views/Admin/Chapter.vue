@@ -38,7 +38,7 @@ const fetchData = async () => {
       axios.get(`${API_URL}/subject/${subjectId.value}`, {
         headers: { Authorization: `Bearer ${token}` },
       }),
-      axios.get(`${API_URL}/quizzes`, {
+      axios.get(`${API_URL}/quizzes/chapter/${chapterId.value}`, {
         headers: { Authorization: `Bearer ${token}` },
       }),
     ]);
@@ -174,6 +174,7 @@ onMounted(async () => {
         <table class="w-full">
           <thead>
             <tr class="text-left sm:text-sm text-xs border-b-2 border-black">
+              <th>SNo.</th>
               <th>Quiz Name</th>
               <th class="px-2">Questions</th>
               <th class="sm:block hidden">Time Limit［HH:MM］</th>
@@ -183,10 +184,11 @@ onMounted(async () => {
           </thead>
           <tbody>
             <tr
-              v-for="quiz in filteredQuizzes"
+              v-for="(quiz, index) in filteredQuizzes"
               :key="quiz.id"
               class="border-b-2 border-black text-xs sm:text-sm"
             >
+            <td>{{ index + 1 }}</td>
               <td class="py-2 relative">
                 <span class="absolute top-[5px] left-[-18px] sm:block hidden"
                   >&lhblk;</span

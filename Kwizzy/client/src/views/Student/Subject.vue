@@ -122,7 +122,7 @@ import Loader from "@/components/Loader.vue";
 const route = useRoute();
 const router = useRouter();
 const isLoading = ref(false);
-const subjectId = route.params.id;
+const subjectId = route.params.subjectId;
 const subject = ref(null);
 const chapters = ref([]);
 const searchQuery = ref("");

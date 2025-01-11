@@ -185,7 +185,7 @@ const fetchData = async () => {
       axios.get(`${API_URL}/subject/${subjectId.value}`, {
         headers: { Authorization: `Bearer ${token}` },
       }),
-      axios.get(`${API_URL}/quizzes`, {
+      axios.get(`${API_URL}/quizzes/chapter/${chapterId.value}`, {
         headers: { Authorization: `Bearer ${token}` },
       }),
     ]);
@@ -229,6 +229,5 @@ const handleNavigation = () => {
 
 onMounted(async () => {
   await fetchData();
-  console.log(chapterName.value, subjectName.value);
 });
 </script>

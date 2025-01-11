@@ -97,7 +97,12 @@ def create_app():
     api.add_resource(UserApi, "/api/user", "/api/user/<int:user_id>")
     api.add_resource(SubjectApi, "/api/subject", "/api/subject/<int:subject_id>")
     api.add_resource(ChapterApi, "/api/chapter", "/api/chapter/<int:chapter_id>")
-    api.add_resource(QuizApi, "/api/quizzes", "/api/quizzes/<int:quiz_id>")
+    api.add_resource(
+        QuizApi,
+        "/api/quizzes",
+        "/api/quizzes/chapter/<int:chapter_id>",
+        "/api/quizzes/<int:quiz_id>",
+    )
     api.add_resource(
         QuestionApi,
         "/api/quizzes/<int:quiz_id>/questions",

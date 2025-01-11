@@ -22,6 +22,8 @@
         <QualificationChart :data="qualification_distribution" />
 
         <ActivityChart :data="activity" />
+
+        <SubjectPerformance :data="subject_performance" />
       </div>
     </div>
   </Sidebar>
@@ -32,18 +34,18 @@ import { ref, onMounted } from "vue";
 import axios from "axios";
 import Loader from "@/components/Loader.vue";
 import Sidebar from "@/components/Admin/Sidebar.vue";
-import PerformanceDistribution from "@/components/Admin/charts/PerformanceDistribution.vue";
-import QualificationChart from "@/components/Admin/charts/QualificationChart.vue";
 import ActivityChart from "@/components/Admin/charts/ActivityChart.vue";
+import QualificationChart from "@/components/Admin/charts/QualificationChart.vue";
+import SubjectPerformance from "@/components/Admin/charts/SubjectPerformance.vue";
+import PerformanceDistribution from "@/components/Admin/charts/PerformanceDistribution.vue";
 
+const activity = ref(null);
 const statistics = ref(null);
+const total_students = ref(null);
+const subject_performance = ref(null);
 const performance_distribution = ref(null);
 const qualification_distribution = ref(null);
-const activity = ref(null);
-const total_students = ref(null);
-
 const API_URL = import.meta.env.VITE_API_URL;
-
 const isLoading = ref(true);
 
 const fetchStatistics = async () => {
@@ -60,7 +62,8 @@ const fetchStatistics = async () => {
     statistics.value = response.data;
     performance_distribution.value = response.data.performance;
     activity.value = response.data.activity;
-    qualification_distribution.value = response.data.qualification;
+    qualification_distribution.value = response.data.qualifications;
+    subject_performance.value = response.data.subjects;
     console.log("stats", statistics.value);
     total_students.value = activity.value.data.reduce(
       (acc, curr) => acc + curr,

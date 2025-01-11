@@ -56,6 +56,7 @@ export const useSubjectStore = defineStore("subjects", () => {
       }));
 
       allSubjects.value = subjects;
+      console.log("Fetched subjects:", allSubjects.value);
       cache.set(CACHE_KEY, subjects);
     } catch (error) {
       toast.error("Error fetching subjects");

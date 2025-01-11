@@ -22,8 +22,6 @@ class ChartDataApi(Resource):
                 return self.get_activity_data()
             elif chart_type == "subjects":
                 return self.get_subject_data()
-            elif chart_type == "daily_stats":
-                return self.get_daily_stats()
             else:
                 return self.get_all_chart_data()
         except Exception as e:
@@ -128,34 +126,6 @@ class ChartDataApi(Resource):
         except Exception as e:
             return {"error": str(e)}, 500
 
-    def get_daily_stats(self):
-        """Get daily quiz completion statistics"""
-        try:
-            end_date = datetime.now()
-            start_date = end_date - timedelta(days=30)
-
-            daily_stats = (
-                db.session.query(
-                    func.date(QuizResult.completed_at).label("date"),
-                    func.count(QuizResult.id).label("quiz_count"),
-                    func.avg(
-                        (QuizResult.marks_scored * 100.0) / QuizResult.total_marks
-                    ).label("avg_score"),
-                )
-                .filter(QuizResult.completed_at.between(start_date, end_date))
-                .group_by(func.date(QuizResult.completed_at))
-                .order_by(func.date(QuizResult.completed_at))
-                .all()
-            )
-
-            return {
-                "dates": [stat[0].strftime("%Y-%m-%d") for stat in daily_stats],
-                "quizCounts": [stat[1] for stat in daily_stats],
-                "averageScores": [float(stat[2] or 0) for stat in daily_stats],
-            }
-        except Exception as e:
-            return {"error": str(e)}, 500
-
     def get_all_chart_data(self):
         """Get all chart data in one request"""
         try:
@@ -164,7 +134,6 @@ class ChartDataApi(Resource):
                 "qualifications": self.get_qualification_data(),
                 "activity": self.get_activity_data(),
                 "subjects": self.get_subject_data(),
-                "dailyStats": self.get_daily_stats(),
             }
         except Exception as e:
             return {"error": str(e)}, 500
