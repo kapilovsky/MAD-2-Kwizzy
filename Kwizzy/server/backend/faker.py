@@ -85,7 +85,6 @@ def seed_questions(quizzes, num_questions_per_quiz=5):
                 quiz_id=quiz.id,
                 title=faker.sentence(nb_words=5),
                 text=faker.sentence(nb_words=15),
-                weight=round(uniform(0.5, 2.0), 1),
             )
             db.session.add(question)
     db.session.commit()

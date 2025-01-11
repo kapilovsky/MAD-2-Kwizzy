@@ -11,7 +11,7 @@ from .. import db, cache
 class ChartDataApi(Resource):
     @jwt_required()
     @role_required("admin")
-    # @cache.memoize(timeout=300)  
+    # @cache.memoize(timeout=300)
     def get(self, chart_type=None):
         try:
             if chart_type == "performance":
@@ -33,10 +33,10 @@ class ChartDataApi(Resource):
         """Get performance distribution data"""
         try:
             performance_ranges = {
-                "excellent": (90, 100),
-                "good": (70, 89),
-                "average": (50, 69),
-                "below_average": (0, 49),
+                "excellent (90-100)": (90, 100),
+                "good (70-89)": (70, 89),
+                "average (50-69)": (50, 69),
+                "below_average (0-49)": (0, 49),
             }
 
             performance_stats = {}

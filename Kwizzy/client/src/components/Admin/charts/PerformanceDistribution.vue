@@ -2,14 +2,14 @@
 <template>
   <div class="bg-white rounded-xl p-6">
     <h3 class="text-xl font-semibold mb-4">Performance Distribution</h3>
-    <div class="h-[400px] w-[400px]">
+    <div class="h-[400px] w-[600px]">
       <Bar v-if="chartData" :data="chartData" :options="chartOptions" />
     </div>
   </div>
 </template>
 
 <script setup>
-import { computed, onMounted } from "vue";
+import { computed } from "vue";
 import { Bar } from "vue-chartjs";
 import {
   Chart as ChartJS,
@@ -47,16 +47,20 @@ const chartData = computed(() => {
         label: "Number of Students",
         data: props.data.data,
         backgroundColor: [
-          "rgba(34, 197, 94, 0.5)", // green
-          "rgba(59, 130, 246, 0.5)", // blue
-          "rgba(234, 179, 8, 0.5)", // yellow
-          "rgba(239, 68, 68, 0.5)", // red
+          "rgba(75, 192, 192, 0.2)",
+          "rgba(54, 162, 235, 0.2)",
+          "rgba(255, 206, 86, 0.2)",
+          "rgba(153, 102, 255, 0.2)",
+          "rgba(255, 159, 64, 0.2)",
+          "rgba(255, 99, 132, 0.2)",
         ],
         borderColor: [
-          "rgb(34, 197, 94)",
-          "rgb(59, 130, 246)",
-          "rgb(234, 179, 8)",
-          "rgb(239, 68, 68)",
+          "rgba(75, 192, 192, 1)",
+          "rgba(54, 162, 235, 1)",
+          "rgba(255, 206, 86, 1)",
+          "rgba(153, 102, 255, 1)",
+          "rgba(255, 159, 64, 1)",
+          "rgba(255, 99, 132, 1)",
         ],
         borderWidth: 1,
       },
@@ -81,8 +85,4 @@ const chartOptions = {
     },
   },
 };
-
-onMounted(() => {
-  console.log("chartData", props.data);
-});
 </script>
