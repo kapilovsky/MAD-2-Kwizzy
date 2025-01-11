@@ -1,8 +1,8 @@
 <!-- components/charts/ActivityChart.vue -->
 <template>
   <div class="bg-white rounded-xl p-6">
-    <h3 class="text-xl font-semibold mb-4">Student Activity</h3>
-    <div class="h-[400px] w-[400px]">
+    <h3 class="text-xl font-semibold sohne-mono mb-4">Student Activity</h3>
+    <div class="h-[400px] w-auto">
       <Doughnut v-if="chartData" :data="chartData" :options="chartOptions" />
     </div>
   </div>

@@ -4,24 +4,48 @@
 
   <Sidebar v-else>
     <div class="p-6">
-      <h2 class="text-2xl font-bold mb-6">Dashboard Overview</h2>
+      <h2 class="sm:text-5xl text-3xl mb-6 sohne-mono font-bold">Summary📒</h2>
 
       <!-- Stats Cards -->
       <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
-        <div class="bg-white rounded-xl p-5">
-          <h3 class="text-sm text-gray-500 uppercase">Total Students</h3>
+        <div
+          class="bg-white hover:bg-[#b20811] hover:text-white transition-all duration-200 group rounded-xl p-5"
+        >
+          <h3
+            class="text-sm text-gray-500 group-hover:text-white transition-all duration-200 sohne uppercase"
+          >
+            Total Students
+          </h3>
           <p class="text-3xl font-bold">{{ total_students }}</p>
         </div>
-        <div class="bg-white rounded-xl p-5">
-          <h3 class="text-sm text-gray-500 uppercase">Total Subjects</h3>
+        <div
+          class="bg-white hover:bg-[#b20811] hover:text-white transition-all duration-200 group rounded-xl p-5"
+        >
+          <h3
+            class="text-sm text-gray-500 group-hover:text-white transition-all duration-200 uppercase"
+          >
+            Total Subjects
+          </h3>
           <p class="text-3xl font-bold">{{ total_subjects }}</p>
         </div>
-        <div class="bg-white rounded-xl p-5">
-          <h3 class="text-sm text-gray-500 uppercase">Total Chapters</h3>
+        <div
+          class="bg-white hover:bg-[#b20811] hover:text-white transition-all duration-200 group rounded-xl p-5"
+        >
+          <h3
+            class="text-sm text-gray-500 group-hover:text-white transition-all duration-200 uppercase"
+          >
+            Total Chapters
+          </h3>
           <p class="text-3xl font-bold">{{ total_chapters }}</p>
         </div>
-        <div class="bg-white rounded-xl p-5">
-          <h3 class="text-sm text-gray-500 uppercase">Total Quizzes</h3>
+        <div
+          class="bg-white hover:bg-[#b20811] hover:text-white transition-all duration-200 group rounded-xl p-5"
+        >
+          <h3
+            class="text-sm text-gray-500 group-hover:text-white transition-all duration-200 uppercase"
+          >
+            Total Quizzes
+          </h3>
           <p class="text-3xl font-bold">{{ total_quizzes }}</p>
         </div>
         <!-- Add more stat cards -->
@@ -29,13 +53,10 @@
 
       <!-- Charts Grid -->
       <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <PerformanceDistribution :data="performance_distribution" />
-
-        <QualificationChart :data="qualification_distribution" />
-
-        <ActivityChart :data="activity" />
-
         <SubjectPerformance :data="subject_performance" />
+        <QualificationChart :data="qualification_distribution" />
+        <PerformanceDistribution :data="performance_distribution" />
+        <ActivityChart :data="activity" />
       </div>
     </div>
   </Sidebar>

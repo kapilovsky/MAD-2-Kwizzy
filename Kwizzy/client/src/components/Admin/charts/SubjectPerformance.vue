@@ -50,7 +50,7 @@ const chartData = computed(() => ({
       data: props.data.averageScores,
       backgroundColor: "rgb(255, 235, 0,0.2)",
       borderColor: "rgb(255, 235, 0)",
-      borderWidth: 1,
+      borderWidth: 2,
       borderRadius: 5,
       yAxisID: "y",
     },
@@ -63,7 +63,7 @@ const chartData = computed(() => ({
       borderWidth: 2,
       pointStyle: "circle",
       pointRadius: 6,
-      pointHoverRadius: 8,
+      pointHoverRadius: 10,
       yAxisID: "y1",
     },
   ],
@@ -81,11 +81,13 @@ const chartOptions = {
       position: "top",
       labels: {
         font: {
-          family: "'IBM Plex Mono', monospace",
-          size: 12,
+          family: "'sohne'",
+          size: 13,
         },
         usePointStyle: true,
-        padding: 20,
+        pointStyle: "circle",
+        pointRadius: 4,
+        pointHoverRadius: 10,
       },
     },
     tooltip: {
@@ -95,11 +97,11 @@ const chartOptions = {
       backgroundColor: "rgba(0, 0, 0, 0.8)",
       titleFont: {
         size: 14,
-        family: "'IBM Plex Mono', monospace",
+        family: "sohne",
       },
       bodyFont: {
         size: 12,
-        family: "'IBM Plex Mono', monospace",
+        family: "sohne",
       },
       callbacks: {
         label: function (context) {
@@ -121,7 +123,7 @@ const chartOptions = {
       },
       ticks: {
         font: {
-          family: "'IBM Plex Mono', monospace",
+          family: "'sohne-mono', monospace",
         },
       },
     },
@@ -134,7 +136,7 @@ const chartOptions = {
       ticks: {
         callback: (value) => `${value}%`,
         font: {
-          family: "'IBM Plex Mono', monospace",
+          family: "'sohne-mono', monospace",
         },
       },
       grid: {
@@ -144,7 +146,7 @@ const chartOptions = {
         display: true,
         text: "Average Score",
         font: {
-          family: "'IBM Plex Mono', monospace",
+          family: "'sohne-mono', monospace",
         },
       },
     },
@@ -159,14 +161,14 @@ const chartOptions = {
       ticks: {
         callback: (value) => `${value} students`,
         font: {
-          family: "'IBM Plex Mono', monospace",
+          family: "'sohne-mono', monospace",
         },
       },
       title: {
         display: true,
         text: "Number of Students",
         font: {
-          family: "'IBM Plex Mono', monospace",
+          family: "'sohne-mono', monospace",
         },
       },
     },

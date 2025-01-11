@@ -1,8 +1,10 @@
 <!-- components/charts/QualificationChart.vue -->
 <template>
   <div class="bg-white rounded-xl p-6">
-    <h3 class="text-xl font-semibold mb-4">Qualification Distribution</h3>
-    <div class="h-[400px] w-[400px]">
+    <h3 class="text-xl font-semibold mb-4 sohne-mono">
+      Qualification Distribution
+    </h3>
+    <div class="h-[400px] w-auto">
       <Doughnut v-if="chartData" :data="chartData" :options="chartOptions" />
     </div>
   </div>
