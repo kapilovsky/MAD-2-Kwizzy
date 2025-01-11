@@ -84,7 +84,6 @@ def create_app():
     from .api.user_answer import UserAnswerApi
     from .api.quiz_result import QuizResultApi
     from .api.chart_api import ChartDataApi
-    from .api.chart_api import SubjectPerformanceApi
 
     api.add_resource(Student, "/api/students", "/api/student/<int:student_id>")
     api.add_resource(StudentStatistics, "/api/student/statistics")
@@ -122,11 +121,6 @@ def create_app():
         UserAnswerApi, "/api/user-answers", "/api/user-answers/<int:answer_id>"
     )
     api.add_resource(ChartDataApi, "/api/charts", "/api/charts/<string:chart_type>")
-    api.add_resource(
-        SubjectPerformanceApi,
-        "/api/subject-performance",
-        "/api/subject-performance/<int:subject_id>",
-    )
 
     with app.app_context():
         db.create_all()

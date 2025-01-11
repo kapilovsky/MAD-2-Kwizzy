@@ -7,10 +7,22 @@
       <h2 class="text-2xl font-bold mb-6">Dashboard Overview</h2>
 
       <!-- Stats Cards -->
-      <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div class="bg-white rounded-xl p-6">
+      <div class="grid grid-cols-1 md:grid-cols-4 gap-6 mb-6">
+        <div class="bg-white rounded-xl p-5">
           <h3 class="text-sm text-gray-500 uppercase">Total Students</h3>
           <p class="text-3xl font-bold">{{ total_students }}</p>
+        </div>
+        <div class="bg-white rounded-xl p-5">
+          <h3 class="text-sm text-gray-500 uppercase">Total Subjects</h3>
+          <p class="text-3xl font-bold">{{ total_subjects }}</p>
+        </div>
+        <div class="bg-white rounded-xl p-5">
+          <h3 class="text-sm text-gray-500 uppercase">Total Chapters</h3>
+          <p class="text-3xl font-bold">{{ total_chapters }}</p>
+        </div>
+        <div class="bg-white rounded-xl p-5">
+          <h3 class="text-sm text-gray-500 uppercase">Total Quizzes</h3>
+          <p class="text-3xl font-bold">{{ total_quizzes }}</p>
         </div>
         <!-- Add more stat cards -->
       </div>
@@ -41,7 +53,10 @@ import PerformanceDistribution from "@/components/Admin/charts/PerformanceDistri
 
 const activity = ref(null);
 const statistics = ref(null);
+const total_quizzes = ref(null);
 const total_students = ref(null);
+const total_subjects = ref(null);
+const total_chapters = ref(null);
 const subject_performance = ref(null);
 const performance_distribution = ref(null);
 const qualification_distribution = ref(null);
@@ -64,6 +79,9 @@ const fetchStatistics = async () => {
     activity.value = response.data.activity;
     qualification_distribution.value = response.data.qualifications;
     subject_performance.value = response.data.subjects;
+    total_subjects.value = response.data.subjects.totalSubjects;
+    total_chapters.value = response.data.subjects.totalChapters;
+    total_quizzes.value = response.data.subjects.totalQuizzes;
     console.log("stats", statistics.value);
     total_students.value = activity.value.data.reduce(
       (acc, curr) => acc + curr,

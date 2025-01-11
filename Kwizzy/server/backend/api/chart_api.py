@@ -117,11 +117,17 @@ class ChartDataApi(Resource):
                 .group_by(Subject.name)
                 .all()
             )
+            total_subjects = Subject.query.count()
+            total_chapters = Chapter.query.count()
+            total_quizzes = Quiz.query.count()
 
             return {
                 "labels": [stat[0] for stat in subject_stats],
                 "averageScores": [float(stat[1] or 0) for stat in subject_stats],
                 "studentCounts": [stat[2] for stat in subject_stats],
+                "totalSubjects": total_subjects,
+                "totalChapters": total_chapters,
+                "totalQuizzes": total_quizzes,
             }
         except Exception as e:
             return {"error": str(e)}, 500
@@ -138,31 +144,3 @@ class ChartDataApi(Resource):
         except Exception as e:
             return {"error": str(e)}, 500
 
-
-class SubjectPerformanceApi(Resource):
-    @jwt_required()
-    @role_required("admin")
-    @cache.memoize(timeout=300)
-    def get(self, subject_id=None):
-        try:
-            if subject_id:
-                return self.get_subject_details(subject_id)
-            return self.get_all_subjects_performance()
-        except Exception as e:
-            return {"error": str(e)}, 500
-
-    def get_subject_details(self, subject_id):
-        """Get detailed performance data for a specific subject"""
-        try:
-            # Add your implementation here
-            pass
-        except Exception as e:
-            return {"error": str(e)}, 500
-
-    def get_all_subjects_performance(self):
-        """Get performance data for all subjects"""
-        try:
-            # Add your implementation here
-            pass
-        except Exception as e:
-            return {"error": str(e)}, 500
