@@ -2,7 +2,9 @@
 <template>
   <div class="bg-white rounded-xl p-6">
     <h3 class="text-xl mb-4 font-semibold">{{ data.title }}</h3>
-    <Line :data="chartData" :options="chartOptions" />
+    <div class="w-auto h-[400px]">
+      <Line :data="chartData" :options="chartOptions" />
+    </div>
   </div>
 </template>
 
@@ -44,7 +46,7 @@ const chartData = computed(() => ({
       label: "Score",
       data: props.data.scores,
       fill: false,
-      borderColor: "rgb(178, 8, 17)",
+      borderColor: "rgba(153, 102, 255, 1)",
       tension: 0.1,
     },
   ],

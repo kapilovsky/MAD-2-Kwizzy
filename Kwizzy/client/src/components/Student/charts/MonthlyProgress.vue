@@ -2,7 +2,53 @@
 <template>
   <div class="bg-white rounded-xl p-6">
     <h3 class="text-xl mb-4 font-semibold">{{ data.title }}</h3>
-    <Line :data="chartData" :options="chartOptions" />
+    <div v-if="!hasData" class="text-center text-gray-500 py-10">
+      No performance data available yet
+    </div>
+    <div v-else>
+      <!-- Performance Stats -->
+      <div class="grid grid-cols-3 gap-4 mb-6">
+        <div class="text-center p-4 bg-purple-50 rounded-lg">
+          <div class="text-sm text-gray-600">Average Score</div>
+          <div class="text-2xl font-bold text-purple-600">
+            {{ currentAverageScore }}%
+          </div>
+        </div>
+        <div class="text-center p-4 bg-green-50 rounded-lg">
+          <div class="text-sm text-gray-600">Highest Score</div>
+          <div class="text-2xl font-bold text-green-600">
+            {{ currentHighestScore }}%
+          </div>
+        </div>
+        <div class="text-center p-4 bg-blue-50 rounded-lg">
+          <div class="text-sm text-gray-600">Total Quizzes</div>
+          <div class="text-2xl font-bold text-blue-600">
+            {{ totalQuizzes }}
+          </div>
+        </div>
+      </div>
+
+      <!-- Chart -->
+      <div class="w-auto h-[300px]">
+        <Line :data="chartData" :options="chartOptions" />
+      </div>
+
+      <!-- Legend -->
+      <div class="mt-4 flex flex-wrap justify-center gap-4 text-sm">
+        <div class="flex items-center gap-2">
+          <div class="w-3 h-3 bg-purple-500 rounded-full"></div>
+          <span>Average Score</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+          <span>Highest Score</span>
+        </div>
+        <div class="flex items-center gap-2">
+          <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+          <span>Lowest Score</span>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -18,6 +64,7 @@ import {
   Title,
   Tooltip,
   Legend,
+  Filler,
 } from "chart.js";
 
 ChartJS.register(
@@ -27,7 +74,8 @@ ChartJS.register(
   LineElement,
   Title,
   Tooltip,
-  Legend
+  Legend,
+  Filler
 );
 
 const props = defineProps({
@@ -37,23 +85,59 @@ const props = defineProps({
   },
 });
 
+const hasData = computed(() => {
+  return props.data.labels && props.data.labels.length > 0;
+});
+
+const currentAverageScore = computed(() => {
+  const scores = props.data.averageScores;
+  return scores.length ? Math.round(scores[scores.length - 1]) : 0;
+});
+
+const currentHighestScore = computed(() => {
+  const scores = props.data.highestScores;
+  return scores.length ? Math.round(scores[scores.length - 1]) : 0;
+});
+
+const totalQuizzes = computed(() => {
+  return props.data.quizCount.reduce((a, b) => a + b, 0);
+});
+
 const chartData = computed(() => ({
   labels: props.data.labels,
   datasets: [
     {
       label: "Average Score",
       data: props.data.averageScores,
-      fill: false,
-      borderColor: "rgb(178, 8, 17)",
-      tension: 0.1,
+      borderColor: "rgb(147, 51, 234)",
+      backgroundColor: "rgba(147, 51, 234, 0.1)",
+      fill: true,
+      tension: 0.4,
+      borderWidth: 2,
+      pointRadius: 4,
+      //   pointBackgroundColor: "rgb(147, 51, 234)",
     },
     {
-      label: "Quizzes Taken",
-      data: props.data.quizCount,
-      fill: false,
-      borderColor: "rgb(75, 192, 192)",
-      tension: 0.1,
-      yAxisID: "quizCount",
+      label: "Highest Score",
+      data: props.data.highestScores,
+      borderColor: "rgb(34, 197, 94)",
+      backgroundColor: "rgba(34, 197, 94, 0.1)",
+      fill: true,
+      tension: 0.4,
+      borderWidth: 2,
+      pointRadius: 4,
+      //   pointBackgroundColor: "rgb(34, 197, 94)",
+    },
+    {
+      label: "Lowest Score",
+      data: props.data.lowestScores,
+      borderColor: "rgb(239, 68, 68)",
+      backgroundColor: "rgba(239, 68, 68, 0.1)",
+      fill: true,
+      tension: 0.4,
+      borderWidth: 2,
+      pointRadius: 4,
+      //   pointBackgroundColor: "rgb(239, 68, 68)",
     },
   ],
 }));
@@ -61,23 +145,62 @@ const chartData = computed(() => ({
 const chartOptions = {
   responsive: true,
   maintainAspectRatio: false,
+  plugins: {
+    legend: {
+      display: false,
+    },
+    tooltip: {
+      mode: "index",
+      intersect: false,
+      backgroundColor: "rgba(0, 0, 0, 0.8)",
+      padding: 12,
+      titleFont: {
+        size: 14,
+      },
+      bodyFont: {
+        size: 13,
+      },
+      callbacks: {
+        label: function (context) {
+          return `${context.dataset.label}: ${Math.round(context.raw)}%`;
+        },
+      },
+    },
+  },
   scales: {
     y: {
       beginAtZero: true,
       max: 100,
-      title: {
-        display: true,
-        text: "Score (%)",
+      grid: {
+        color: "rgba(0, 0, 0, 0.05)",
+      },
+      ticks: {
+        callback: (value) => `${value}%`,
+        font: {
+          size: 12,
+        },
       },
     },
-    quizCount: {
-      position: "right",
-      beginAtZero: true,
-      title: {
-        display: true,
-        text: "Number of Quizzes",
+    x: {
+      grid: {
+        display: false,
+      },
+      ticks: {
+        font: {
+          size: 12,
+        },
       },
     },
   },
+  interaction: {
+    intersect: false,
+    mode: "index",
+  },
 };
 </script>
+
+<style scoped>
+.chart-container {
+  position: relative;
+}
+</style>

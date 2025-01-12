@@ -46,7 +46,11 @@ const navigationItems = [
     icon: QuizIcon,
     path: `/student/${student_id.value}/subjects`,
   },
-  { name: "Summary", icon: ChartBarIcon, path: "/student/summary" },
+  {
+    name: "Summary",
+    icon: ChartBarIcon,
+    path: `/student/${student_id.value}/summary`,
+  },
 ];
 
 const handleLogout = () => {
