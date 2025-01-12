@@ -198,7 +198,7 @@ class Student(Resource):
             return {"error": str(e)}, 500
 
     @jwt_required()
-    @cache.memoize(timeout=300)
+    @cache.memoize(timeout=30)
     def get(self, student_id=None):
         try:
             cache_key = f"students_{student_id or 'all'}_{request.args.get('page', 1)}_{request.args.get('per_page', 10)}_{request.args.get('search', '').strip()}_{request.args.get('sort_by', 'name')}_{request.args.get('order', 'asc')}"

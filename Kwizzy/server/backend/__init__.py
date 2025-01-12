@@ -3,6 +3,7 @@ from werkzeug.utils import safe_join
 from flask_sqlalchemy import SQLAlchemy
 from flask_restful import Api, Resource
 from flask_migrate import Migrate
+from flask_mail import Mail
 import os
 from os import path
 from flask_jwt_extended import JWTManager
@@ -10,6 +11,9 @@ from flask_cors import CORS
 from flask_mail import Mail
 from flask_caching import Cache
 from dotenv import load_dotenv
+from .tasks.celery_config import celery_init_app
+import flask_excel as excel
+from celery import Celery
 
 load_dotenv()
 
@@ -20,6 +24,12 @@ migrate = Migrate()
 mail = Mail()
 cache = Cache()
 
+celery = Celery(
+    "backend",
+    broker=os.getenv("CELERY_BROKER_URL", "redis://localhost:6379/0"),
+    backend=os.getenv("CELERY_RESULT_BACKEND", "redis://localhost:6379/1"),
+)
+
 DB_NAME = "database.db"
 
 
@@ -29,6 +39,22 @@ def create_app():
     app.config["ALLOWED_EXTENSIONS"] = set(
         os.getenv("ALLOWED_EXTENSIONS", "").split(",")
     )
+
+    class ContextTask(celery.Task):
+        def __call__(self, *args, **kwargs):
+            with app.app_context():
+                return self.run(*args, **kwargs)
+
+    celery.Task = ContextTask
+
+    # Configure Celery
+    celery.conf.update(
+        timezone="Asia/Kolkata",
+        broker_connection_retry_on_startup=True,
+        task_track_started=True,
+        task_ignore_result=False,
+    )
+
     cache.init_app(
         app,
         config={
@@ -43,6 +69,7 @@ def create_app():
     migrate.init_app(app, db)
     mail.init_app(app)
     jwt.init_app(app)
+    excel.init_excel(app)
 
     CORS(
         app,
@@ -84,6 +111,7 @@ def create_app():
     from .api.user_answer import UserAnswerApi
     from .api.quiz_result import QuizResultApi
     from .api.chart_api import ChartDataApi
+    from .api.taskAPI import TaskAPI
 
     api.add_resource(Student, "/api/students", "/api/student/<int:student_id>")
     api.add_resource(StudentStatistics, "/api/student/statistics")
@@ -121,6 +149,7 @@ def create_app():
         UserAnswerApi, "/api/user-answers", "/api/user-answers/<int:answer_id>"
     )
     api.add_resource(ChartDataApi, "/api/charts", "/api/charts/<string:chart_type>")
+    api.add_resource(TaskAPI, "/api/tasks", "/api/tasks/<int:task_id>")
 
     with app.app_context():
         db.create_all()
@@ -128,6 +157,7 @@ def create_app():
 
 
 app = create_app()
+celery_app = celery_init_app(app)
 
 
 def create_database(app):

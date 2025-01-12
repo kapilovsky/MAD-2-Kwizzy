@@ -9,6 +9,8 @@ Flask-Caching==2.3.0
 Flask-JWT-Extended==4.7.1
 Flask-RESTful==0.3.10
 Flask-Uploads==0.2.1
+Flask-Excel==0.0.7
 python-dotenv==1.0.1
 celery==5.4.0
 redis==5.2.1
+sib-api-v3-sdk @ git+https://github.com/sendinblue/APIv3-python-library.git@9a5807c149db7855eca346b1d7829a96481f495c

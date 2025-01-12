@@ -15,7 +15,7 @@ from time import perf_counter_ns
 class SubjectApi(Resource):
 
     def __init__(self):
-        self.cache_timeout = 300
+        self.cache_timeout = 30
 
     def get_all_subjects(self):
         """Cached method to get all subjects"""
@@ -25,13 +25,13 @@ class SubjectApi(Resource):
         print(f"Time taken to fetch subjects: {(end - start) / 1_000_000} ms")
         return [subject.to_dict() for subject in subject_list]
 
-    @cache.memoize(timeout=300)
+    @cache.memoize(timeout=30)
     def get_subject_by_id(self, subject_id):
         """Cached method to get single subject"""
         subject = Subject.query.get_or_404(subject_id)
         return subject.to_dict()
 
-    @cache.memoize(timeout=300)
+    @cache.memoize(timeout=30)
     def search_subjects(self, search_query):
         """Cached method to search subjects"""
         subjects = Subject.query.filter(
