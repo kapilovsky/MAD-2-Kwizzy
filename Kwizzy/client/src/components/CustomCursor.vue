@@ -143,14 +143,14 @@ onUnmounted(() => {
   transform: translate(-50%, -50%);
   transition: opacity 0.3s ease-in-out, transform 0.3s ease-in-out;
   z-index: 999;
-  mix-blend-mode: difference;
+  mix-blend-mode: exclusion;
 }
 
 .cursor-outline {
   width: 20px;
   height: 20px;
   border: 2px solid rgb(255, 255, 255);
-  mix-blend-mode: difference;
+  mix-blend-mode: exclusion;
   position: fixed;
   border-radius: 50%;
   pointer-events: none;

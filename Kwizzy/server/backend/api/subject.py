@@ -18,7 +18,6 @@ class SubjectApi(Resource):
         self.cache_timeout = 30
 
     def get_all_subjects(self):
-        """Cached method to get all subjects"""
         start = perf_counter_ns()
         subject_list = Subject.query.all()
         end = perf_counter_ns()
@@ -27,7 +26,6 @@ class SubjectApi(Resource):
 
     @cache.memoize(timeout=30)
     def get_subject_by_id(self, subject_id):
-        """Cached method to get single subject"""
         subject = Subject.query.get_or_404(subject_id)
         return subject.to_dict()
 
@@ -192,7 +190,7 @@ class SubjectApi(Resource):
                 if subject.subject_image:
                     try:
                         old_image_path = os.path.join(
-                            app.config["UPLOAD_FOLDER"], 
+                            app.config["UPLOAD_FOLDER"],
                             "subjects",
                             subject.subject_image,
                         )

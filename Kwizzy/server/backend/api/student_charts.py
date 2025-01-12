@@ -8,7 +8,7 @@ from datetime import datetime, timedelta
 from .. import db, cache
 
 
-class StudentChartDataApi(Resource):
+class StudentChartsApi(Resource):
     @jwt_required()
     @role_required("student")
     def get(self, chart_type=None):
@@ -86,17 +86,25 @@ class StudentChartDataApi(Resource):
         except Exception as e:
             return {"error": str(e)}, 500
 
+    # Backend: Enhanced monthly progress data
+
     def get_monthly_progress(self, student_id):
         """Get monthly progress over the last 6 months"""
         try:
             six_months_ago = datetime.now() - timedelta(days=180)
             monthly_stats = (
                 db.session.query(
-                    func.date_format(QuizResult.completed_at, "%Y-%m").label("month"),
+                    func.strftime("%Y-%m", QuizResult.completed_at).label("month"),
                     func.avg(
                         QuizResult.marks_scored * 100.0 / QuizResult.total_marks
                     ).label("average_score"),
                     func.count(QuizResult.id).label("quizzes_taken"),
+                    func.max(
+                        QuizResult.marks_scored * 100.0 / QuizResult.total_marks
+                    ).label("highest_score"),
+                    func.min(
+                        QuizResult.marks_scored * 100.0 / QuizResult.total_marks
+                    ).label("lowest_score"),
                 )
                 .filter(
                     QuizResult.user_id == student_id,
@@ -108,11 +116,20 @@ class StudentChartDataApi(Resource):
             )
 
             return {
-                "labels": [stat[0] for stat in monthly_stats],
+                "labels": [
+                    (
+                        datetime.strptime(stat[0], "%Y-%m").strftime("%B %Y")
+                        if stat[0]
+                        else "N/A"
+                    )
+                    for stat in monthly_stats
+                ],
                 "averageScores": [float(stat[1] or 0) for stat in monthly_stats],
                 "quizCount": [stat[2] for stat in monthly_stats],
+                "highestScores": [float(stat[3] or 0) for stat in monthly_stats],
+                "lowestScores": [float(stat[4] or 0) for stat in monthly_stats],
                 "type": "line",
-                "title": "Monthly Progress",
+                "title": "Monthly Performance Overview",
             }
         except Exception as e:
             return {"error": str(e)}, 500
@@ -134,24 +151,26 @@ class StudentChartDataApi(Resource):
                 .all()
             )
 
-            # Format data for heatmap
-            heatmap_data = [
-                {
-                    "date": activity[0].isoformat(),
-                    "count": activity[1],
-                    "value": activity[
-                        1
-                    ],  # for compatibility with different heatmap libraries
-                }
-                for activity in daily_activity
-            ]
+            heatmap_data = []
+            for activity in daily_activity:
+                try:
+                    heatmap_data.append(
+                        {
+                            "date": activity[0],
+                            "count": int(activity[1]),
+                        }
+                    )
+                except Exception as e:
+                    print(f"Error formatting activity: {e}")
+                    continue
 
             return {
                 "data": heatmap_data,
-                "startDate": one_year_ago.date().isoformat(),
-                "endDate": datetime.now().date().isoformat(),
+                "startDate": one_year_ago.strftime("%Y-%m-%d"),
+                "endDate": datetime.now().strftime("%Y-%m-%d"),
             }
         except Exception as e:
+            print(f"Error in get_heatmap_data: {e}")  # Debug print
             return {"error": str(e)}, 500
 
     def get_strength_weakness(self, student_id):

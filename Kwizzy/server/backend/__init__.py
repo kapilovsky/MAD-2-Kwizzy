@@ -128,7 +128,7 @@ def create_app():
     from .api.user_answer import UserAnswerApi
     from .api.quiz_result import QuizResultApi
     from .api.chart_api import ChartDataApi
-    from .api.student_charts import StudentCharts
+    from .api.student_charts import StudentChartsApi
     from .api.taskAPI import TaskAPI
 
     api.add_resource(Student, "/api/students", "/api/student/<int:student_id>")
@@ -166,7 +166,7 @@ def create_app():
         UserAnswerApi, "/api/user-answers", "/api/user-answers/<int:answer_id>"
     )
     api.add_resource(ChartDataApi, "/api/admin/charts", "/api/charts/<string:chart_type>")
-    api.add_resource(StudentCharts, "/api/student/charts")
+    api.add_resource(StudentChartsApi, "/api/student/charts")
     api.add_resource(TaskAPI, "/api/tasks", "/api/tasks/<int:task_id>")
 
     with app.app_context():
