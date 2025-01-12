@@ -11,9 +11,9 @@ from flask_cors import CORS
 from flask_mail import Mail
 from flask_caching import Cache
 from dotenv import load_dotenv
-from .tasks.celery_config import celery_init_app
 import flask_excel as excel
 from celery import Celery
+from celery.schedules import crontab
 
 load_dotenv()
 
@@ -53,6 +53,19 @@ def create_app():
         broker_connection_retry_on_startup=True,
         task_track_started=True,
         task_ignore_result=False,
+        beat_schedule={
+            "daily-reminder": {
+                "task": "backend.tasks.celery_tasks.send_daily_reminder",  # Path to your task
+                "schedule": crontab(hour=18, minute=0),
+                "args": (1,),
+            },
+            # "monthly-report": {
+            #     "task": "backend.tasks.celery_tasks.generate_monthly_report",
+            #     "schedule": crontab(
+            #         0, 0, day_of_month="1"
+            #     ),  # Runs on 1st of every month
+            # },
+        },
     )
 
     cache.init_app(
@@ -149,7 +162,9 @@ def create_app():
         UserAnswerApi, "/api/user-answers", "/api/user-answers/<int:answer_id>"
     )
     api.add_resource(ChartDataApi, "/api/charts", "/api/charts/<string:chart_type>")
-    api.add_resource(TaskAPI, "/api/tasks", "/api/tasks/<int:task_id>")
+    api.add_resource(
+        TaskAPI, "/api/tasks/<string:task_type>", "/api/tasks/<int:task_id>"
+    )
 
     with app.app_context():
         db.create_all()
@@ -157,7 +172,6 @@ def create_app():
 
 
 app = create_app()
-celery_app = celery_init_app(app)
 
 
 def create_database(app):

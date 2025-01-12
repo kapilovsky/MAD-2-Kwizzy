@@ -1,0 +1,12 @@
+{% extends "base.html" %} {% block header %}Report Generated{% endblock %} {%
+block content %}
+<h2>Your {{ report_type }} Report is Ready!</h2>
+<p>The report has been generated successfully.</p>
+<p>Report Details:</p>
+<ul>
+  <li>Generated on: {{ generation_time }}</li>
+  <li>Type: {{ report_type }}</li>
+  <li>Period: {{ report_period }}</li>
+</ul>
+<a href="{{ report_url }}" class="button">Download Report</a>
+{% endblock %}
