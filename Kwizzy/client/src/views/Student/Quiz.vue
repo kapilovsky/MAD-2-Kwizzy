@@ -85,7 +85,7 @@
             </div>
           </div>
           <div
-            class="text-[560px] absolute sm:bottom-0 bottom-20 -right-10 sm:right-0 opacity-20 z-1 select-none"
+            class="text-[760px] absolute sm:-bottom-[300px] bottom-20 -right-10 sm:right-0 opacity-20 z-1 select-none"
             style="pointer-events: none"
           >
             🡽
