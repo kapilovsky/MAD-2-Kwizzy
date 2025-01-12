@@ -105,20 +105,19 @@ const fetchStatistics = async () => {
     if (!token) {
       throw new Error("Token not found");
     }
-    const response = await axios.get(`${API_URL}/charts`, {
+    const response = await axios.get(`${API_URL}/admin/charts`, {
       headers: {
         Authorization: `Bearer ${token}`,
       },
     });
     statistics.value = response.data;
-    performance_distribution.value = response.data.performance;
     activity.value = response.data.activity;
-    qualification_distribution.value = response.data.qualifications;
     subject_performance.value = response.data.subjects;
+    total_quizzes.value = response.data.subjects.totalQuizzes;
+    performance_distribution.value = response.data.performance;
     total_subjects.value = response.data.subjects.totalSubjects;
     total_chapters.value = response.data.subjects.totalChapters;
-    total_quizzes.value = response.data.subjects.totalQuizzes;
-    console.log("stats", statistics.value);
+    qualification_distribution.value = response.data.qualifications;
     total_students.value = activity.value.data.reduce(
       (acc, curr) => acc + curr,
       0

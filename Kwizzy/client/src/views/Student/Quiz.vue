@@ -213,6 +213,34 @@ const fetchQuizDetails = async () => {
   }
 };
 
+const fetchBreadcrumbsIfNeeded = async () => {
+  if (!subjectName.value || !chapterName.value) {
+    try {
+      isLoading.value = true;
+      const token = localStorage.getItem("access_token");
+      const [subjectRes, chapterRes] = await Promise.all([
+        axios.get(`${API_URL}/subject/${subjectId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+        axios.get(`${API_URL}/chapter/${chapterId}`, {
+          headers: { Authorization: `Bearer ${token}` },
+        }),
+      ]);
+
+      breadcrumbStore.setBreadcrumbs({
+        subjectName: subjectRes.data.name,
+        chapterName: chapterRes.data.name,
+        subjectId: subjectId,
+        chapterId: chapterId,
+      });
+    } catch (error) {
+      console.error("Error fetching breadcrumb data:", error);
+    } finally {
+      isLoading.value = false;
+    }
+  }
+};
+
 const showStartDialog = () => {
   isDialogOpen.value = true;
 };
@@ -230,9 +258,8 @@ const startQuiz = async () => {
   }
 };
 
-onMounted(() => {
-  fetchQuizDetails();
-  console.log(chapterName.value, subjectName.value);
+onMounted(async () => {
+  await Promise.all([fetchQuizDetails(), fetchBreadcrumbsIfNeeded()]);
 });
 
 onUnmounted(() => {

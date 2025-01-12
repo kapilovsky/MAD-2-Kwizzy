@@ -2185,8 +2185,8 @@ video {
   font-size: 34px;
 }
 
-.text-\[660px\] {
-  font-size: 660px;
+.text-\[760px\] {
+  font-size: 760px;
 }
 
 .text-lg {
@@ -2207,10 +2207,6 @@ video {
 .text-xs {
   font-size: 0.75rem;
   line-height: 1rem;
-}
-
-.text-\[760px\] {
-  font-size: 760px;
 }
 
 .font-bold {
@@ -2932,8 +2928,8 @@ button:focus {
     position: relative;
   }
 
-  .sm\:bottom-0 {
-    bottom: 0px;
+  .sm\:-bottom-\[300px\] {
+    bottom: -300px;
   }
 
   .sm\:bottom-4 {
@@ -2958,42 +2954,6 @@ button:focus {
 
   .sm\:top-\[calc\(100\%-180px\)\] {
     top: calc(100% - 180px);
-  }
-
-  .sm\:-bottom-0 {
-    bottom: -0px;
-  }
-
-  .sm\:-bottom-10 {
-    bottom: -2.5rem;
-  }
-
-  .sm\:-bottom-20 {
-    bottom: -5rem;
-  }
-
-  .sm\:-bottom-\[100\] {
-    bottom: -100;
-  }
-
-  .sm\:-bottom-\[100px\] {
-    bottom: -100px;
-  }
-
-  .sm\:-bottom-\[400px\] {
-    bottom: -400px;
-  }
-
-  .sm\:-bottom-\[300px\] {
-    bottom: -300px;
-  }
-
-  .sm\:-bottom-\[200px\] {
-    bottom: -200px;
-  }
-
-  .sm\:-bottom-\[00px\] {
-    bottom: -00px;
   }
 
   .sm\:mb-14 {

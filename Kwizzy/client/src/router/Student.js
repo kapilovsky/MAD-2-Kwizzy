@@ -2,14 +2,20 @@ import { useQuizStore } from "../stores/quizStore";
 import { useQuizResultStore } from "../stores/quizResultStore";
 import StudentLayout from "../views/Student/StudentLayout.vue";
 import StudentDashboard from "../views/Student/StudentDashboard.vue";
-const QuizDetails = () => import("../views/Student/Quiz.vue");
-const QuizTaking = () => import("../views/Student/QuizTaking.vue");
-const QuizResults = () => import("../views/Student/QuizResults.vue");
-const Quizzes = () => import("../views/Student/Quizzes.vue");
 import ViewSubjects from "../views/Student/ViewSubjects.vue";
 import Subject from "../views/Student/Subject.vue";
+const QuizDetails = () =>
+  import(/*{ webpackPrefetch: true }*/ "../views/Student/Quiz.vue");
+const QuizTaking = () =>
+  import(/*{ webpackPrefetch: true }*/ "../views/Student/QuizTaking.vue");
+const QuizResults = () =>
+  import(/*{ webpackPrefetch: true }*/ "../views/Student/QuizResults.vue");
+const Quizzes = () =>
+  import(/*{ webpackPrefetch: true }*/ "../views/Student/Quizzes.vue");
 const DetailedPerformance = () =>
   import("../views/Student/DetailedPerformance.vue");
+const Summary = () =>
+  import(/*{ webpackPrefetch: true }*/ "../views/Student/Summary.vue");
 
 const StudentRoutes = [
   {
@@ -74,6 +80,15 @@ const StudentRoutes = [
         meta: {
           requiresAuth: true,
           title: "Quiz History",
+        },
+      },
+      {
+        path: "summary",
+        name: "summary",
+        component: Summary,
+        meta: {
+          requiresAuth: true,
+          title: "Summary",
         },
       },
       {

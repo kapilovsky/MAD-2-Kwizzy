@@ -142,61 +142,6 @@ class Student(Resource):
 
         return quiz_details
 
-    def get_student_statistics(self):
-        """Get overall student statistics"""
-        try:
-            total_students = User.query.filter_by(role="student").count()
-            active_students = (
-                User.query.join(QuizResult)
-                .filter(
-                    User.role == "student",
-                    QuizResult.completed_at >= (datetime.now() - timedelta(days=30)),
-                )
-                .distinct()
-                .count()
-            )
-
-            # Get qualification distribution
-            qualification_stats = (
-                db.session.query(User.qualification, func.count(User.id))
-                .filter_by(role="student")
-                .group_by(User.qualification)
-                .all()
-            )
-
-            # Get performance distribution
-            performance_ranges = {
-                "excellent": (90, 100),
-                "good": (70, 89),
-                "average": (50, 69),
-                "below_average": (0, 49),
-            }
-
-            performance_stats = {}
-            for range_name, (min_score, max_score) in performance_ranges.items():
-                count = (
-                    User.query.join(QuizResult)
-                    .filter(
-                        User.role == "student",
-                        QuizResult.marks_scored
-                        * 100
-                        / QuizResult.total_marks.between(min_score, max_score),
-                    )
-                    .distinct()
-                    .count()
-                )
-                performance_stats[range_name] = count
-
-            return {
-                "total_students": total_students,
-                "active_students": active_students,
-                "inactive_students": total_students - active_students,
-                "qualification_distribution": dict(qualification_stats),
-                "performance_distribution": performance_stats,
-            }
-        except Exception as e:
-            return {"error": str(e)}, 500
-
     @jwt_required()
     @cache.memoize(timeout=30)
     def get(self, student_id=None):
@@ -311,13 +256,6 @@ class Student(Resource):
         except ValueError:
             return False
         return True
-
-
-class StudentStatistics(Resource):
-    @jwt_required()
-    @role_required("admin")
-    def get(self):
-        return Student().get_student_statistics(), 200
 
 
 class StudentActivity(Resource):
