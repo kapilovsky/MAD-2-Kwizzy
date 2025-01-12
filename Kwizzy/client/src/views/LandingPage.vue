@@ -198,7 +198,7 @@ const handleScroll = (sectionId) => {
         class="text-white bg-black py-[72px] sm:py-20 relative overflow-clip hero"
       >
         <div
-          class="absolute h-[375px] w-[750px] rounded-[100%] bg-black left-1/2 -translate-x-1/2 border-[#b48cde] top-[calc(100%-96px)] sm:w-[3000px] sm:h-[720px] sm:top-[calc(100%-120px)] ellipse"
+          class="absolute h-[375px] w-[750px] rounded-[100%] bg-black left-1/2 -translate-x-1/2 border-[#b48cde] top-[calc(100%-96px)] sm:w-[3000px] sm:h-[600px] sm:top-[calc(100%-100px)] ellipse"
         ></div>
         <div class="container relative">
           <div class="flex items-center justify-center">

@@ -1,8 +1,8 @@
 <script setup>
-import { ref, computed, onMounted, onUnmounted } from "vue";
+import { ref, computed, onMounted, onUnmounted, watch } from "vue";
 import { useScroll } from "@vueuse/core";
 import { useMotion } from "@vueuse/motion";
-import AppScreenshot from "../../assets/images/landing-page/app.jpg";
+import AppScreenshot from "../../assets/images/landing-page/app.png";
 
 const appScreenshot = ref(null);
 const scrollProgress = ref(0);
@@ -17,13 +17,29 @@ const handleScroll = () => {
   scrollProgress.value = Math.min(Math.max(scrollPercentage, 0), 1);
 };
 
-// Computed properties for transformations
+const normalizedProgress = computed(() => {
+  return Math.min(scrollProgress.value / 0.6, 1);
+});
+
+// Watch for scroll changes
+watch(scrollProgress, () => {
+  console.log(scrollProgress.value);
+});
+
 const rotateXValue = computed(() => {
-  return 14 - scrollProgress.value * 16;
+  return 15 - normalizedProgress.value * 15; // Will be 0 at 0.6 scroll progress
 });
 
 const opacityValue = computed(() => {
-  return 0.2 + scrollProgress.value * 0.8;
+  return 0.35 + normalizedProgress.value * 0.65; // Will be 1 at 0.6 scroll progress
+});
+
+const scaleValue = computed(() => {
+  return 0.95 + normalizedProgress.value * 0.05; // Subtle scale effect
+});
+
+const translateYValue = computed(() => {
+  return 50 - normalizedProgress.value * 50; // Subtle float effect
 });
 
 // Mount scroll listener
@@ -40,7 +56,7 @@ onUnmounted(() => {
 <template>
   <div
     id="product"
-    class="text-white bg-black py-[72px] bg-gradient-to-b from-black to-[#000000] overflow-hidden"
+    class="text-white bg-black py-[72px] sm:py-[132px] bg-gradient-to-b from-black to-[#000000] overflow-hidden"
   >
     <div class="container">
       <h2
@@ -71,12 +87,18 @@ onUnmounted(() => {
         class="mt-14 transform-gpu px-4 py-2 rounded-xl"
         :style="{
           opacity: opacityValue,
-          transform: `perspective(1000px) rotateX(${rotateXValue}deg)`,
+          transform: `
+            perspective(1000px) 
+            rotateX(${rotateXValue}deg)
+            scale(${scaleValue})
+            translateY(${translateYValue}px)
+          `,
           transition: 'all 0.3s ease-out',
         }"
       >
+        <!-- Main Image -->
         <img
-          class="rounded-xl w-[90vw] mx-auto"
+          class="rounded-xl w-[95vw] mx-auto relative z-10"
           :src="AppScreenshot"
           alt="The Product Screenshot"
         />
@@ -84,7 +106,6 @@ onUnmounted(() => {
     </div>
   </div>
 </template>
-
 <style scoped>
 .transform-gpu {
   will-change: transform, opacity;
@@ -94,6 +115,7 @@ onUnmounted(() => {
 
 img {
   transition: transform 0.3s ease-out, opacity 0.3s ease-out;
+  filter: drop-shadow(0 30px 40px rgba(153, 0, 255, 0.4));
 }
 
 .container {
@@ -105,5 +127,20 @@ img {
   .container {
     padding: 0 0.5rem;
   }
+}
+
+/* Add animation for floating elements */
+@keyframes float {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.floating {
+  animation: float 3s ease-in-out infinite;
 }
 </style>

@@ -66,6 +66,7 @@ const fetchChapters = async () => {
       params: { subject_id: subjectId },
     });
     chapters.value = response.data.chapters || [];
+    console.log("Chapters:", chapters.value);
   } catch (error) {
     console.error("Error fetching subject details:", error);
   } finally {
@@ -310,7 +311,7 @@ const handleSearch = (query) => {
 
               <td class="py-2">{{ chapter.description }}</td>
               <td class="py-2 sm:block hidden">
-                {{ chapter.quizzes || 0 }}
+                {{ chapter.total_quizzes || 0 }}
               </td>
               <td class="py-2">
                 <div class="flex items-center justify-end gap-2 px-2">
