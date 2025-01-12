@@ -14,6 +14,8 @@ from dotenv import load_dotenv
 import flask_excel as excel
 from celery import Celery
 from celery.schedules import crontab
+from celery.signals import beat_init
+
 
 load_dotenv()
 
@@ -49,15 +51,18 @@ def create_app():
 
     # Configure Celery
     celery.conf.update(
+        enable_utc=False,
         timezone="Asia/Kolkata",
         broker_connection_retry_on_startup=True,
         task_track_started=True,
         task_ignore_result=False,
         beat_schedule={
             "daily-reminder": {
-                "task": "backend.tasks.celery_tasks.send_daily_reminder",  # Path to your task
-                "schedule": crontab(hour=18, minute=0),
-                "args": (1,),
+                "task": "backend.tasks.celery_tasks.send_daily_reminders",  # Path to your task
+                "schedule": crontab(
+                    hour=17,
+                    minute=6,
+                ),
             },
             # "monthly-report": {
             #     "task": "backend.tasks.celery_tasks.generate_monthly_report",
@@ -162,9 +167,7 @@ def create_app():
         UserAnswerApi, "/api/user-answers", "/api/user-answers/<int:answer_id>"
     )
     api.add_resource(ChartDataApi, "/api/charts", "/api/charts/<string:chart_type>")
-    api.add_resource(
-        TaskAPI, "/api/tasks/<string:task_type>", "/api/tasks/<int:task_id>"
-    )
+    api.add_resource(TaskAPI, "/api/tasks", "/api/tasks/<int:task_id>")
 
     with app.app_context():
         db.create_all()
