@@ -1,20 +1,16 @@
-from flask import Flask, send_from_directory
+from flask import Flask
 from werkzeug.utils import safe_join
 from flask_sqlalchemy import SQLAlchemy
-from flask_restful import Api, Resource
+from flask_restful import Api
 from flask_migrate import Migrate
-from flask_mail import Mail
 import os
 from os import path
 from flask_jwt_extended import JWTManager
 from flask_cors import CORS
-from flask_mail import Mail
 from flask_caching import Cache
 from dotenv import load_dotenv
-import flask_excel as excel
 from celery import Celery
 from celery.schedules import crontab
-from celery.signals import beat_init
 
 
 load_dotenv()
@@ -23,7 +19,6 @@ load_dotenv()
 db = SQLAlchemy()
 jwt = JWTManager()
 migrate = Migrate()
-mail = Mail()
 cache = Cache()
 
 celery = Celery(
@@ -83,9 +78,7 @@ def create_app():
     api = Api(app)
     db.init_app(app)
     migrate.init_app(app, db)
-    mail.init_app(app)
     jwt.init_app(app)
-    excel.init_excel(app)
 
     CORS(
         app,
@@ -128,6 +121,7 @@ def create_app():
     from .api.chart_api import ChartDataApi
     from .api.student_charts import StudentChartsApi
     from .api.taskAPI import TaskAPI
+    from .api.csv import UserQuizExportAPI, AdminQuizExportAPI
 
     api.add_resource(Student, "/api/students", "/api/student/<int:student_id>")
     api.add_resource(StudentActivity, "/api/student/<int:student_id>/activity")
@@ -168,6 +162,8 @@ def create_app():
     )
     api.add_resource(StudentChartsApi, "/api/student/charts")
     api.add_resource(TaskAPI, "/api/tasks", "/api/tasks/<int:task_id>")
+    api.add_resource(UserQuizExportAPI, "/api/export/user-quiz")
+    api.add_resource(AdminQuizExportAPI, "/api/export/admin-quiz")
 
     with app.app_context():
         db.create_all()
