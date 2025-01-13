@@ -4,6 +4,8 @@ import Signup from "../views/Signup.vue";
 const PageNotFound = () => import("../views/404.vue");
 const PrivacyPolicy = () => import("../views/PrivacyPolicy.vue");
 const TermsOfService = () => import("../views/TermsOfService.vue");
+const ForgotPassword = () => import("../views/ForgotPassword.vue");
+const ResetPassword = () => import("../views/ResetPassword.vue");
 
 const AuthRoutes = [
   {
@@ -35,6 +37,18 @@ const AuthRoutes = [
     name: "TermsOfService",
     component: TermsOfService,
     meta: { title: "Terms of Service" },
+  },
+  {
+    path: "/forgot-password",
+    name: "ForgotPassword",
+    component: ForgotPassword,
+    meta: { title: "Forgot Password" },
+  },
+  {
+    path: "/reset-password",
+    name: "ResetPassword",
+    component: ResetPassword,
+    meta: { title: "Reset Password" },
   },
   {
     path: "/:pathMatch(.*)*",

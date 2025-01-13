@@ -75,8 +75,10 @@ const handleLogin = async () => {
           />
         </div>
 
-        <a href="#" class="text-sm text-blue-600 hover:underline text-right"
-          >Forgot password?</a
+        <RouterLink
+          to="/forgot-password"
+          class="text-sm text-blue-600 hover:underline text-right"
+          >Forgot password?</RouterLink
         >
 
         <p>
