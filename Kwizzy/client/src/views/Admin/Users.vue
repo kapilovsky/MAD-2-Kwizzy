@@ -10,6 +10,8 @@ import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 import user from "@/assets/images/icons/user.svg";
 import logo from "@/assets/images/landing-page/white logo.png";
+import { useToast } from "@/composables/useToast";
+const toast = useToast();
 
 const students = ref([]);
 const loading = ref(true);
@@ -20,6 +22,85 @@ const totalStudents = ref(0);
 const selectedSort = ref("name");
 const sortOrder = ref("asc");
 const itemsPerPage = ref(10);
+const isExporting = ref(false);
+const exportStatus = ref(null);
+const taskId = ref(null);
+const error = ref(null);
+
+const exportCSV = async () => {
+  try {
+    isExporting.value = true;
+    exportStatus.value = "processing";
+    toast.info(
+      "Generating your export. You will receive the download link via email..."
+    );
+    error.value = null;
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      throw new Error("Token not found");
+    }
+
+    const response = await axios.post(
+      `${API_URL}/export/admin-csv`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    taskId.value = response.data.task_id;
+
+    await pollExportStatus();
+  } catch (err) {
+    error.value = "Failed to start export. Please try again.";
+    console.error("Export error:", err);
+  }
+};
+
+const pollExportStatus = async () => {
+  try {
+    const token = localStorage.getItem("access_token");
+
+    while (true) {
+      const response = await axios.get(
+        `${API_URL}/export/admin-csv?task_id=${taskId.value}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (
+        response.data.status === "SUCCESS" &&
+        response.data.result.status === "success"
+      ) {
+        toast.success(
+          "Export completed! Check your email for the download link."
+        );
+
+        break;
+      } else if (
+        response.data.status === "FAILURE" ||
+        (response.data.status === "SUCCESS" &&
+          response.data.result.status === "error")
+      ) {
+        throw new Error(response.data.result.message || "Export failed");
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
+  } catch (err) {
+    exportStatus.value = "error";
+    toast.error("Failed to generate export. Please try again.");
+    console.error("Polling error:", err);
+  } finally {
+    isExporting.value = false;
+  }
+};
 
 // Debounce search
 let searchTimeout;
@@ -118,12 +199,18 @@ onMounted(() => {
       <!-- Stats Cards -->
       <h1 class="text-4xl font-bold sohne mb-4">Users</h1>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div class="bg-white">
+        <div class="bg-white flex items-center gap-6">
           <div class="text-sm text-gray-900 mb-2 sohne-mono">
             🡲 Total Students: {{ totalStudents }}
           </div>
+          <button
+            @click="exportCSV"
+            :disabled="isExporting"
+            class="text-sm hover:text-[#0000ff] text-gray-900 mb-2 sohne-mono"
+          >
+            🡲 {{ isExporting ? "Exporting..." : "[Export CSV]" }}
+          </button>
         </div>
-        <!-- Add more stat cards as needed -->
       </div>
 
       <!-- Table Section -->

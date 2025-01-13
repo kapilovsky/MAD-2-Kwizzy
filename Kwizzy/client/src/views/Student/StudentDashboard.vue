@@ -7,15 +7,17 @@ const API_URL = import.meta.env.VITE_API_URL;
 import arrow from "../../assets/images/icons/Arrow.png";
 import check from "../../assets/images/icons/check.svg";
 import EditProfile from "@/components/Student/EditProfile.vue";
+import { useToast } from "@/composables/useToast";
+const toast = useToast();
 
 const route = useRoute();
 const isLoading = ref(true);
 const error = ref(null);
-const exportUrl = ref(null);
-const isExporting = ref(false);
-const taskId = ref(null);
 const recentQuizzes = ref([]);
 const isEditProfileModalOpen = ref(false);
+const isExporting = ref(false);
+const exportStatus = ref(null);
+const taskId = ref(null);
 
 const props = defineProps({
   student: {
@@ -27,8 +29,11 @@ const props = defineProps({
 const exportCSV = async () => {
   try {
     isExporting.value = true;
+    exportStatus.value = "processing";
+    toast.info(
+      "Generating your export. You will receive the download link via email..."
+    );
     error.value = null;
-    exportUrl.value = null;
     const token = localStorage.getItem("access_token");
     if (!token) {
       throw new Error("Token not found");
@@ -51,8 +56,6 @@ const exportCSV = async () => {
   } catch (err) {
     error.value = "Failed to start export. Please try again.";
     console.error("Export error:", err);
-  } finally {
-    isExporting.value = false;
   }
 };
 
@@ -74,8 +77,10 @@ const pollExportStatus = async () => {
         response.data.status === "SUCCESS" &&
         response.data.result.status === "success"
       ) {
-        exportUrl.value = response.data.result.url;
-        alert("Export successful");
+        toast.success(
+          "Export completed! Check your email for the download link."
+        );
+
         break;
       } else if (
         response.data.status === "FAILURE" ||
@@ -88,8 +93,11 @@ const pollExportStatus = async () => {
       await new Promise((resolve) => setTimeout(resolve, 2000));
     }
   } catch (err) {
-    error.value = "Failed to generate export. Please try again.";
+    exportStatus.value = "error";
+    toast.error("Failed to generate export. Please try again.");
     console.error("Polling error:", err);
+  } finally {
+    isExporting.value = false;
   }
 };
 
@@ -192,7 +200,7 @@ onMounted(() => {
         <p class="text-neutral-600 sohne-mono text-sm">
           {{ getCurrentTimeGreeting() }} • {{ getCurrentDate() }}
         </p>
-        <div class="flex gap-4 mt-2">
+        <div class="flex gap-4">
           <button
             class="sohne-mono text-xs text-neutral-600 mt-2 uppercase hover:text-[#0000ff]"
             @click="openEditModal"
@@ -202,14 +210,18 @@ onMounted(() => {
           <button
             class="sohne-mono text-xs text-neutral-600 mt-2 uppercase hover:text-[#0000ff]"
             @click="exportCSV"
+            :disabled="isExporting"
           >
-            [Export CSV]
+            {{ isExporting ? "Exporting..." : "[Export CSV]" }}
           </button>
         </div>
-        <div class="font-mono text-xs text-gray-400 mt-2 uppercase">
+        <div class="font-mono text-xs text-gray-400 mt-3 uppercase">
+          {{ student.student_info.email }}
+        </div>
+        <div class="font-mono text-xs text-gray-400 mt-1 uppercase">
           {{ student.student_info.qualification }}
         </div>
-        <div class="font-mono text-xs text-gray-400 mt-2">
+        <div class="font-mono text-xs text-gray-400 mt-1">
           ID: #{{ student.student_info.id.toString().padStart(4, "0") }}
         </div>
       </div>
@@ -380,5 +392,16 @@ tbody tr:hover {
   .grid {
     grid-template-columns: 1fr;
   }
+}
+
+.notification-enter-active,
+.notification-leave-active {
+  transition: all 0.3s ease;
+}
+
+.notification-enter-from,
+.notification-leave-to {
+  opacity: 0;
+  transform: translateX(30px);
 }
 </style>

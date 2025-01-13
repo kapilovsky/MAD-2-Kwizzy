@@ -8,7 +8,6 @@ const API_URL = import.meta.env.VITE_API_URL;
 const subjectData = ref({ name: "", description: "", image: null });
 import CloseIcon from "../../assets/images/icons/close.svg";
 import { useToast } from "@/composables/useToast";
-import Toast from "../Toast.vue";
 const toast = useToast();
 
 const handleSubmit = async () => {

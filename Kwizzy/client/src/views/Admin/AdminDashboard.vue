@@ -5,7 +5,6 @@ import { ref, onMounted, computed } from "vue";
 import CreateSubject from "@/components/Admin/AddSubject.vue";
 import SearchBar from "@/components/Admin/SearchBar.vue";
 import logo from "../../assets/images/landing-page/white logo.png";
-import { useToast } from "@/composables/useToast";
 import { useSubjectStore } from "@/stores/subjectStore";
 const subjectStore = useSubjectStore();
 const searchQuery = ref("");
