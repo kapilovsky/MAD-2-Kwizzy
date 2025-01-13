@@ -10,6 +10,10 @@ import EditProfile from "@/components/Student/EditProfile.vue";
 
 const route = useRoute();
 const isLoading = ref(true);
+const error = ref(null);
+const exportUrl = ref(null);
+const isExporting = ref(false);
+const taskId = ref(null);
 const recentQuizzes = ref([]);
 const isEditProfileModalOpen = ref(false);
 
@@ -20,10 +24,79 @@ const props = defineProps({
   },
 });
 
+const exportCSV = async () => {
+  try {
+    isExporting.value = true;
+    error.value = null;
+    exportUrl.value = null;
+    const token = localStorage.getItem("access_token");
+    if (!token) {
+      throw new Error("Token not found");
+    }
+
+    const response = await axios.post(
+      `${API_URL}/export/user-csv`,
+      {},
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    taskId.value = response.data.task_id;
+
+    await pollExportStatus();
+  } catch (err) {
+    error.value = "Failed to start export. Please try again.";
+    console.error("Export error:", err);
+  } finally {
+    isExporting.value = false;
+  }
+};
+
+const pollExportStatus = async () => {
+  try {
+    const token = localStorage.getItem("access_token");
+
+    while (true) {
+      const response = await axios.get(
+        `${API_URL}/export/user-csv?task_id=${taskId.value}`,
+        {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
+        }
+      );
+
+      if (
+        response.data.status === "SUCCESS" &&
+        response.data.result.status === "success"
+      ) {
+        exportUrl.value = response.data.result.url;
+        alert("Export successful");
+        break;
+      } else if (
+        response.data.status === "FAILURE" ||
+        (response.data.status === "SUCCESS" &&
+          response.data.result.status === "error")
+      ) {
+        throw new Error(response.data.result.message || "Export failed");
+      }
+
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+    }
+  } catch (err) {
+    error.value = "Failed to generate export. Please try again.";
+    console.error("Polling error:", err);
+  }
+};
+
 const fetchStudentData = async () => {
   try {
     isLoading.value = true;
-    // Assuming you have an API endpoint to get student data
+
     const response = await studentService.getStudent(
       props.student.student_info.id
     );
@@ -119,12 +192,18 @@ onMounted(() => {
         <p class="text-neutral-600 sohne-mono text-sm">
           {{ getCurrentTimeGreeting() }} • {{ getCurrentDate() }}
         </p>
-        <div>
+        <div class="flex gap-4 mt-2">
           <button
-            class="sohne-mono text-xs text-neutral-600 mt-2 uppercase"
+            class="sohne-mono text-xs text-neutral-600 mt-2 uppercase hover:text-[#0000ff]"
             @click="openEditModal"
           >
-            Edit Profile
+            [Edit Profile]
+          </button>
+          <button
+            class="sohne-mono text-xs text-neutral-600 mt-2 uppercase hover:text-[#0000ff]"
+            @click="exportCSV"
+          >
+            [Export CSV]
           </button>
         </div>
         <div class="font-mono text-xs text-gray-400 mt-2 uppercase">

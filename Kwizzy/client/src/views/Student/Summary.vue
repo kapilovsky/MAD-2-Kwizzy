@@ -13,7 +13,7 @@
 
       <!-- Activity Heatmap -->
       <div class="mt-6 bg-white rounded-xl p-6">
-        <h3 class="text-xl mb-4 arame">Activity Calendar</h3>
+        <h3 class="text-xl mb-4 arame text-center">Activity Calendar</h3>
         <ActivityHeatmap v-if="chartData?.heatmap" :data="chartData.heatmap" />
       </div>
 

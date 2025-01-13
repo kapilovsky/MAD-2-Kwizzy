@@ -162,8 +162,8 @@ def create_app():
     )
     api.add_resource(StudentChartsApi, "/api/student/charts")
     api.add_resource(TaskAPI, "/api/tasks", "/api/tasks/<int:task_id>")
-    api.add_resource(UserQuizExportAPI, "/api/export/user-quiz")
-    api.add_resource(AdminQuizExportAPI, "/api/export/admin-quiz")
+    api.add_resource(UserQuizExportAPI, "/api/export/user-csv")
+    api.add_resource(AdminQuizExportAPI, "/api/export/admin-csv")
 
     with app.app_context():
         db.create_all()

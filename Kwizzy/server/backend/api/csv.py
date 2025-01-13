@@ -277,7 +277,7 @@ def calculate_streak(quiz_results):
 def get_performance_level(avg_score):
     """Determine performance level based on average score"""
     if avg_score >= 90:
-        return "Outstanding"
+        return "Excellent!"
     elif avg_score >= 75:
         return "Good"
     elif avg_score >= 60:
@@ -286,7 +286,6 @@ def get_performance_level(avg_score):
         return "Needs Improvement"
 
 
-# Add cleanup function to remove old exports (optional)
 @celery.task
 def cleanup_old_exports():
     """Remove CSV files older than 7 days"""

@@ -70,6 +70,7 @@ console.log("Formatted data:", formattedData.value);
   width: 70%;
   min-height: 300px;
   padding: 1rem;
+  margin: 0 auto;
 }
 
 /* Custom styles for the heatmap */

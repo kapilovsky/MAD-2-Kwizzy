@@ -2853,6 +2853,29 @@ button:focus {
   color: rgb(255 255 255 / 0.4);
 }
 
+.hover\:text-\[\#f9e000\]:hover {
+  --tw-text-opacity: 1;
+  color: rgb(249 224 0 / var(--tw-text-opacity, 1));
+}
+
+.hover\:text-\[\#b20811\]:hover {
+  --tw-text-opacity: 1;
+  color: rgb(178 8 17 / var(--tw-text-opacity, 1));
+}
+
+.hover\:text-\[\#080bb2\]:hover {
+  --tw-text-opacity: 1;
+  color: rgb(8 11 178 / var(--tw-text-opacity, 1));
+}
+
+.hover\:text-\[\]:hover {
+  color: ;
+}
+
+.hover\:text-\[\#\]:hover {
+  color: #;
+}
+
 .hover\:text-opacity-100:hover {
   --tw-text-opacity: 1;
 }
