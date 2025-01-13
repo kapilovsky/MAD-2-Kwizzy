@@ -8,6 +8,13 @@ from flask_jwt_extended import (
     create_refresh_token,
 )
 from datetime import datetime
+from flask import current_app, request
+from itsdangerous import URLSafeTimedSerializer
+from ..tasks.celery_tasks import EmailService
+import os
+import logging
+
+logger = logging.getLogger(__name__)
 
 
 class Register(Resource):
@@ -95,3 +102,110 @@ class Login(Resource):
             "user_role": user.role,
             "user_id": user.id,
         }, 200
+
+
+class ForgotPasswordAPI(Resource):
+    def post(self):
+        """Initiate password reset"""
+        try:
+            data = request.get_json()
+            email = data.get("email")
+
+            if not email:
+                return {"error": "Email is required"}, 400
+
+            user = User.query.filter_by(email=email).first()
+            if not user:
+                return {"error": "No account exists with this email address"}, 404
+
+            # Generate reset token
+            reset_token = generate_reset_token(user.id)
+
+            # Create reset link
+            reset_link = (
+                f"{os.getenv('FRONTEND_URL')}/reset-password?token={reset_token}"
+            )
+
+            # Send email
+            template_data = {
+                "user_name": user.name,
+                "reset_link": reset_link,
+                "expiry_time": "1 hour",  # Token expiry time
+            }
+
+            EmailService.send_email(
+                to_email=user.email,
+                to_name=user.name,
+                subject="Password Reset Request",
+                template_name="password_reset.html",
+                template_data=template_data,
+            )
+
+            return {"message": "Password reset link has been sent to your email"}, 200
+
+        except Exception as e:
+            logger.error(f"Password reset error: {str(e)}")
+            return {"error": "Failed to process request"}, 500
+
+
+class ResetPasswordAPI(Resource):
+    def post(self):
+        """Reset password using token"""
+        try:
+            data = request.get_json()
+            token = data.get("token")
+            new_password = data.get("new_password")
+
+            if not token or not new_password:
+                return {"error": "Token and new password are required"}, 400
+
+            # Verify token and get user_id
+            user_id = verify_reset_token(token)
+            if not user_id:
+                return {"error": "Invalid or expired token"}, 400
+
+            user = User.query.get(user_id)
+            if not user:
+                return {"error": "User not found"}, 404
+
+            # Update password
+            user.password = generate_password_hash(new_password)
+            db.session.commit()
+
+            # Send confirmation email
+            template_data = {
+                "user_name": user.name,
+                "timestamp": datetime.now().strftime("%Y-%m-%d %H:%M:%S"),
+            }
+
+            EmailService.send_email(
+                to_email=user.email,
+                to_name=user.name,
+                subject="Password Reset Successful",
+                template_name="password_reset_success.html",
+                template_data=template_data,
+            )
+
+            return {"message": "Password reset successful"}, 200
+
+        except Exception as e:
+            logger.error(f"Password reset error: {str(e)}")
+            return {"error": "Failed to reset password"}, 500
+
+
+def generate_reset_token(user_id):
+    """Generate a secure reset token"""
+    serializer = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
+    return serializer.dumps(user_id, salt="password-reset-salt")
+
+
+def verify_reset_token(token, expiration=3600):
+    """Verify reset token"""
+    serializer = URLSafeTimedSerializer(current_app.config["SECRET_KEY"])
+    try:
+        user_id = serializer.loads(
+            token, salt="password-reset-salt", max_age=expiration
+        )
+        return user_id
+    except:
+        return None

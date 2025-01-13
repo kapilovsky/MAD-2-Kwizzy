@@ -63,6 +63,10 @@ def create_app():
                 "task": "backend.tasks.celery_tasks.generate_monthly_report",
                 "schedule": crontab(0, 0, day_of_month="1"),
             },
+            "cleanup-old-exports": {
+                "task": "backend.tasks.celery_tasks.cleanup_old_exports",
+                "schedule": crontab(minute=0, hour=0),
+            },
         },
     )
 
@@ -102,7 +106,7 @@ def create_app():
         response.headers["Access-Control-Allow-Headers"] = "Content-Type, Authorization"
         return response
 
-    from .api.auth import Login, Register
+    from .api.auth import Login, Register, ForgotPasswordAPI, ResetPasswordAPI
     from .api.student import (
         Student,
         StudentActivity,
@@ -130,6 +134,8 @@ def create_app():
     )
     api.add_resource(Login, "/api/login")
     api.add_resource(Register, "/api/register")
+    api.add_resource(ForgotPasswordAPI, "/api/auth/forgot-password")
+    api.add_resource(ResetPasswordAPI, "/api/auth/reset-password")
     api.add_resource(UserApi, "/api/user", "/api/user/<int:user_id>")
     api.add_resource(SubjectApi, "/api/subject", "/api/subject/<int:subject_id>")
     api.add_resource(ChapterApi, "/api/chapter", "/api/chapter/<int:chapter_id>")

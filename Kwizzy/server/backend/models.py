@@ -110,6 +110,15 @@ class Quiz(db.Model):
         "QuizResult", back_populates="quiz", cascade="all, delete-orphan"
     )
     chapter = relationship("Chapter", back_populates="quizzes")
+    payments = relationship("PaymentHistory", backref="quiz")
+
+    def has_user_paid(self, user_id):
+        return (
+            PaymentHistory.query.filter_by(
+                user_id=user_id, quiz_id=self.id, status="completed"
+            ).first()
+            is not None
+        )
 
 
 class Question(db.Model):
@@ -215,3 +224,15 @@ class QuizResult(db.Model):
             "quiz_name": self.quiz.name if self.quiz else None,
             "quiz_description": self.quiz.description if self.quiz else None,
         }
+
+
+class PaymentHistory(db.Model):
+    __tablename__ = "payment_history"
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    quiz_id = Column(Integer, ForeignKey("quizzes.id"), nullable=False)
+    order_id = Column(String(100), nullable=False)
+    payment_id = Column(String(100))
+    amount = Column(Integer, nullable=False)
+    status = Column(String(20), default="pending")
+    created_at = Column(DateTime, default=IndianTimeZone())
