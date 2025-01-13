@@ -41,7 +41,9 @@ const handleLogin = async () => {
 </script>
 
 <template>
-  <div class="container flex items-center sm:justify-between h-screen px-24">
+  <div
+    class="container bg-white flex items-center sm:justify-between h-screen px-24"
+  >
     <div
       class="login flex flex-col justify-start gap-6 h-full py-24 max-w-sm sm:ml-12 px-8 sm:px-0"
     >

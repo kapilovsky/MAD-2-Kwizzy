@@ -64,12 +64,10 @@ def create_app():
                     minute=6,
                 ),
             },
-            # "monthly-report": {
-            #     "task": "backend.tasks.celery_tasks.generate_monthly_report",
-            #     "schedule": crontab(
-            #         0, 0, day_of_month="1"
-            #     ),  # Runs on 1st of every month
-            # },
+            "monthly-report": {
+                "task": "backend.tasks.celery_tasks.generate_monthly_report",
+                "schedule": crontab(0, 0, day_of_month="1"),
+            },
         },
     )
 
@@ -165,7 +163,9 @@ def create_app():
     api.add_resource(
         UserAnswerApi, "/api/user-answers", "/api/user-answers/<int:answer_id>"
     )
-    api.add_resource(ChartDataApi, "/api/admin/charts", "/api/charts/<string:chart_type>")
+    api.add_resource(
+        ChartDataApi, "/api/admin/charts", "/api/charts/<string:chart_type>"
+    )
     api.add_resource(StudentChartsApi, "/api/student/charts")
     api.add_resource(TaskAPI, "/api/tasks", "/api/tasks/<int:task_id>")
 

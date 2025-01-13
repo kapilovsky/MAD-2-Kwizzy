@@ -149,6 +149,143 @@ def send_daily_reminders():
 
 
 @celery.task
+def generate_monthly_activity_report():
+    """
+    Generate and send monthly activity reports for all students
+    Scheduled to run on the first day of each month
+    """
+    try:
+        # Get previous month's date range
+        today = datetime.now()
+        first_day_current = today.replace(day=1)
+        last_day_previous = first_day_current - timedelta(days=1)
+        first_day_previous = last_day_previous.replace(day=1)
+
+        logger.info(
+            f"Generating monthly reports for period: {first_day_previous.strftime('%B %Y')}"
+        )
+
+        # Get all students
+        students = User.query.filter_by(role="student").all()
+
+        successful_sends = 0
+        failed_sends = 0
+
+        for student in students:
+            try:
+                # Get student's quiz activity for previous month
+                monthly_quiz_results = (
+                    QuizResult.query.join(Quiz)
+                    .filter(
+                        QuizResult.user_id == student.id,
+                        QuizResult.completed_at >= first_day_previous,
+                        QuizResult.completed_at <= last_day_previous,
+                    )
+                    .all()
+                )
+
+                # Calculate statistics
+                total_quizzes = len(monthly_quiz_results)
+                if total_quizzes == 0:
+                    continue  # Skip if no activity
+
+                total_score = sum(
+                    (result.marks_scored / result.total_marks) * 100
+                    for result in monthly_quiz_results
+                )
+                average_score = round(total_score / total_quizzes, 2)
+
+                # Get performance by subject
+                subject_performance = {}
+                for result in monthly_quiz_results:
+                    subject_name = result.quiz.chapter.subject.name
+                    if subject_name not in subject_performance:
+                        subject_performance[subject_name] = {
+                            "total_quizzes": 0,
+                            "total_score": 0,
+                        }
+                    subject_performance[subject_name]["total_quizzes"] += 1
+                    subject_performance[subject_name]["total_score"] += (
+                        result.marks_scored / result.total_marks
+                    ) * 100
+
+                # Calculate average score per subject
+                for subject in subject_performance.values():
+                    subject["average_score"] = round(
+                        subject["total_score"] / subject["total_quizzes"], 2
+                    )
+
+                # Get best performance
+                best_quiz = max(
+                    monthly_quiz_results, key=lambda x: (x.marks_scored / x.total_marks)
+                )
+                best_score = round(
+                    (best_quiz.marks_scored / best_quiz.total_marks) * 100, 2
+                )
+
+                # Prepare template data
+                template_data = {
+                    "student_name": student.name,
+                    "report_period": first_day_previous.strftime("%B %Y"),
+                    "total_quizzes": total_quizzes,
+                    "average_score": average_score,
+                    "best_score": best_score,
+                    "best_quiz_name": best_quiz.quiz.name,
+                    "subject_performance": subject_performance,
+                    "quiz_history": [
+                        {
+                            "date": result.completed_at.strftime("%Y-%m-%d"),
+                            "quiz_name": result.quiz.name,
+                            "score": round(
+                                (result.marks_scored / result.total_marks) * 100, 2
+                            ),
+                        }
+                        for result in monthly_quiz_results
+                    ],
+                    "dashboard_url": f"{os.getenv('FRONTEND_URL')}/student/{student.id}",
+                }
+
+                # Send email
+                result = EmailService.send_email(
+                    to_email=student.email,
+                    to_name=student.name,
+                    subject=f"Your Monthly Activity Report - {first_day_previous.strftime('%B %Y')}",
+                    template_name="monthly_report.html",
+                    template_data=template_data,
+                )
+
+                if result:
+                    successful_sends += 1
+                    logger.info(f"Monthly report sent successfully to {student.email}")
+                else:
+                    failed_sends += 1
+                    logger.error(f"Failed to send monthly report to {student.email}")
+
+            except Exception as e:
+                failed_sends += 1
+                logger.error(f"Error processing report for {student.email}: {str(e)}")
+                continue
+
+        return {
+            "status": "success",
+            "message": f"Monthly reports processed. Success: {successful_sends}, Failed: {failed_sends}",
+            "details": {
+                "successful_sends": successful_sends,
+                "failed_sends": failed_sends,
+                "total_students": len(students),
+                "period": first_day_previous.strftime("%B %Y"),
+            },
+        }
+
+    except Exception as e:
+        logger.error(f"Error in monthly report generation: {str(e)}")
+        return {
+            "status": "error",
+            "message": f"Failed to process monthly reports: {str(e)}",
+        }
+
+
+@celery.task
 def send_report_notification(user_id, report_url, report_type="Quiz Performance"):
     """Send notification when report is generated"""
     try:

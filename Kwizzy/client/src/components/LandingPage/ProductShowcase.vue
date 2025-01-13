@@ -7,7 +7,6 @@ import AppScreenshot from "../../assets/images/landing-page/app.png";
 const appScreenshot = ref(null);
 const scrollProgress = ref(0);
 
-// Scroll handler
 const handleScroll = () => {
   if (!appScreenshot.value) return;
 
@@ -115,7 +114,7 @@ onUnmounted(() => {
 
 img {
   transition: transform 0.3s ease-out, opacity 0.3s ease-out;
-  filter: drop-shadow(0 30px 40px rgba(153, 0, 255, 0.4));
+  filter: drop-shadow(0 30px 40px rgb(221, 255, 0, 0.5));
 }
 
 .container {

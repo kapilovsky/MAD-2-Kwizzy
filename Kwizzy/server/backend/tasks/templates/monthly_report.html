@@ -1,0 +1,142 @@
+<!-- templates/monthly_report.html -->
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        line-height: 1.6;
+        color: #333;
+        max-width: 800px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .header {
+        background: #192227;
+        color: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 30px;
+      }
+      .section {
+        background: #f9f9f9;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+      }
+      .stats {
+        display: flex;
+        justify-content: space-between;
+        margin: 20px 0;
+      }
+      .stat-box {
+        background: white;
+        padding: 15px;
+        border-radius: 8px;
+        text-align: center;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+      }
+      .chart {
+        margin: 20px 0;
+        height: 200px;
+      }
+      table {
+        width: 100%;
+        border-collapse: collapse;
+        margin: 20px 0;
+      }
+      th,
+      td {
+        padding: 12px;
+        text-align: left;
+        border-bottom: 1px solid #ddd;
+      }
+      th {
+        background-color: #f5f5f5;
+      }
+      .button {
+        display: inline-block;
+        padding: 10px 20px;
+        background-color: #192227;
+        color: white;
+        text-decoration: none;
+        border-radius: 5px;
+        margin-top: 20px;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <h1>Monthly Activity Report</h1>
+      <p>Hello {{ student_name }},</p>
+      <p>Here's your activity summary for {{ report_period }}</p>
+    </div>
+
+    <div class="section">
+      <h2>Monthly Overview</h2>
+      <div class="stats">
+        <div class="stat-box">
+          <h3>{{ total_quizzes }}</h3>
+          <p>Quizzes Taken</p>
+        </div>
+        <div class="stat-box">
+          <h3>{{ average_score }}%</h3>
+          <p>Average Score</p>
+        </div>
+        <div class="stat-box">
+          <h3>{{ best_score }}%</h3>
+          <p>Best Score</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="section">
+      <h2>Subject Performance</h2>
+      <table>
+        <tr>
+          <th>Subject</th>
+          <th>Quizzes Taken</th>
+          <th>Average Score</th>
+        </tr>
+        {% for subject, data in subject_performance.items() %}
+        <tr>
+          <td>{{ subject }}</td>
+          <td>{{ data.total_quizzes }}</td>
+          <td>{{ data.average_score }}%</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+    <div class="section">
+      <h2>Quiz History</h2>
+      <table>
+        <tr>
+          <th>Date</th>
+          <th>Quiz</th>
+          <th>Score</th>
+        </tr>
+        {% for quiz in quiz_history %}
+        <tr>
+          <td>{{ quiz.date }}</td>
+          <td>{{ quiz.quiz_name }}</td>
+          <td>{{ quiz.score }}%</td>
+        </tr>
+        {% endfor %}
+      </table>
+    </div>
+
+    <div style="text-align: center; margin-top: 30px">
+      <a href="{{ dashboard_url }}" class="button">View Full Dashboard</a>
+    </div>
+
+    <div
+      style="margin-top: 30px; color: #666; font-size: 12px; text-align: center"
+    >
+      <p>
+        This is an automated report from Kwizzy. Please do not reply to this
+        email.
+      </p>
+    </div>
+  </body>
+</html>
