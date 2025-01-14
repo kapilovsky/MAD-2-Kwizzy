@@ -1,5 +1,5 @@
 <script setup>
-import { RouterLink, RouterView } from "vue-router";
+import { RouterView } from "vue-router";
 import CustomCursor from "./components/CustomCursor.vue";
 import Toast from "./components/Toast.vue";
 </script>

@@ -108,7 +108,7 @@
                   <span class="font-medium">{{ quiz.time_duration }}</span>
                 </td>
                 <td class="py-2">
-                  <span class="font-medium">{{ quiz.price || "Free" }}</span>
+                  <span class="font-medium">₹{{ quiz.price || "Free" }}</span>
                 </td>
 
                 <td class="p-2 text-right">

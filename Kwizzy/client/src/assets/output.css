@@ -3161,6 +3161,11 @@ button:focus {
   background-color: rgb(17 24 39 / var(--tw-bg-opacity, 1));
 }
 
+.hover\:bg-\[\#2c3e50\]:hover {
+  --tw-bg-opacity: 1;
+  background-color: rgb(44 62 80 / var(--tw-bg-opacity, 1));
+}
+
 .hover\:fill-\[\#de0000\]:hover {
   fill: #de0000;
 }
@@ -3211,6 +3216,10 @@ button:focus {
 
 .hover\:text-white\/40:hover {
   color: rgb(255 255 255 / 0.4);
+}
+
+.hover\:text-\[\]:hover {
+  color: ;
 }
 
 .hover\:text-opacity-100:hover {

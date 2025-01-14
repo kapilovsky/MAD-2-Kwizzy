@@ -126,7 +126,7 @@ def create_app():
     from .api.student_charts import StudentChartsApi
     from .api.taskAPI import TaskAPI
     from .api.csv import UserQuizExportAPI, AdminQuizExportAPI
-    from .api.payment import PaymentApi, TransactionHistoryAPI
+    from .api.payment import PaymentApi, TransactionHistoryAPI, TransactionExportAPI
 
     api.add_resource(Student, "/api/students", "/api/student/<int:student_id>")
     api.add_resource(StudentActivity, "/api/student/<int:student_id>/activity")
@@ -181,6 +181,7 @@ def create_app():
         "/api/payments/history",
         "/api/payments/history/<int:user_id>",
     )
+    api.add_resource(TransactionExportAPI, "/api/export/transactions/<int:student_id>")
 
     with app.app_context():
         db.create_all()
