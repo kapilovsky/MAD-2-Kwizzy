@@ -238,9 +238,10 @@ class PaymentHistory(db.Model):
 
     def to_dict(self):
         quiz_details = Quiz.query.filter_by(id=self.quiz_id).first()
+        user_details = User.query.filter_by(id=self.user_id).first()
         return {
             "id": self.id,
-            "user_id": self.user_id,
+            "user": user_details.name,
             "quiz": quiz_details.name,
             "transaction_id": self.transaction_id,
             "amount": self.amount,

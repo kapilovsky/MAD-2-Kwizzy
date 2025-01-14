@@ -149,6 +149,7 @@ const StudentRoutes = [
     meta: {
       requiresAuth: true,
       title: "Taking Quiz",
+      roles: ["student"],
       preventRefresh: true, // to handle refresh warnings
     },
     beforeEnter: async (to, from, next) => {
@@ -181,7 +182,6 @@ const StudentRoutes = [
   },
 ];
 
-// Add navigation guards
 const addNavigationGuards = (router) => {
   // Clean up when leaving quiz-related routes
   router.afterEach((to, from) => {

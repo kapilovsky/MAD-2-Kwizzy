@@ -176,7 +176,11 @@ def create_app():
         "/api/payments",
         "/api/payments/status/<int:user_id>/<int:quiz_id>",
     )
-    api.add_resource(TransactionHistoryAPI, "/api/payments/history/<int:user_id>")
+    api.add_resource(
+        TransactionHistoryAPI,
+        "/api/payments/history",
+        "/api/payments/history/<int:user_id>",
+    )
 
     with app.app_context():
         db.create_all()

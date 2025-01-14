@@ -13,6 +13,7 @@ import UsersIcon from "../../assets/images/icons/users.svg";
 import LogoutIcon from "../../assets/images/icons/logout.svg";
 import MenuIcon from "../../assets/images/icons/menu.svg";
 import CloseIcon from "../../assets/images/icons/close.svg";
+import TransactionIcon from "../../assets/images/icons/receipt.svg";
 
 provide("sidebarState", {
   isOpen,
@@ -25,6 +26,7 @@ const navigationItems = [
   { name: "Home", icon: HomeIcon, path: "/admin" },
   { name: "Users", icon: UsersIcon, path: "/admin/users" },
   { name: "Summary", icon: ChartBarIcon, path: "/admin/summary" },
+  { name: "Transactions", icon: TransactionIcon, path: "/admin/transactions" },
 ];
 
 const handleLogout = () => {

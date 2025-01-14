@@ -47,8 +47,11 @@ class PaymentApi(Resource):
 
 class TransactionHistoryAPI(Resource):
     @jwt_required()
-    def get(self, user_id):
+    def get(self, user_id=None):
         try:
+            if not user_id:
+                payments = PaymentHistory.query.all()
+                return {"payments": [payment.to_dict() for payment in payments]}, 200
             payments = PaymentHistory.query.filter_by(user_id=user_id).all()
             return {"payments": [payment.to_dict() for payment in payments]}, 200
         except Exception as e:
