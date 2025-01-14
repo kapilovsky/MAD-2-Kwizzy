@@ -1,6 +1,9 @@
 <template>
   <div class="container mx-auto sm:px-4 py-8">
-    <div v-if="isLoading" class="flex justify-center items-center h-64">
+    <div
+      v-if="isLoading || isCheckingPayment"
+      class="flex justify-center items-center h-64"
+    >
       <Loader />
     </div>
 
@@ -103,6 +106,25 @@
         </div>
 
         <button
+          v-if="quiz?.price > 0 && !hasPaid"
+          @click="showPaymentModal"
+          class="w-full bg-[#fdfcfc] py-3 rounded-lg transition-colors disabled:bg-gray-400 mt-8 sm:text-right relative group overflow-hidden"
+          :disabled="isProcessing"
+        >
+          <span
+            class="arame sm:text-5xl text-2xl sm:mr-20 cursor-pointer text-[#192227]"
+          >
+            Pay ₹{{ quiz.price }}
+          </span>
+          <span
+            class="absolute sm:text-5xl text-2xl right-7 top-1/2 transform -translate-y-1/2 text-[#192227] opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all"
+          >
+            🡲
+          </span>
+        </button>
+
+        <button
+          v-else
           @click="showStartDialog"
           class="w-full bg-[#fdfcfc] py-3 rounded-lg transition-colors disabled:bg-gray-400 mt-8 sm:text-right relative group overflow-hidden"
           :disabled="isStarting"
@@ -116,6 +138,13 @@
             🡲
           </span>
         </button>
+
+        <MockPaymentModal
+          v-if="showPayment"
+          :amount="quiz?.price"
+          @close="showPayment = false"
+          @success="handlePaymentSuccess"
+        />
       </div>
     </div>
 
@@ -171,6 +200,7 @@ import axios from "axios";
 import { useToast } from "@/composables/useToast";
 import DialogModal from "@/components/DialogModal.vue";
 import Loader from "@/components/Loader.vue";
+import MockPaymentModal from "@/components/Student/MockPaymentModal.vue";
 import { BreadcrumbsStore } from "@/stores/breadcrumbsStore";
 const breadcrumbStore = BreadcrumbsStore();
 const { subjectName, chapterName } = storeToRefs(breadcrumbStore);
@@ -180,13 +210,69 @@ const route = useRoute();
 const toast = useToast();
 
 const quiz = ref(null);
+const hasPaid = ref(false);
 const error = ref(null);
 const isLoading = ref(true);
 const isStarting = ref(false);
 const isDialogOpen = ref(false);
+const showPayment = ref(false);
+const isProcessing = ref(false);
+const isCheckingPayment = ref(true);
 const studentId = route.params.id;
 const subjectId = route.params.subjectId;
 const chapterId = route.params.chapterId;
+
+const showPaymentModal = () => {
+  showPayment.value = true;
+};
+
+const handlePaymentSuccess = async (paymentDetails) => {
+  try {
+    isProcessing.value = true;
+    const token = localStorage.getItem("access_token");
+
+    await axios.post(
+      `${API_URL}/payments`,
+      {
+        quiz_id: route.params.quizId,
+        transaction_id: paymentDetails.transactionId,
+        amount: paymentDetails.amount,
+        user_id: studentId,
+      },
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+
+    showPayment.value = false;
+    hasPaid.value = true;
+    toast.success("Payment successful!");
+    showStartDialog();
+  } catch (error) {
+    console.error("Error processing payment:", error);
+    toast.error("Failed to process payment");
+  } finally {
+    isProcessing.value = false;
+  }
+};
+
+const checkPaymentStatus = async () => {
+  try {
+    isCheckingPayment.value = true;
+    const token = localStorage.getItem("access_token");
+    const response = await axios.get(
+      `${API_URL}/payments/status/${route.params.quizId}/${studentId}`,
+      {
+        headers: { Authorization: `Bearer ${token}` },
+      }
+    );
+    hasPaid.value = response.data.has_paid;
+  } catch (error) {
+    console.error("Error checking payment status:", error);
+  } finally {
+    isCheckingPayment.value = false;
+  }
+};
 
 const fetchQuizDetails = async () => {
   try {
@@ -259,7 +345,11 @@ const startQuiz = async () => {
 };
 
 onMounted(async () => {
-  await Promise.all([fetchQuizDetails(), fetchBreadcrumbsIfNeeded()]);
+  await Promise.all([
+    fetchQuizDetails(),
+    fetchBreadcrumbsIfNeeded(),
+    checkPaymentStatus(),
+  ]);
 });
 
 onUnmounted(() => {

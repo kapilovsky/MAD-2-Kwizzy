@@ -92,7 +92,7 @@
 
                 <td class="py-2 sm:block hidden">{{ chapter.description }}</td>
                 <td class="py-2">
-                  {{ chapter.quizzes || 0 }}
+                  {{ chapter.total_quizzes || 0 }}
                 </td>
                 <td class="p-2 text-right">
                   <RouterLink :to="`${route.path}/chapter/${chapter.id}`">

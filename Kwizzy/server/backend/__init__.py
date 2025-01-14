@@ -126,6 +126,7 @@ def create_app():
     from .api.student_charts import StudentChartsApi
     from .api.taskAPI import TaskAPI
     from .api.csv import UserQuizExportAPI, AdminQuizExportAPI
+    from .api.payment import PaymentApi
 
     api.add_resource(Student, "/api/students", "/api/student/<int:student_id>")
     api.add_resource(StudentActivity, "/api/student/<int:student_id>/activity")
@@ -170,6 +171,9 @@ def create_app():
     api.add_resource(TaskAPI, "/api/tasks", "/api/tasks/<int:task_id>")
     api.add_resource(UserQuizExportAPI, "/api/export/user-csv")
     api.add_resource(AdminQuizExportAPI, "/api/export/admin-csv")
+    api.add_resource(
+        PaymentApi, "/api/payments", "/api/payments/status/<int:quiz_id>/<int:user_id>"
+    )
 
     with app.app_context():
         db.create_all()
