@@ -16,6 +16,8 @@ const DetailedPerformance = () =>
   import("../views/Student/DetailedPerformance.vue");
 const Summary = () =>
   import(/*{ webpackPrefetch: true }*/ "../views/Student/Summary.vue");
+const Transactions = () =>
+  import(/*{ webpackPrefetch: true }*/ "../views/Student/Transactions.vue");
 
 const StudentRoutes = [
   {
@@ -89,6 +91,15 @@ const StudentRoutes = [
         meta: {
           requiresAuth: true,
           title: "Summary",
+        },
+      },
+      {
+        path: "transactions",
+        name: "transactions",
+        component: Transactions,
+        meta: {
+          requiresAuth: true,
+          title: "Transactions",
         },
       },
       {

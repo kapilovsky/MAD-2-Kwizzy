@@ -235,3 +235,15 @@ class PaymentHistory(db.Model):
     amount = Column(Integer, nullable=False)
     status = Column(String(20), default="pending")
     created_at = Column(DateTime, default=IndianTimeZone())
+
+    def to_dict(self):
+        quiz_details = Quiz.query.filter_by(id=self.quiz_id).first()
+        return {
+            "id": self.id,
+            "user_id": self.user_id,
+            "quiz": quiz_details.name,
+            "transaction_id": self.transaction_id,
+            "amount": self.amount,
+            "status": self.status,
+            "created_at": format_ist_datetime(self.created_at),
+        }

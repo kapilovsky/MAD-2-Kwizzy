@@ -1,7 +1,7 @@
 <!-- components/Student/charts/MonthlyProgress.vue -->
 <template>
   <div class="bg-white rounded-xl p-6">
-    <h3 class="text-xl mb-4 font-semibold">{{ data.title }}</h3>
+    <h3 class="text-xl mb-4 arame">{{ data.title }}</h3>
     <div v-if="!hasData" class="text-center text-gray-500 py-10">
       No performance data available yet
     </div>
@@ -110,7 +110,7 @@ const chartData = computed(() => ({
       label: "Average Score",
       data: props.data.averageScores,
       borderColor: "rgb(147, 51, 234)",
-      backgroundColor: "rgba(147, 51, 234, 0.1)",
+      backgroundColor: "rgba(255, 255, 255, 0.1)",
       fill: true,
       tension: 0.4,
       borderWidth: 2,
@@ -121,18 +121,18 @@ const chartData = computed(() => ({
       label: "Highest Score",
       data: props.data.highestScores,
       borderColor: "rgb(34, 197, 94)",
-      backgroundColor: "rgba(34, 197, 94, 0.1)",
+      backgroundColor: "rgba(255, 255, 255, 0.1)",
       fill: true,
       tension: 0.4,
       borderWidth: 2,
       pointRadius: 4,
-      //   pointBackgroundColor: "rgb(34, 197, 94)",
+      // pointBackgroundColor: "rgb(34, 197, 94)",
     },
     {
       label: "Lowest Score",
       data: props.data.lowestScores,
       borderColor: "rgb(239, 68, 68)",
-      backgroundColor: "rgba(239, 68, 68, 0.1)",
+      backgroundColor: "rgba(255, 255, 255, 0.1)",
       fill: true,
       tension: 0.4,
       borderWidth: 2,

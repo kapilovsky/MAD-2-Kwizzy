@@ -1,7 +1,7 @@
 <!-- components/Student/charts/RecentPerformance.vue -->
 <template>
   <div class="bg-white rounded-xl p-6">
-    <h3 class="text-xl mb-4 font-semibold">{{ data.title }}</h3>
+    <h3 class="text-xl mb-4 arame">{{ data.title }}</h3>
     <div class="w-auto h-[400px]">
       <Line :data="chartData" :options="chartOptions" />
     </div>

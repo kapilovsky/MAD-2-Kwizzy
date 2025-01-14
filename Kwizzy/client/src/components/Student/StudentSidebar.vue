@@ -1,24 +1,20 @@
 <script setup>
-import { ref, provide, computed } from "vue";
-import { useRouter, RouterLink, useRoute } from "vue-router";
+import { ref, provide } from "vue";
+import { useRouter, RouterLink } from "vue-router";
 import logo from "../../assets/images/landing-page/white logo.png";
 const router = useRouter();
 const isOpen = ref(false);
 const isMobileOpen = ref(false);
-import axios from "axios";
-const API_URL = import.meta.env.VITE_API_URL;
 import { useToast } from "@/composables/useToast";
 const toast = useToast();
-import SearchBar from "../../components/Admin/SearchBar.vue";
 
 import HomeIcon from "../../assets/images/icons/home.svg";
 import QuizIcon from "../../assets/images/icons/quiz.svg";
-import UsersIcon from "../../assets/images/icons/users.svg";
 import ChartBarIcon from "../../assets/images/icons/summary.svg";
 import LogoutIcon from "../../assets/images/icons/logout.svg";
-import SearchIcon from "../../assets/images/icons/search.svg";
 import MenuIcon from "../../assets/images/icons/menu.svg";
 import CloseIcon from "../../assets/images/icons/close.svg";
+import TransactionIcon from "../../assets/images/icons/receipt.svg";
 
 const props = defineProps({
   student: {
@@ -51,10 +47,16 @@ const navigationItems = [
     icon: ChartBarIcon,
     path: `/student/${student_id.value}/summary`,
   },
+  {
+    name: "Transactions",
+    icon: TransactionIcon,
+    path: `/student/${student_id.value}/transactions`,
+  },
 ];
 
 const handleLogout = () => {
   localStorage.removeItem("access_token");
+  toast.success("Logged out successfully");
   router.push("/login");
 };
 </script>

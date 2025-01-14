@@ -43,3 +43,14 @@ class PaymentApi(Resource):
         except Exception as e:
             print("Error:", str(e))
             return {"error": str(e)}, 500
+
+
+class TransactionHistoryAPI(Resource):
+    @jwt_required()
+    def get(self, user_id):
+        try:
+            payments = PaymentHistory.query.filter_by(user_id=user_id).all()
+            return {"payments": [payment.to_dict() for payment in payments]}, 200
+        except Exception as e:
+            print("Error:", str(e))
+            return {"error": str(e)}, 500

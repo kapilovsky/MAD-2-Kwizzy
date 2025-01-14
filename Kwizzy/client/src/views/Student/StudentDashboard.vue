@@ -179,7 +179,7 @@ onMounted(() => {
       <div class="relative overflow-hidden">
         <div
           v-if="!student.student_info.profile_pic"
-          class="sm:w-40 sm:h-40 w-0 h-0 rounded-lg bg-[#192227] text-white/20 hover:text-white/40 transition-all duration-200 hover-scale"
+          class="sm:w-40 sm:h-40 w-0 h-0 rounded-lg bg-[#192227] text-white/20 hover:text-white/40 transition-all duration-200"
         >
           <span class="absolute -bottom-6 right-0 text-9xl">{{
             student.student_info.name.charAt(0)
@@ -189,7 +189,7 @@ onMounted(() => {
           <img
             :src="student.student_info.profile_pic"
             alt="Profile Picture"
-            class="sm:w-40 sm:h-40 w-0 h-0 rounded-lg hover-scale"
+            class="sm:w-40 sm:h-40 w-0 h-0 rounded-lg"
           />
         </div>
       </div>
@@ -215,7 +215,7 @@ onMounted(() => {
             {{ isExporting ? "Exporting..." : "[Export CSV]" }}
           </button>
         </div>
-        <div class="font-mono text-xs text-gray-400 mt-3 uppercase">
+        <div class="font-mono text-xs text-gray-400 mt-2 uppercase">
           {{ student.student_info.email }}
         </div>
         <div class="font-mono text-xs text-gray-400 mt-1 uppercase">
@@ -368,14 +368,6 @@ onMounted(() => {
 </template>
 
 <style scoped>
-.hover-scale {
-  transition: transform 0.2s;
-}
-
-.hover-scale:hover {
-  transform: scale(1.02);
-}
-
 .font-mono {
   font-family: "IBM Plex Mono";
 }
