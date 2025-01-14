@@ -96,10 +96,6 @@ const plans = [
                 :key="featureIndex"
                 class="flex items-center text-white/80"
               >
-                <!-- <ion-icon
-                  name="checkmark-sharp"
-                  class="mr-3 text-green-400"
-                ></ion-icon> -->
                 <component :is="check" class="mr-3 fill-[##4ade80]" />
                 {{ feature }}
               </li>

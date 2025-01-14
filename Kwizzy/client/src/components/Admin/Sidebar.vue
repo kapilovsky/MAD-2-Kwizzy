@@ -215,5 +215,6 @@ header {
 
 main {
   border-left: 2px solid #e5e7ebd6;
+  border-top-left-radius: 16px;
 }
 </style>

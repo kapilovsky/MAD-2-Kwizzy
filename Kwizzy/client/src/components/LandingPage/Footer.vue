@@ -1,8 +1,6 @@
 <script setup>
 const currentYear = new Date().getFullYear();
-import logo from "../../assets/images/landing-page/logo.png";
-
-import { ref } from "vue";
+import logo from "../../assets/images/landing-page/white logo.png";
 
 const footerLinks = {
   product: {
@@ -19,10 +17,18 @@ const footerLinks = {
   social: {
     title: "Social",
     links: [
-      { name: "Twitter", id: "#", icon: "logo-twitter" },
-      { name: "GitHub", id: "#", icon: "logo-github" },
-      { name: "LinkedIn", id: "#", icon: "logo-linkedin" },
-      { name: "Instagram", id: "#", icon: "logo-instagram" },
+      { name: "Twitter", id: "https://x.com/k4p1ll", icon: "logo-twitter" },
+      { name: "GitHub", id: "https://github.com/k4p1l", icon: "logo-github" },
+      {
+        name: "LinkedIn",
+        id: "https://www.linkedin.com/in/k4p1l/",
+        icon: "logo-linkedin",
+      },
+      {
+        name: "Instagram",
+        id: "https://www.instagram.com/k4p1ll/",
+        icon: "logo-instagram",
+      },
     ],
   },
 };
@@ -60,6 +66,7 @@ const footerLinks = {
                 <li v-for="link in section.links" :key="link.name">
                   <a
                     :href="link.id"
+                    target="_blank"
                     class="text-white/70 hover:text-white flex items-center gap-2 transition-colors group"
                   >
                     <ion-icon
@@ -82,7 +89,7 @@ const footerLinks = {
           <div class="gradient-text">Kwizzy</div>
           <div class="flex items-center gap-2 sm:mb-14 mb-32">
             <span class="text-white"
-              >© {{ currentYear }}. All rights reserved. I mean the right to
+              >© {{ currentYear }}. All rights reserved. I mean, the right to
               brag about this project.</span
             >
           </div>
@@ -152,14 +159,16 @@ img {
 /* Hover Effects */
 a {
   position: relative;
+  width: fit-content;
+  cursor: none;
 }
 
 a::after {
   content: "";
   position: absolute;
   width: 0;
-  height: 1px;
-  bottom: -2px;
+  height: 2.2px;
+  bottom: -2.2px;
   left: 0;
   background: linear-gradient(to right, #e879f9, #6366f1);
   transition: width 0.3s ease;

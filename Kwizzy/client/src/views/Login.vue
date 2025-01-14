@@ -77,7 +77,7 @@ const handleLogin = async () => {
 
         <RouterLink
           to="/forgot-password"
-          class="text-sm text-blue-600 hover:underline text-right"
+          class="text-sm text-blue-600 hover:underline tracking-tighter text-right"
           >Forgot password?</RouterLink
         >
 
@@ -101,11 +101,13 @@ const handleLogin = async () => {
       <footer class="mt-24">
         <p>
           By logging in, you agree to my
-          <RouterLink class="text-blue-600" to="/terms-of-service"
+          <RouterLink
+            class="text-blue-600 hover:underline"
+            to="/terms-of-service"
             >Terms of Service</RouterLink
           >
           and
-          <RouterLink class="text-blue-600" to="/privacy-policy"
+          <RouterLink class="text-blue-600 hover:underline" to="/privacy-policy"
             >Privacy Policy</RouterLink
           >.
         </p>

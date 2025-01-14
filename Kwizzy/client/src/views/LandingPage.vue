@@ -11,7 +11,7 @@ import FAQs from "@/components/LandingPage/FAQs.vue";
 import Testimonials from "@/components/LandingPage/Testimonials.vue";
 import Pricing from "@/components/LandingPage/Pricing.vue";
 import Footer from "@/components/LandingPage/Footer.vue";
-import logo from "@/assets/images/landing-page/logo.png";
+import logo from "@/assets/images/landing-page/white logo.png";
 
 const isMenuOpen = ref(false);
 
@@ -109,14 +109,14 @@ const handleScroll = (sectionId) => {
               </button>
               <RouterLink to="/login">
                 <button
-                  class="px-4 py-2 font-medium text-black bg-white rounded-lg"
+                  class="px-4 py-2 font-semibold text-black bg-white rounded-lg hover:bg-transparent hover:text-white hover:-translate-y-1 transition-all duration-200 cursor-none"
                 >
                   Log In
                 </button>
               </RouterLink>
               <RouterLink to="/signup">
                 <button
-                  class="px-4 py-2 font-medium text-black bg-white rounded-lg"
+                  class="px-4 py-2 font-semibold text-black bg-white rounded-lg hover:bg-transparent hover:text-white hover:-translate-y-1 transition-all duration-200 cursor-none"
                 >
                   Sign Up
                 </button>
@@ -227,7 +227,7 @@ const handleScroll = (sectionId) => {
           <div class="flex justify-center mt-8">
             <button
               @click="handleScroll('call-to-action')"
-              class="px-4 py-2 font-medium text-black bg-white rounded-lg"
+              class="px-4 py-2 font-semibold text-black bg-white rounded-lg hover:-translate-y-1 transition-all duration-200 ease-linear cursor-none"
             >
               Get Started
             </button>
@@ -265,8 +265,10 @@ const handleScroll = (sectionId) => {
 
           <div class="mt-8">
             <RouterLink to="/login">
-              <button class="px-4 py-2 bg-white text-black rounded-lg">
-                Start Your Journey Now <span>🡲</span>
+              <button
+                class="px-4 py-2 font-semibold text-black bg-white rounded-lg hover:bg-transparent hover:text-white hover:-translate-y-2 transition-all ease-linear duration-200 cursor-none"
+              >
+                Start Your Journey Now
               </button>
             </RouterLink>
           </div>
@@ -308,6 +310,11 @@ const handleScroll = (sectionId) => {
     rgba(161, 153, 247, 0.7),
     rgb(252, 214, 255, 0.7)
   );
+}
+
+a,
+button {
+  cursor: none;
 }
 
 a span {

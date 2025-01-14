@@ -10,7 +10,6 @@ const subjectStore = useSubjectStore();
 const searchQuery = ref("");
 const isCreateModalOpen = ref(false);
 
-// Computed property for filtered subjects
 const filteredSubjects = computed(() => {
   if (!searchQuery.value) return subjectStore.allSubjects;
 

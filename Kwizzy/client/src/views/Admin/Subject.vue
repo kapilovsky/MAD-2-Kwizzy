@@ -218,15 +218,28 @@ const handleSearch = (query) => {
       <img
         :src="subject?.image"
         :alt="subject?.name"
-        class="sm:w-[150px] sm:h-[150px] rounded-xl object-cover"
+        class="sm:w-[180px] sm:h-[180px] rounded-xl object-cover"
       />
       <div>
         <h1 class="text-4xl font-bold mb-2 magnetic">{{ subject?.name }}</h1>
-        <p class="text-gray-600 max-w-xl">{{ subject?.description }}</p>
-        <p class="text-gray-600 mb-4">{{ subject?.chapters }} Chapters</p>
+        <p class="text-gray-600 max-w-xl mb-2">{{ subject?.description }}</p>
+        <div class="flex items-start gap-4 mb-2">
+          <button
+            @click="editSubject(subject)"
+            class="text-sm text-gray-500 hover:text-[#0000ff] transition-colors sohne-mono"
+          >
+            [Edit]
+          </button>
+          <button
+            @click="handleDeleteSubject(subject.id)"
+            class="text-sm text-gray-500 rounded-lg hover:text-[#ff0a0a] transition-colors sohne-mono"
+          >
+            [Delete]
+          </button>
+        </div>
         <button
           @click="isAddChapterModalOpen = true"
-          class="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-800 transition-colors"
+          class="flex items-center gap-2 px-4 py-2 bg-black text-white rounded-lg hover:bg-gray-900 hover:scale-95 transition-all duration-200 ease-linear"
         >
           <svg
             class="w-5 h-5"
@@ -244,40 +257,12 @@ const handleSearch = (query) => {
           Add Chapter
         </button>
       </div>
-      <div class="flex items-start sm:mt-0 mt-4 gap-[80px]">
-        <button
-          @click="editSubject(subject)"
-          class="px-4 py-2 text-sm text-black rounded-lg hover:text-[#0000ff] transition-colors sohne-mono focus:outline-none"
-        >
-          <span class="relative">
-            <sup class="absolute text-[12px] left-[-8px] sohne-mono">+</sup>
-            Edit
-            <sup class="absolute text-[10px] font-mono"> [Subject] </sup>
-          </span>
-        </button>
-        <button
-          @click="handleDeleteSubject(subject.id)"
-          class="px-4 py-2 text-sm text-black rounded-lg hover:text-[#ff0a0a] transition-colors sohne-mono"
-        >
-          <span class="relative">
-            Delete
-            <sup class="absolute text-[10px] font-mono"> [Subject]</sup>
-            <sup class="absolute text-[12px] top-[20px] right-[-8px] sohne-mono"
-              >+</sup
-            >
-          </span>
-        </button>
-      </div>
     </div>
     <!-- Chapters Table -->
     <div>
-      <div>
-        <h2
-          class="sm:text-5xl text-3xl font-semibold sohne tracking-[-1px] mb-4 magnetic"
-        >
-          Chapters
-        </h2>
-      </div>
+      <!-- <p class="text-xl sohne font-bold mb-4">
+        Total Chapters: <span class="font-bold">{{ subject?.chapters }}</span>
+      </p> -->
       <div class="px-2">
         <table class="w-full chapters">
           <thead>
@@ -371,6 +356,9 @@ const handleSearch = (query) => {
 </template>
 
 <style>
+* {
+  cursor: none;
+}
 .sohne {
   font-family: sohne;
 }
@@ -396,5 +384,9 @@ table td span {
 
 .chapters tbody tr:hover {
   background-color: #f0f0ff;
+}
+
+button {
+  cursor: none;
 }
 </style>

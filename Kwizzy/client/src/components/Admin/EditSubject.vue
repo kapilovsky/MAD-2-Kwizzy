@@ -142,9 +142,9 @@ onUnmounted(() => {
             </p>
             <button
               @click="$emit('close')"
-              class="absolute top-0 right-0 bg-[#f0f0f0] p-1 text-black hover:bg-[#f0f0ff] rounded-md transition-colors duration-200 ease-linear flex items-center gap-1"
+              class="absolute top-0 right-0 bg-[#f0f0f0] p-1 text-black hover:bg-[#f0f0ff] rounded-md transition-colors duration-200 ease-linear flex items-center text-sm"
             >
-              <component :is="CloseIcon" class="w-6 h-6" />[<span
+              <component :is="CloseIcon" class="w-5 h-5 mr-1" />[<span
                 class="sohne-mono"
                 >ESC</span
               >]

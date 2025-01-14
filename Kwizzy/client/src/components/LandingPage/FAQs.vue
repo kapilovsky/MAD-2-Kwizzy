@@ -79,14 +79,13 @@ const toggleItem = (index) => {
         >
           <div class="flex items-center justify-between mt-4">
             <h3 class="text-lg font-bold">{{ item.question }}</h3>
-            <ion-icon
-              :name="openItemIndex === index ? 'remove-sharp' : 'add-sharp'"
-            ></ion-icon>
+            <p class="text-2xl" v-if="openItemIndex === index">-</p>
+            <p class="text-2xl" v-else>+</p>
           </div>
           <transition
             name="accordion"
-            enter-active-class="transition-all duration-500 ease-out"
-            leave-active-class="transition-all duration-500 ease-out"
+            enter-active-class="transition-all duration-300 ease-out"
+            leave-active-class="transition-all duration-300 ease-out"
           >
             <div
               v-show="openItemIndex === index"

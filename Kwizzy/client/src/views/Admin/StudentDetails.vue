@@ -90,8 +90,8 @@ onMounted(() => {
         <div class="flex items-start justify-between mb-8">
           <div>
             <h1 class="text-4xl font-bold sohne-mono mb-2">Student Details</h1>
-            <p class="text-neutral-600 sohne-mono">
-              Detailed information and performance metrics
+            <p class="text-neutral-600 sohne">
+              Detailed information and performance of the student
             </p>
           </div>
         </div>
@@ -176,9 +176,11 @@ onMounted(() => {
                   <div
                     class="h-2.5 rounded-full"
                     :class="[
-                      student.student_info.quiz_stats.performance_percentage >= 70
+                      student.student_info.quiz_stats.performance_percentage >=
+                      70
                         ? 'bg-green-600'
-                        : student.student_info.quiz_stats.performance_percentage >= 40
+                        : student.student_info.quiz_stats
+                            .performance_percentage >= 40
                         ? 'bg-yellow-400'
                         : 'bg-red-600',
                     ]"

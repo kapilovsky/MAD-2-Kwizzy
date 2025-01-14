@@ -111,14 +111,15 @@ onUnmounted(() => {
           @click.stop
         >
           <div class="flex justify-between items-center mb-4">
-            <p class="sohne-mono">
-              <span class="text-gray-500"> Admin / </span>Add Subject
+            <p class="sohne-mono font-bold text-sm">
+              <span class="text-gray-500 sohne-mono font-normal"> Admin </span>/
+              Add Subject
             </p>
             <button
               @click="$emit('close')"
-              class="p-1 text-black bg-[#f0f0f0] hover:bg-[#f0f0ff] rounded-md transition-colors duration-200 ease-linear flex items-center gap-1"
+              class="p-1 text-black bg-[#f0f0f0] hover:bg-[#f0f0ff] rounded-md transition-colors duration-200 ease-linear flex items-center text-xs"
             >
-              <component :is="CloseIcon" class="w-6 h-6" />[<span
+              <component :is="CloseIcon" class="w-4 mr-1" />[<span
                 class="sohne-mono"
                 >ESC</span
               >]
