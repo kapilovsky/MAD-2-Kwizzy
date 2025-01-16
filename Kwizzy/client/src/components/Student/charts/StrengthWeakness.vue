@@ -1,7 +1,7 @@
 <!-- components/Student/charts/StrengthWeakness.vue -->
 <template>
-  <div class="bg-white rounded-xl p-6">
-    <h3 class="text-xl mb-4 arame">{{ data.title }}</h3>
+  <div class="bg-white rounded-xl sm:p-6">
+    <h3 class="sm:text-xl mb-4 arame">{{ data.title }}</h3>
     <div class="grid grid-cols-2 gap-4">
       <div>
         <h4 class="text-sm font-semibold mb-2 text-green-600 sohne-mono">

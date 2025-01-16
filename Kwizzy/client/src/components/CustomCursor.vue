@@ -188,4 +188,14 @@ onUnmounted(() => {
   transform: translate(-50%, -50%) scale(3);
   border-color: #ffffff;
 }
+
+@media (max-width: 768px) {
+  .cursor-dot {
+    display: none;
+  }
+
+  .cursor-outline {
+    display: none;
+  }
+}
 </style>

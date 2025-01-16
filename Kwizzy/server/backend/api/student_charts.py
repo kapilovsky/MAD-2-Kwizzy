@@ -190,7 +190,7 @@ class StudentChartsApi(Resource):
                 .join(Subject, Chapter.subject_id == Subject.id)
                 .filter(QuizResult.user_id == student_id)
                 .group_by(Chapter.name, Subject.name)
-                .having(func.count(QuizResult.id) >= 2)  # At least 2 attempts
+                .having(func.count(QuizResult.id) >= 1)
                 .all()
             )
 

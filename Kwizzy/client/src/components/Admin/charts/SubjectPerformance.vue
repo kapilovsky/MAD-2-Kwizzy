@@ -1,8 +1,8 @@
 <!-- components/charts/SubjectPerformanceChart.vue -->
 <template>
-  <div class="bg-white rounded-xl p-6">
-    <h3 class="text-xl font-semibold mb-4 sohne-mono">Subject Performance</h3>
-    <div class="h-[400px]">
+  <div class="bg-white rounded-xl sm:p-6">
+    <h3 class="sm:text-xl font-semibold mb-4 sohne-mono">Subject Performance</h3>
+    <div class="sm:h-[400px]">
       <Bar v-if="chartData" :data="chartData" :options="chartOptions" />
     </div>
   </div>

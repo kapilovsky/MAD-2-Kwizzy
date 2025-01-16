@@ -1,4 +1,3 @@
-<!-- components/Student/charts/ActivityHeatmap.vue -->
 <template>
   <div class="heatmap-container">
     <div v-if="debug" class="mb-4 p-2 bg-gray-100 rounded">
@@ -12,10 +11,31 @@
       <CalendarHeatmap
         :values="formattedData"
         :end-date="endDate"
-        :range-color="['#ebedf0', '#9be9a8', '#40c463', '#30a14e', '#216e39']"
+        :range-color="[
+          '#f0f6ff',
+          '#e3eeff',
+          '#d6e6ff',
+          '#c9ddff',
+          '#b1d0ff',
+          '#99c4ff',
+          '#82b7ff',
+          '#6aabff',
+          '#529eff',
+          '#3b91ff',
+          '#2484ff',
+          '#0d77ff',
+          '#0066ff',
+          '#0052cc',
+          '#003d99',
+          '#002966',
+          '#001f4d',
+          '#001433',
+          '#000a1a',
+          '#000510',
+        ]"
         :tooltip="true"
         :tooltip-unit="'quiz'"
-        :max="10"
+        :max="Math.max(...formattedData.map((item) => item.count)) + 1"
         :round="2"
       />
     </div>
@@ -59,10 +79,6 @@ const formattedData = computed(() => {
     count: parseInt(item.count),
   }));
 });
-
-// Debug log
-console.log("Props data:", props.data);
-console.log("Formatted data:", formattedData.value);
 </script>
 
 <style scoped>
@@ -90,5 +106,17 @@ console.log("Formatted data:", formattedData.value);
 
 :deep(.vch__month__label) {
   font-size: 0.6rem;
+}
+
+:deep(.vch__external-legend-wrapper) {
+  padding: 2px;
+}
+
+@media (max-width: 768px) {
+  .heatmap-container {
+    width: 100%;
+    padding: 0;
+    min-height: 120px;
+  }
 }
 </style>

@@ -1,8 +1,8 @@
 <!-- components/Student/charts/RecentPerformance.vue -->
 <template>
-  <div class="bg-white rounded-xl p-6">
-    <h3 class="text-xl mb-4 arame">{{ data.title }}</h3>
-    <div class="w-auto h-[400px]">
+  <div class="bg-white rounded-xl sm:p-6">
+    <h3 class="sm:text-xl mb-4 arame">{{ data.title }}</h3>
+    <div class="sm:w-auto sm:h-[400px] w-full mx-auto">
       <Line :data="chartData" :options="chartOptions" />
     </div>
   </div>

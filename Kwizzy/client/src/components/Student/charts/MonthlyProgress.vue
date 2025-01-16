@@ -1,7 +1,7 @@
 <!-- components/Student/charts/MonthlyProgress.vue -->
 <template>
-  <div class="bg-white rounded-xl p-6">
-    <h3 class="text-xl mb-4 arame">{{ data.title }}</h3>
+  <div class="bg-white rounded-xl sm:p-6">
+    <h3 class="sm:text-xl mb-4 arame">{{ data.title }}</h3>
     <div v-if="!hasData" class="text-center text-gray-500 py-10">
       No performance data available yet
     </div>

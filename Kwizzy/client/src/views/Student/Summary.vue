@@ -1,6 +1,6 @@
 <!-- views/StudentDashboard.vue -->
 <template>
-  <div class="p-2">
+  <div class="sm:p-2 pb-4">
     <Loader v-if="isLoading" />
     <div v-else>
       <h2
@@ -12,14 +12,14 @@
       </h2>
 
       <!-- Activity Heatmap -->
-      <div class="mt-6 bg-white rounded-xl p-6">
-        <h3 class="text-xl mb-4 arame text-center">Activity Calendar</h3>
+      <div class="mt-6 bg-white rounded-xl sm:p-6">
+        <h3 class="sm:text-xl mb-4 arame sm:text-center">Activity Calendar</h3>
         <ActivityHeatmap v-if="chartData?.heatmap" :data="chartData.heatmap" />
       </div>
 
       <!-- Charts Grid -->
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <SubjectPerformance :data="chartData.subject_performance" />
+      <div class="grid grid-cols-1 md:grid-cols-2 md:gap-6 gap-12">
+        <StudentSubjectPerformance :data="chartData.subject_performance" />
         <RecentPerformance :data="chartData.recent_performance" />
         <MonthlyProgress :data="chartData.monthly_progress" />
         <StrengthWeakness :data="chartData.strength_weakness" />
@@ -33,7 +33,7 @@ import { ref, onMounted, computed } from "vue";
 import axios from "axios";
 import Loader from "@/components/Loader.vue";
 import { useCursor } from "@/composables/useCursor";
-import SubjectPerformance from "@/components/Student/charts/SubjectPerformance.vue";
+import StudentSubjectPerformance from "@/components/Student/charts/StudentSubjectPerformance.vue";
 import RecentPerformance from "@/components/Student/charts/RecentPerformance.vue";
 import MonthlyProgress from "@/components/Student/charts/MonthlyProgress.vue";
 import StrengthWeakness from "@/components/Student/charts/StrengthWeakness.vue";
@@ -54,7 +54,7 @@ const fetchChartData = async () => {
       headers: { Authorization: `Bearer ${token}` },
     });
     chartData.value = response.data;
-    console.log("API Response:", response.data.monthly_progress);
+    console.log("API Response:", response.data.strength_weakness);
   } catch (error) {
     console.error("Error fetching chart data:", error);
   } finally {

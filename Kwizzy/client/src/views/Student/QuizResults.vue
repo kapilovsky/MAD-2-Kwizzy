@@ -82,9 +82,9 @@
             </h3>
             <div
               class="text-2xl font-bold"
-              :class="percentage >= 70 ? 'text-green-400' : 'text-red-400'"
+              :class="percentage >= 40 ? 'text-green-400' : 'text-red-400'"
             >
-              {{ percentage >= 70 ? "PASSED" : "FAILED" }}
+              {{ percentage >= 40 ? "PASSED" : "FAILED" }}
             </div>
           </div>
         </div>
@@ -156,7 +156,7 @@
                     Your Answer
                   </p>
                   <p class="font-medium">
-                    Option {{ answer.selected_option_text }}
+                    Option: {{ answer.selected_option_text }}
                   </p>
                 </div>
                 <div v-if="!answer.is_correct">
@@ -164,7 +164,7 @@
                     Correct Answer
                   </p>
                   <p class="font-medium text-green-600">
-                    Option {{ answer.correct_option_text }}
+                    Option: {{ answer.correct_option_text }}
                   </p>
                 </div>
               </div>
@@ -278,9 +278,9 @@ const backToDashboard = async () => {
   }
 };
 
-onMounted(() => {
+onMounted(() => async () => {
   window.onbeforeunload = null;
-  fetchQuizResult();
+  await fetchQuizResult();
 });
 
 onUnmounted(() => {
