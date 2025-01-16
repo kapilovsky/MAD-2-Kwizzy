@@ -1,16 +1,133 @@
-{% extends "base.html" %} {% block header %}
-<div>
-  <img src="../../static/assets/kwizzy logo.png" alt="kwizzy logo" />
-  <h2>Kwizzy</h2>
-</div>
-<h1>Daily Quiz Reminder</h1>
-{% endblock %} {% block content %}
-<h2>Hello {{ student_name }}!</h2>
-<p>Here's what's new:</p>
-<ul>
-  {% for quiz in new_quizzes %}
-  <li>{{ quiz.name }} - {{ quiz.description }}</li>
-  {% endfor %}
-</ul>
-<a href="{{ dashboard_url }}" class="button">Go to Dashboard</a>
-{% endblock %}
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      body {
+        font-family: Neue Montreal;
+        line-height: 2;
+        color: #ffffff !important;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .container {
+        background: url("https://drive.usercontent.google.com/download?id=1iuCYroTZUdU9PvZmxzORoXymBOjVpCQ2&authuser=0");
+        background-size: cover;
+        border-radius: 10px;
+        padding: 20px;
+        color: #ffffff !important;
+        max-width: 800px !important;
+        margin: 0 auto;
+      }
+      .header {
+        background-color: transparent;
+        padding: 0px 20px;
+        border-radius: 10px 10px 0 0;
+        text-align: center;
+        color: #ffffff !important;
+      }
+      .header div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .header h2 {
+        font-family: Neue Montreal;
+        font-size: 36px;
+        letter-spacing: -1px;
+        margin-left: 10px;
+        color: #ffffff !important;
+      }
+      .header h1 {
+        font-family: "Times New Roman", Times, serif;
+        font-weight: 500;
+        letter-spacing: -2px;
+        color: #ffffff !important;
+      }
+      .header img {
+        width: 100px;
+        height: 100px;
+      }
+      .content {
+        background-color: transparent;
+        padding: 0px 20px;
+        border-radius: 0 0 10px 10px;
+        font-family: Neue Montreal;
+        color: #ffffff !important;
+      }
+      .content p {
+        font-size: 18px;
+      }
+      .content h2 {
+        font-size: 24px;
+      }
+      li {
+        font-size: 18px;
+      }
+      .button {
+        display: block;
+        text-align: center;
+        padding: 12px 0px;
+        background-color: #ffffff !important;
+        color: #131313 !important;
+        font-weight: 500;
+        text-decoration: none;
+        border-radius: 5px;
+        margin: 20px auto;
+        transition: all 0.2s ease;
+        font-size: 18px;
+      }
+      .button:hover {
+        transform: translateY(-2px);
+        scale: 0.98;
+      }
+      hr {
+        border: 0;
+        height: 1px;
+        background: #ffffff !important;
+        margin: 40px 0;
+      }
+      .footer {
+        margin-top: 20px;
+        text-align: center;
+        color: #ffffff !important;
+        font-size: 12px;
+        line-height: 1;
+        font-family: Neue Montreal;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="container">
+      <div class="header">
+        <div>
+          <img
+            src="https://drive.usercontent.google.com/download?id=1t1T9OVkbTji3X7bwmRHAKJhsuLvEo1O1"
+            alt="kwizzy logo"
+          />
+          <h2>Kwizzy</h2>
+        </div>
+        <h1>Daily Quiz Reminder</h1>
+      </div>
+
+      <div class="content">
+        <h2>Hello {{ student_name }}!</h2>
+        <p>Here's what's new:</p>
+        <ul>
+          {% for quiz in new_quizzes %}
+          <li>{{ quiz.name }} - {{ quiz.description }}</li>
+          {% endfor %}
+        </ul>
+        <a href="{{ dashboard_url }}" class="button">Go to Dashboard</a>
+      </div>
+      <hr />
+      <div class="footer">
+        <p>
+          This is an automated message from Kwizzy. Please do not reply to this
+          email.
+        </p>
+        <p>Made with some ☕, aloo bhujiya and 🤍 by Kapil :)</p>
+        <p>© 2024 Kwizzy. All rights reserved.</p>
+      </div>
+    </div>
+  </body>
+</html>
