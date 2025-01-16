@@ -112,7 +112,6 @@ const handleSubmit = async () => {
     });
 
     if (response.data && response.status === 201) {
-
       localStorage.removeItem("quizStartTime");
       localStorage.removeItem("totalDuration");
       localStorage.removeItem("quizEndTime");

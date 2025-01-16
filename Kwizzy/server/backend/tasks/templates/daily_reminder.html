@@ -1,10 +1,11 @@
-{% extends "base.html" %} {% block header %}Daily Quiz Reminder{% endblock %} {%
-block content %}
+{% extends "base.html" %} {% block header %}
+<div>
+  <img src="../../static/assets/kwizzy logo.png" alt="kwizzy logo" />
+  <h2>Kwizzy</h2>
+</div>
+<h1>Daily Quiz Reminder</h1>
+{% endblock %} {% block content %}
 <h2>Hello {{ student_name }}!</h2>
-<p>
-  We noticed you haven't taken any quizzes recently. Stay on track with your
-  learning journey!
-</p>
 <p>Here's what's new:</p>
 <ul>
   {% for quiz in new_quizzes %}

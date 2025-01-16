@@ -6,5 +6,5 @@ from ..models import User
 
 class TaskAPI(Resource):
     def get(self):
-        result = generate_monthly_activity_report.delay()
+        result = send_daily_reminders.delay()
         return {"result_id": result.id}, 200
