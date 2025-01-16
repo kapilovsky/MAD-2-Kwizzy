@@ -155,17 +155,22 @@
                   <p class="text-sm text-gray-500 font-mono uppercase mb-2">
                     Your Answer
                   </p>
-                  <p class="font-medium">
+                  <p v-if="answer.selected_option_text" class="font-medium">
                     Option: {{ answer.selected_option_text }}
                   </p>
+                  <p v-else class="text-gray-400 italic">Loading...</p>
                 </div>
                 <div v-if="!answer.is_correct">
                   <p class="text-sm text-gray-500 font-mono uppercase mb-2">
                     Correct Answer
                   </p>
-                  <p class="font-medium text-green-600">
+                  <p
+                    v-if="answer.correct_option_text"
+                    class="font-medium text-green-600"
+                  >
                     Option: {{ answer.correct_option_text }}
                   </p>
+                  <p v-else class="text-gray-400 italic">Loading...</p>
                 </div>
               </div>
             </div>
@@ -183,6 +188,12 @@
         </button>
       </div>
     </div>
+  </div>
+  <div v-if="error" class="text-red-500 p-4 rounded-lg bg-red-50">
+    {{ error }}
+    <button @click="fetchQuizResult" class="text-blue-500 underline ml-2">
+      Retry
+    </button>
   </div>
 </template>
 
@@ -208,6 +219,7 @@ const { currentResult, isLoading } = storeToRefs(quizResultStore);
 
 const quizResult = ref(null);
 const error = ref(null);
+const isInitialLoad = ref(true);
 
 const quizId = route.params.quizId;
 const studentId = route.params.id;
@@ -224,14 +236,7 @@ const fetchQuizResult = async () => {
   try {
     error.value = null;
     quizResultStore.isLoading = true;
-    // If we have result in store, use it
-    if (quizResultStore.currentResult) {
-      console.log("Using result from store:", quizResultStore.currentResult);
-      quizResult.value = quizResultStore.currentResult;
-      return;
-    }
 
-    // If no result in store, fetch from API
     const resultId = route.query.resultId;
     if (!resultId) {
       throw new Error("No result ID provided");
@@ -239,14 +244,16 @@ const fetchQuizResult = async () => {
 
     const token = localStorage.getItem("access_token");
     if (!token) throw new Error("No access token available");
-
-    const response = await axios.get(`${API_URL}/quiz-results/${resultId}`, {
-      headers: { Authorization: `Bearer ${token}` },
-    });
-
-    quizResult.value = response.data;
-    console.log("Fetched result from API:", response.data);
-    quizResultStore.isLoading = false;
+    if (isInitialLoad.value) {
+      const result = await quizResultStore.fetchResult(resultId);
+      quizResult.value = result;
+      isInitialLoad.value = false;
+    } else if (quizResultStore.currentResult) {
+      quizResult.value = quizResultStore.currentResult;
+    } else {
+      const result = await quizResultStore.fetchResult(resultId);
+      quizResult.value = result;
+    }
   } catch (err) {
     console.error("Error fetching quiz result:", err);
     error.value = err.message || "Failed to load quiz results";
@@ -256,13 +263,23 @@ const fetchQuizResult = async () => {
   }
 };
 
+// Watch for route changes
 watch(
-  [() => route.query.resultId, currentResult],
-  ([newResultId, newResult]) => {
+  () => route.query.resultId,
+  async (newResultId) => {
+    if (newResultId) {
+      isInitialLoad.value = true; // Reset initial load flag
+      await fetchQuizResult();
+    }
+  }
+);
+
+// Watch for store changes
+watch(
+  currentResult,
+  (newResult) => {
     if (newResult) {
       quizResult.value = newResult;
-    } else if (newResultId) {
-      fetchQuizResult();
     }
   },
   { immediate: true }
@@ -282,17 +299,4 @@ onMounted(() => async () => {
   window.onbeforeunload = null;
   await fetchQuizResult();
 });
-
-onUnmounted(() => {
-  quizResultStore.clearResult();
-});
-
-watch(
-  () => route.query.resultId,
-  (newResultId) => {
-    if (newResultId) {
-      fetchQuizResult();
-    }
-  }
-);
 </script>

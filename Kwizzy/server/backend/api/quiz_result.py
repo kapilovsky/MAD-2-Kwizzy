@@ -6,6 +6,7 @@ from flask import request
 from .. import db, cache
 from time import perf_counter_ns
 from sqlalchemy import or_
+from sqlalchemy.orm import joinedload
 
 
 class QuizResultApi(Resource):
@@ -15,8 +16,17 @@ class QuizResultApi(Resource):
     @cache.memoize(timeout=300)
     def get_quiz_result_by_id(self, result_id):
         """Cached method to get single quiz result"""
-        quiz_result = QuizResult.query.get_or_404(result_id)
-        return quiz_result.to_dict()
+        try:
+            # Use joinedload to load relationships efficiently
+            quiz_result = QuizResult.query.options(
+                joinedload(QuizResult.quiz),
+                joinedload(QuizResult.user_answers).joinedload(
+                    UserAnswer.selected_option_rel
+                ),
+            ).get_or_404(result_id)
+            return quiz_result.to_dict()
+        except Exception as e:
+            return ({"error": f"Error fetching quiz result: {str(e)}"}), 500
 
     @cache.memoize(timeout=300)
     def get_user_quiz_results(self, user_id):

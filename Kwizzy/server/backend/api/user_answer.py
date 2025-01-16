@@ -102,12 +102,11 @@ class UserAnswerApi(Resource):
 
             # Prepare detailed result response
             result = {
-                "id": quiz_result.id,  # Add this
                 "quiz_id": quiz.id,
                 "quiz_name": quiz.name,
-                "quiz_description": quiz.description,  # Add this
+                "quiz_description": quiz.description,
                 "total_questions": total_questions,
-                "marks_scored": correct_answers,  # Rename for consistency
+                "marks_scored": correct_answers,
                 "total_marks": total_questions,
                 "percentage": round(percentage, 2),
                 "result_id": quiz_result.id,

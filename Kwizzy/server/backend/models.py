@@ -164,27 +164,46 @@ class UserAnswer(db.Model):
     is_correct = Column(Boolean, default=False)
 
     quiz_result = relationship("QuizResult", back_populates="user_answers")
+    question = relationship("Question", backref="user_answers")
+    selected_option_rel = relationship("Option", foreign_keys=[selected_option])
 
     def to_dict(self):
-        selected_option_text = (
-            Option.query.filter_by(id=self.selected_option).first().text
-            if self.selected_option
-            else None
-        )
-        correct_option_text = (
-            Option.query.filter_by(question_id=self.question_id, is_correct=True)
-            .first()
-            .text
-        )
-        return {
-            "id": self.id,
-            "result_id": self.result_id,
-            "question_id": self.question_id,
-            "selected_option": self.selected_option,
-            "selected_option_text": selected_option_text,
-            "correct_option_text": correct_option_text,
-            "is_correct": self.is_correct,
-        }
+        try:
+            # Get selected option text
+            selected_option_text = None
+            if self.selected_option:
+                selected_option = Option.query.get(self.selected_option)
+                if selected_option:
+                    selected_option_text = selected_option.text
+
+            # Get correct option text
+            correct_option = Option.query.filter_by(
+                question_id=self.question_id, is_correct=True
+            ).first()
+            correct_option_text = (
+                correct_option.text if correct_option else "No correct option found"
+            )
+
+            return {
+                "id": self.id,
+                "result_id": self.result_id,
+                "question_id": self.question_id,
+                "selected_option": self.selected_option,
+                "selected_option_text": selected_option_text or "No answer selected",
+                "correct_option_text": correct_option_text,
+                "is_correct": self.is_correct,
+            }
+        except Exception as e:
+            print(f"Error in UserAnswer.to_dict(): {str(e)}")
+            return {
+                "id": self.id,
+                "result_id": self.result_id,
+                "question_id": self.question_id,
+                "selected_option": self.selected_option,
+                "selected_option_text": "Error loading answer",
+                "correct_option_text": "Error loading correct answer",
+                "is_correct": self.is_correct,
+            }
 
 
 # ||----------------------Quiz Result Model----------------------||#
@@ -204,26 +223,35 @@ class QuizResult(db.Model):
     user = relationship("User", back_populates="quiz_results")
     quiz = relationship("Quiz", back_populates="quiz_results")
     user_answers = relationship(
-        "UserAnswer", back_populates="quiz_result", cascade="all, delete"
+        "UserAnswer", back_populates="quiz_result", cascade="all, delete", lazy="joined"
     )
 
     def to_dict(self):
-        return {
-            "id": self.id,
-            "quiz_id": self.quiz_id,
-            "user_id": self.user_id,
-            "marks_scored": self.marks_scored,
-            "total_marks": self.total_marks,
-            "completed_at_formatted": format_ist_datetime(self.completed_at),  #
-            "user_answers": (
-                [answer.to_dict() for answer in self.user_answers]
-                if hasattr(self, "user_answers")
-                else []
-            ),
-            # Add quiz details if needed
-            "quiz_name": self.quiz.name if self.quiz else None,
-            "quiz_description": self.quiz.description if self.quiz else None,
-        }
+        try:
+            return {
+                "id": self.id,
+                "quiz_id": self.quiz_id,
+                "user_id": self.user_id,
+                "marks_scored": self.marks_scored,
+                "total_marks": self.total_marks,
+                "completed_at_formatted": format_ist_datetime(self.completed_at),
+                "user_answers": [answer.to_dict() for answer in self.user_answers],
+                "quiz_name": self.quiz.name if self.quiz else None,
+                "quiz_description": self.quiz.description if self.quiz else None,
+            }
+        except Exception as e:
+            print(f"Error in QuizResult.to_dict(): {str(e)}")
+            return {
+                "id": self.id,
+                "quiz_id": self.quiz_id,
+                "user_id": self.user_id,
+                "marks_scored": self.marks_scored,
+                "total_marks": self.total_marks,
+                "completed_at_formatted": format_ist_datetime(self.completed_at),
+                "user_answers": [],
+                "quiz_name": "Error loading quiz name",
+                "quiz_description": "Error loading quiz description",
+            }
 
 
 class PaymentHistory(db.Model):

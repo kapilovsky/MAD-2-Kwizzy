@@ -1,4 +1,4 @@
-<!-- components/QuizInterface.vue -->
+<!-- components/QuizTaking.vue -->
 <script setup>
 import { onMounted, onUnmounted, ref } from "vue";
 import { useQuizStore } from "@/stores/quizStore";
@@ -112,14 +112,10 @@ const handleSubmit = async () => {
     });
 
     if (response.data && response.status === 201) {
-      // Store the result in both localStorage and Pinia store
-      const quizResult = response.data.result;
-      localStorage.setItem("quizResult", JSON.stringify(quizResult));
-      quizResultStore.setResult(quizResult);
 
-      // Clear quiz data
       localStorage.removeItem("quizStartTime");
       localStorage.removeItem("totalDuration");
+      localStorage.removeItem("quizEndTime");
 
       // Show success message
       toast.success("Quiz submitted successfully!");
@@ -132,7 +128,7 @@ const handleSubmit = async () => {
           quizId: route.params.quizId,
         },
         query: {
-          resultId: quizResult.result_id,
+          resultId: response.data.result.result_id,
         },
       });
     }

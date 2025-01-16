@@ -29,8 +29,19 @@ export const useQuizResultStore = defineStore("quizResult", {
           }
         );
 
-        this.currentResult = response.data;
-        return response.data;
+        const formattedResult = {
+          ...response.data,
+          user_answers: response.data.user_answers.map((answer) => ({
+            ...answer,
+            selected_option_text:
+              answer.selected_option_text || "No answer selected",
+            correct_option_text: answer.correct_option_text || "Loading...",
+          })),
+        };
+
+        this.currentResult = formattedResult;
+        console.log("Fetched result:", formattedResult);
+        return formattedResult;
       } catch (error) {
         this.error = error.message;
         throw error;
