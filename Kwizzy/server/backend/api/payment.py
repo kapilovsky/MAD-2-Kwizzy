@@ -65,54 +65,108 @@ class TransactionHistoryAPI(Resource):
 
 class TransactionExportAPI(Resource):
     @jwt_required()
-    def get(self, student_id):
-        try:
-            # Create filename with timestamp
-            timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-            filename = f"transactions_{student_id}_{timestamp}_{uuid4().hex[:8]}.csv"
-
-            # Create filepath
-            csv_folder = os.path.join(current_app.config["UPLOAD_FOLDER"], "csv")
-            os.makedirs(csv_folder, exist_ok=True)
-            filepath = os.path.join(csv_folder, filename)
-
-            # Get transactions
-            transactions = PaymentHistory.query.filter_by(user_id=student_id).all()
-            # use to_dict() method to get the data in the required format
-            transactions = [payment.to_dict() for payment in transactions]
-            print(transactions)
-
-            # Write to CSV
-            with open(filepath, "w", newline="") as file:
-                writer = csv.writer(file)
-                writer.writerow(
-                    [
-                        "S.No",
-                        "Transaction ID",
-                        "Quiz Name",
-                        "Amount in Rs.",
-                        "Payment Date",
-                    ]
+    def get(self, student_id=None):
+        if student_id:
+            try:
+                # Create filename with timestamp
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                filename = (
+                    f"transactions_{student_id}_{timestamp}_{uuid4().hex[:8]}.csv"
                 )
 
-                for index, transaction in enumerate(transactions, 1):
+                # Create filepath
+                csv_folder = os.path.join(current_app.config["UPLOAD_FOLDER"], "csv")
+                os.makedirs(csv_folder, exist_ok=True)
+                filepath = os.path.join(csv_folder, filename)
+
+                # Get transactions
+                transactions = PaymentHistory.query.filter_by(user_id=student_id).all()
+                # use to_dict() method to get the data in the required format
+                transactions = [payment.to_dict() for payment in transactions]
+                print(transactions)
+
+                # Write to CSV
+                with open(filepath, "w", newline="") as file:
+                    writer = csv.writer(file)
                     writer.writerow(
                         [
-                            index,
-                            transaction["transaction_id"],
-                            transaction["quiz"],
-                            transaction["amount"],
-                            transaction["created_at"],
+                            "S.No",
+                            "Transaction ID",
+                            "Quiz Name",
+                            "Amount in Rs.",
+                            "Payment Date",
                         ]
                     )
 
-            return send_file(
-                filepath,
-                as_attachment=True,
-                download_name=filename,
-                mimetype="text/csv",
-            )
+                    for index, transaction in enumerate(transactions, 1):
+                        writer.writerow(
+                            [
+                                index,
+                                transaction["transaction_id"],
+                                transaction["quiz"],
+                                transaction["amount"],
+                                transaction["created_at"],
+                            ]
+                        )
 
-        except Exception as e:
-            print(f"Error exporting transactions: {str(e)}")
-            return {"error": str(e)}, 500
+                return send_file(
+                    filepath,
+                    as_attachment=True,
+                    download_name=filename,
+                    mimetype="text/csv",
+                )
+
+            except Exception as e:
+                print(f"Error exporting transactions: {str(e)}")
+                return {"error": str(e)}, 500
+
+        else:
+            try:
+                # Create filename with timestamp
+                timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+                filename = f"transactions_{timestamp}_{uuid4().hex[:8]}.csv"
+
+                # Create filepath
+                csv_folder = os.path.join(current_app.config["UPLOAD_FOLDER"], "csv")
+                os.makedirs(csv_folder, exist_ok=True)
+                filepath = os.path.join(csv_folder, filename)
+
+                # Get transactions
+                transactions = PaymentHistory.query.all()
+                # use to_dict() method to get the data in the required format
+                transactions = [payment.to_dict() for payment in transactions]
+
+                # Write to CSV
+                with open(filepath, "w", newline="") as file:
+                    writer = csv.writer(file)
+                    writer.writerow(
+                        [
+                            "S.No",
+                            "Transaction ID",
+                            "Quiz Name",
+                            "Amount in Rs.",
+                            "Payment Date",
+                        ]
+                    )
+
+                    for index, transaction in enumerate(transactions, 1):
+                        writer.writerow(
+                            [
+                                index,
+                                transaction["transaction_id"],
+                                transaction["quiz"],
+                                transaction["amount"],
+                                transaction["created_at"],
+                            ]
+                        )
+
+                return send_file(
+                    filepath,
+                    as_attachment=True,
+                    download_name=filename,
+                    mimetype="text/csv",
+                )
+
+            except Exception as e:
+                print(f"Error exporting transactions: {str(e)}")
+                return {"error": str(e)}, 500

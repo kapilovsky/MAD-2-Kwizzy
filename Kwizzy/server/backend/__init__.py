@@ -181,7 +181,11 @@ def create_app():
         "/api/payments/history",
         "/api/payments/history/<int:user_id>",
     )
-    api.add_resource(TransactionExportAPI, "/api/export/transactions/<int:student_id>")
+    api.add_resource(
+        TransactionExportAPI,
+        "/api/export/transactions",
+        "/api/export/transactions/<int:student_id>",
+    )
 
     with app.app_context():
         db.create_all()

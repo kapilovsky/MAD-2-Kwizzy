@@ -28,9 +28,18 @@
       </header>
 
       <div class="sm:mt-4 mt-16">
-        <h1 class="sm:text-5xl text-3xl font-bold tracking-tighter">
-          Transactions
-        </h1>
+        <div class="flex items-center justify-between">
+          <h1 class="sm:text-5xl text-3xl font-bold tracking-tighter">
+            Transactions
+          </h1>
+          <button
+            @click="exportTransactions"
+            class="text-[#192227] font-bold sohne tracking-tighter"
+            :disabled="isExporting"
+          >
+            <span>{{ isExporting ? "Exporting..." : "[Export CSV]" }}</span>
+          </button>
+        </div>
 
         <div>
           <table class="w-full table-auto mt-8">
@@ -78,6 +87,7 @@ const isLoading = ref(true);
 const route = useRoute();
 const transactions = ref([]);
 const searchQuery = ref("");
+const isExporting = ref(false);
 
 const handleSearch = (query) => {
   searchQuery.value = query;
@@ -99,6 +109,35 @@ const filteredTransactions = computed(() => {
         .includes(searchQuery.value.toLowerCase())
   );
 });
+
+const exportTransactions = async () => {
+  try {
+    isExporting.value = true;
+    const token = localStorage.getItem("access_token");
+    if (!token) throw new Error("Token not found");
+
+    const response = await axios.get(`${API_URL}/export/transactions`, {
+      headers: { Authorization: `Bearer ${token}` },
+      responseType: "blob",
+    });
+
+    const url = window.URL.createObjectURL(new Blob([response.data]));
+    const link = document.createElement("a");
+    link.href = url;
+    link.setAttribute(
+      "download",
+      `transactions_${new Date().toISOString().split("T")[0]}.csv`
+    );
+    document.body.appendChild(link);
+    link.click();
+    link.remove();
+    window.URL.revokeObjectURL(url);
+  } catch (error) {
+    console.error("Error exporting transactions:", error);
+  } finally {
+    isExporting.value = false;
+  }
+};
 
 const fetchTransactions = async () => {
   try {

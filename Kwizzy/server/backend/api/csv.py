@@ -209,7 +209,7 @@ def generate_admin_quiz_export(admin_id):
             # Write headers
             writer.writerow(
                 [
-                    "User ID",
+                    "S.No",
                     "Name",
                     "Email",
                     "Total Quizzes",
@@ -221,9 +221,10 @@ def generate_admin_quiz_export(admin_id):
                     "Performance Level",
                 ]
             )
-
+            index = 1
             # Write data for each student
             for student in students:
+
                 quiz_results = QuizResult.query.filter_by(user_id=student.id).all()
 
                 if quiz_results:
@@ -245,7 +246,7 @@ def generate_admin_quiz_export(admin_id):
 
                     writer.writerow(
                         [
-                            student.id,
+                            index,
                             student.name,
                             student.email,
                             total_quizzes,
@@ -257,6 +258,7 @@ def generate_admin_quiz_export(admin_id):
                             performance_level,
                         ]
                     )
+                    index += 1
 
         # Generate download URL
         base_url = os.getenv("BASE_URL", "http://localhost:5000")
