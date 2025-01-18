@@ -6,7 +6,8 @@ from dotenv import load_dotenv
 import os
 import logging
 from jinja2 import Environment, FileSystemLoader
-from ..utils import IndianTimeZone
+from ..utils import IndianTimeZone, EmailRateLimiter
+
 
 template_dir = os.path.join(os.path.dirname(__file__), "templates")
 jinja_env = Environment(loader=FileSystemLoader(template_dir))
@@ -24,39 +25,24 @@ api_instance = sib_api_v3_sdk.TransactionalEmailsApi(
     sib_api_v3_sdk.ApiClient(configuration)
 )
 
-# subject = "from the Python SDK!"
-# sender = {"name": "Sendinblue", "email": "kapilydym23@gmail.com"}
-# replyTo = {"name": "Sendinblue", "email": "kapilydym23@gmail.com"}
-# html_content = (
-#     "<html><body><h1>This is my first transactional email </h1></body></html>"
-# )
-# to = [{"email": "k4p1ll.23@gmail.com", "name": "Kapil Yadav"}]
-# params = {"parameter": "My param value", "subject": "New Subject"}
-# send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
-#     to=to,
-#     # bcc=bcc,
-#     # cc=cc,
-#     # reply_to=reply_to,
-#     # headers=headers,
-#     html_content=html_content,
-#     sender=sender,
-#     subject=subject,
-# )
-
-
-# @celery.task
-# def send_email():
-#     try:
-#         api_response = api_instance.send_transac_email(send_smtp_email)
-#         print(api_response)
-#     except ApiException as e:
-#         print("Exception when calling SMTPApi->send_transac_email: %s\n" % e)
-
 
 class EmailService:
+    def __init__(self):
+        self.rate_limiter = EmailRateLimiter()
+
     @staticmethod
     def send_email(to_email, to_name, subject, template_name, template_data):
         try:
+            # Create rate limiter instance
+            rate_limiter = EmailRateLimiter()
+
+            # Check if we can send more emails
+            if not rate_limiter.can_send_email():
+                logger.warning(
+                    f"Daily email limit reached. Cannot send email to {to_email}"
+                )
+                return False
+
             # Render HTML template
             template = jinja_env.get_template(f"{template_name}")
 
@@ -70,8 +56,8 @@ class EmailService:
             send_smtp_email = sib_api_v3_sdk.SendSmtpEmail(
                 to=to, html_content=html_content, sender=sender, subject=subject
             )
-
             api_response = api_instance.send_transac_email(send_smtp_email)
+            rate_limiter.increment_count()
             logger.info(f"Email sent successfully to {to_email}")
             return True
 
@@ -84,6 +70,16 @@ class EmailService:
 def send_daily_reminders():
     """Send daily reminder to inactive user"""
     try:
+        rate_limiter = EmailRateLimiter()
+        remaining_emails = rate_limiter.get_remaining_emails()
+
+        if remaining_emails <= 0:
+            logger.warning("Daily email limit reached. Skipping reminder sends.")
+            return {
+                "status": "warning",
+                "message": "Daily email limit reached",
+                "details": {"remaining_quota": 0},
+            }
 
         students = User.query.filter_by(role="student").all()
         if not students:
@@ -96,6 +92,12 @@ def send_daily_reminders():
         failed_sends = 0
 
         for student in students:
+            if not rate_limiter.can_send_email():
+                skipped_sends += len(students) - (successful_sends + failed_sends)
+                logger.warning(
+                    f"Daily limit reached. Skipping remaining {skipped_sends} students"
+                )
+                break
             try:
                 template_data = {
                     "student_name": student.name,
@@ -125,11 +127,13 @@ def send_daily_reminders():
 
         return {
             "status": "success",
-            "message": f"Daily reminders processed. Success: {successful_sends}, Failed: {failed_sends}",
+            "message": f"Daily reminders processed. Success: {successful_sends}, Failed: {failed_sends}, Skipped: {skipped_sends}",
             "details": {
                 "successful_sends": successful_sends,
                 "failed_sends": failed_sends,
+                "skipped_sends": skipped_sends,
                 "total_students": len(students),
+                "remaining_quota": rate_limiter.get_remaining_emails(),
             },
         }
 
@@ -152,6 +156,19 @@ def generate_monthly_activity_report():
     Scheduled to run on the first day of each month
     """
     try:
+        rate_limiter = EmailRateLimiter()
+        remaining_emails = rate_limiter.get_remaining_emails()
+
+        if remaining_emails <= 0:
+            logger.warning(
+                "Daily email limit reached. Skipping generating monthly reports."
+            )
+            return {
+                "status": "warning",
+                "message": "Daily email limit reached",
+                "details": {"remaining_quota": 0},
+            }
+
         # Get previous month's date range
         today = datetime.now()
         first_day_current = today.replace(day=1)
@@ -170,6 +187,12 @@ def generate_monthly_activity_report():
 
         for student in students:
             try:
+                if not rate_limiter.can_send_email():
+                    skipped_sends += len(students) - (successful_sends + failed_sends)
+                    logger.warning(
+                        f"Daily limit reached. Skipping remaining {skipped_sends} students"
+                    )
+                    break
                 # Get student's quiz activity for previous month
                 monthly_quiz_results = (
                     QuizResult.query.join(Quiz)
@@ -271,6 +294,8 @@ def generate_monthly_activity_report():
                 "failed_sends": failed_sends,
                 "total_students": len(students),
                 "period": first_day_previous.strftime("%B %Y"),
+                "remaining_quota": rate_limiter.get_remaining_emails(),
+                "skipped_sends": skipped_sends,
             },
         }
 
@@ -286,6 +311,13 @@ def generate_monthly_activity_report():
 def send_export_notification(to_email, to_name, subject, download_url):
     """Send notification when export is ready"""
     try:
+        rate_limiter = EmailRateLimiter()
+
+        if not rate_limiter.can_send_email():
+            logger.warning(
+                f"Daily email limit reached. Cannot send export notification to {to_email}"
+            )
+            return {"status": "error", "message": "Daily email limit reached"}
         template_data = {
             "user_name": to_name,
             "export_type": subject,

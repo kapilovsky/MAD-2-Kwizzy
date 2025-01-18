@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required, get_jwt_identity
-from ..utils import role_required
+from ..utils import role_required, EmailRateLimiter
 from ..models import User, QuizResult, Quiz, Chapter, Subject
 from .. import db, celery
 from flask import current_app, url_for, request
@@ -18,6 +18,9 @@ os.makedirs(CSV_FOLDER, exist_ok=True)
 
 
 class UserQuizExportAPI(Resource):
+    def __init__(self):
+        self.rate_limiter = EmailRateLimiter()
+
     @jwt_required()
     def post(self):
         """Trigger quiz export for current user"""
@@ -91,6 +94,20 @@ class AdminQuizExportAPI(Resource):
 def generate_user_quiz_export(user_id):
     """Generate CSV export of user's quiz results"""
     try:
+        # Check if user exists
+        user = User.query.get(user_id)
+        if not user:
+            return {"status": "error", "message": "User not found"}
+
+        rate_limiter = EmailRateLimiter()
+        remaining_emails = rate_limiter.get_remaining_emails()
+
+        if remaining_emails <= 0:
+            return {
+                "status": "error",
+                "message": "Email limit exceeded. Please try again later.",
+            }
+
         # Create filename with timestamp
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"user_{user_id}_quiz_export_{timestamp}.csv"
@@ -163,6 +180,20 @@ def generate_user_quiz_export(user_id):
 def generate_admin_quiz_export(admin_id):
     """Generate CSV export of all users' quiz data"""
     try:
+        # Check if admin exists
+        admin = User.query.get(admin_id)
+        if not admin or admin.role != "admin":
+            return {"status": "error", "message": "Admin not found"}
+
+        rate_limiter = EmailRateLimiter()
+        remaining_emails = rate_limiter.get_remaining_emails()
+
+        if remaining_emails <= 0:
+            return {
+                "status": "error",
+                "message": "Email limit exceeded. Please try again later.",
+            }
+
         # Create filename with timestamp
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         filename = f"admin_export_{timestamp}.csv"

@@ -1,99 +1,168 @@
-<!-- templates/export_ready.html -->
 <!DOCTYPE html>
 <html>
   <head>
     <style>
       body {
-        font-family: Arial, sans-serif;
-        line-height: 1.6;
-        color: #333;
-        max-width: 600px;
+        font-family: Neue Montreal;
+        line-height: 2;
+        color: #ffffff !important;
         margin: 0 auto;
         padding: 20px;
       }
       .container {
-        background-color: #f9f9f9;
+        background: url("https://raw.githubusercontent.com/k4p1l/MAD-2-Kwizzy/refs/heads/main/Kwizzy/server/backend/static/assets/sky.png?token=GHSAT0AAAAAAC37TKUAELRVK4LWKCGUOTV6Z4LYHCQ");
+        background-size: cover;
         border-radius: 10px;
         padding: 20px;
-        margin-top: 20px;
+        color: #ffffff !important;
+        max-width: 800px !important;
+        margin: 0 auto;
       }
       .header {
-        background-color: #192227;
-        color: white;
-        padding: 20px;
+        background-color: transparent;
+        padding: 0px 20px;
         border-radius: 10px 10px 0 0;
         text-align: center;
+        color: #ffffff !important;
+      }
+      .header div {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .header h2 {
+        font-family: Neue Montreal;
+        font-size: 36px;
+        letter-spacing: -1px;
+        margin-left: 10px;
+        color: #ffffff !important;
+      }
+      .header h1 {
+        font-family: "Times New Roman", Times, serif;
+        font-weight: 500;
+        letter-spacing: -2px;
+        color: #ffffff !important;
+      }
+      .header img {
+        width: 100px;
+        height: 100px;
       }
       .content {
-        background-color: white;
-        padding: 20px;
+        background-color: transparent;
+        padding: 0px 20px;
         border-radius: 0 0 10px 10px;
-        border: 1px solid #eee;
+        font-family: Neue Montreal;
+        color: #ffffff !important;
+      }
+      .content p {
+        font-size: 18px;
+        color: #ffffff !important;
+      }
+      .content h2 {
+        font-size: 24px;
+        color: #ffffff !important;
+      }
+      .export-details {
+        background-color: rgba(255, 255, 255, 0.1);
+        padding: 20px;
+        border-radius: 10px;
+        margin: 20px 0;
+        color: #ffffff !important;
+      }
+      .export-details ul {
+        list-style: none;
+        padding: 0;
+        color: #ffffff !important;
+      }
+      .export-details li {
+        font-size: 16px;
+        margin: 10px 0;
+        color: #ffffff !important;
+      }
+      .export-details h3 {
+        font-size: 20px;
+        color: #ffffff !important;
+      }
+      .export-details p {
+        color: #ffffff !important;
+      }
+      .warning-note {
+        background-color: rgba(255, 255, 255, 0.15);
+        backdrop-filter: blur(4px);
+        padding: 15px;
+        border-radius: 10px;
+        margin: 20px 0;
+        font-size: 16px;
+        color: #ffffff !important;
       }
       .button {
-        display: inline-block;
-        padding: 12px 24px;
-        background-color: #192227;
-        color: white;
+        display: block;
+        text-align: center;
+        padding: 12px 0px;
+        background-color: #ffffff !important;
+        color: #131313 !important;
+        font-weight: 500;
         text-decoration: none;
         border-radius: 5px;
-        margin: 20px 0;
+        margin: 20px auto;
+        transition: all 0.2s ease;
+        font-size: 18px;
+        width: 200px;
       }
       .button:hover {
-        background-color: #2c3e50;
+        transform: translateY(-2px);
+        scale: 0.98;
+      }
+      hr {
+        border: 0;
+        height: 1px;
+        background: #ffffff !important;
+        margin: 40px 0;
       }
       .footer {
         margin-top: 20px;
         text-align: center;
-        color: #666;
+        color: #ffffff !important;
         font-size: 12px;
+        line-height: 1;
+        font-family: Neue Montreal;
       }
-      .info {
-        background-color: #f8f9fa;
-        padding: 15px;
-        border-radius: 5px;
-        margin: 15px 0;
-        border-left: 4px solid #192227;
-      }
-      .warning {
-        color: #856404;
-        background-color: #fff3cd;
-        padding: 10px;
-        border-radius: 5px;
-        margin: 15px 0;
-        font-size: 14px;
+      .footer p {
+        color: #ffffff !important;
       }
     </style>
   </head>
   <body>
     <div class="container">
       <div class="header">
-        <h1>Export Ready!</h1>
+        <div>
+          <img
+            src="https://raw.githubusercontent.com/k4p1l/MAD-2-Kwizzy/refs/heads/main/Kwizzy/server/backend/static/assets/kwizzy%20logo.png?token=GHSAT0AAAAAAC37TKUBOFGUTRGAAE47FLMMZ4LYHNQ"
+            alt="kwizzy logo"
+          />
+          <h2>Kwizzy</h2>
+        </div>
+        <h1>Your Export is Ready!</h1>
       </div>
 
       <div class="content">
-        <p>Hello {{ user_name }},</p>
-
+        <h2>Hello {{ user_name }}!</h2>
         <p>
-          Your {{ export_type }} has been generated successfully and is now
+          Your CSV of User details has been generated successfully and is now
           ready for download.
         </p>
 
-        <div class="info">
-          <p><strong>Export Details:</strong></p>
+        <div class="export-details">
+          <h3>Export Details:</h3>
           <ul>
-            <li>Type: {{ export_type }}</li>
-            <li>Generated: {{ generation_time }}</li>
+            <li>📊 Type: CSV of User details</li>
+            <li>🕒 Generated: {{ generation_time }}</li>
           </ul>
         </div>
 
-        <div style="text-align: center">
-          <a href="{{ download_url }}" class="button">Download Export</a>
-        </div>
+        <a href="{{ download_url }}" class="button">Download Export</a>
 
-        <div class="warning">
-          <p>⚠️ {{ expiry_note }}</p>
-        </div>
+        <div class="warning-note">⚠️ {{ expiry_note }}</div>
 
         <p>
           If you have any questions or need assistance, please don't hesitate to
@@ -103,14 +172,15 @@
         <p>Best regards,<br />Team Kwizzy</p>
       </div>
 
+      <hr />
+
       <div class="footer">
         <p>
           This is an automated message from Kwizzy. Please do not reply to this
           email.
         </p>
-        <p>
-          © {{ generation_time.split('-')[0] }} Kwizzy. All rights reserved.
-        </p>
+        <p>Made with some ☕, aloo bhujiya and 🤍 by Kapil :)</p>
+        <p>© 2024 Kwizzy. All rights reserved.</p>
       </div>
     </div>
   </body>
