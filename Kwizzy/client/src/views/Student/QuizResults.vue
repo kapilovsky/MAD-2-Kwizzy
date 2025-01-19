@@ -244,16 +244,10 @@ const fetchQuizResult = async () => {
 
     const token = localStorage.getItem("access_token");
     if (!token) throw new Error("No access token available");
-    if (isInitialLoad.value) {
-      const result = await quizResultStore.fetchResult(resultId);
-      quizResult.value = result;
-      isInitialLoad.value = false;
-    } else if (quizResultStore.currentResult) {
-      quizResult.value = quizResultStore.currentResult;
-    } else {
-      const result = await quizResultStore.fetchResult(resultId);
-      quizResult.value = result;
-    }
+
+    // Always fetch fresh data
+    const result = await quizResultStore.fetchResult(resultId);
+    quizResult.value = result;
   } catch (err) {
     console.error("Error fetching quiz result:", err);
     error.value = err.message || "Failed to load quiz results";

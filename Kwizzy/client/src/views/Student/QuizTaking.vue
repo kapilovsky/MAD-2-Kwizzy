@@ -115,12 +115,13 @@ const handleSubmit = async () => {
       localStorage.removeItem("quizStartTime");
       localStorage.removeItem("totalDuration");
       localStorage.removeItem("quizEndTime");
+      await quizResultStore.clearResult();
+      await quizResultStore.fetchResult(response.data.result.result_id);
 
       // Show success message
       toast.success("Quiz submitted successfully!");
 
-      // Navigate to results page
-      await router.replace({
+      await router.push({
         name: "quiz-results",
         params: {
           id: route.params.id,

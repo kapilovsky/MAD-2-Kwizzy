@@ -3,19 +3,12 @@ from flask_restful import Resource
 from ..models import QuizResult, UserAnswer
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from flask import request
-from .. import db, cache
-from time import perf_counter_ns
-from sqlalchemy import or_
+from .. import db
 from sqlalchemy.orm import joinedload
 
 
 class QuizResultApi(Resource):
-    def __init__(self):
-        self.cache_timeout = 300
-
-    @cache.memoize(timeout=300)
     def get_quiz_result_by_id(self, result_id):
-        """Cached method to get single quiz result"""
         try:
             # Use joinedload to load relationships efficiently
             quiz_result = QuizResult.query.options(
@@ -28,9 +21,7 @@ class QuizResultApi(Resource):
         except Exception as e:
             return ({"error": f"Error fetching quiz result: {str(e)}"}), 500
 
-    @cache.memoize(timeout=300)
     def get_user_quiz_results(self, user_id):
-        """Cached method to get all quiz results for a user"""
         results = QuizResult.query.filter_by(user_id=user_id).all()
         return [result.to_dict() for result in results]
 
@@ -72,7 +63,7 @@ class QuizResultApi(Resource):
             )
 
             db.session.add(new_result)
-            db.session.flush()  # Get the ID of new_result
+            db.session.flush()
 
             # Create user answers
             for answer in data["answers"]:
@@ -85,7 +76,6 @@ class QuizResultApi(Resource):
                 db.session.add(user_answer)
 
             db.session.commit()
-            self.invalidate_cache()
 
             return {
                 "message": "Quiz result created successfully",
@@ -95,8 +85,3 @@ class QuizResultApi(Resource):
         except Exception as e:
             db.session.rollback()
             return {"message": str(e)}, 400
-
-    def invalidate_cache(self):
-        """Invalidate all quiz result related caches"""
-        cache.delete_memoized(self.get_quiz_result_by_id)
-        cache.delete_memoized(self.get_user_quiz_results)
