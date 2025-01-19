@@ -111,34 +111,6 @@ const StudentRoutes = [
           title: "Quiz Results",
           preventRefresh: true,
         },
-        beforeEnter: async (to, from, next) => {
-          const quizResultStore = useQuizResultStore();
-
-          try {
-            // If coming from quiz-take, we already have the result
-            if (from.name === "quiz-take") {
-              next();
-              return;
-            }
-
-            // If refreshing or direct access, check if we have resultId
-            const resultId = to.query.resultId;
-            if (!resultId) {
-              next({
-                name: "student",
-                params: { id: to.params.id },
-              });
-              return;
-            }
-
-            // Pre-fetch the result
-            await quizResultStore.fetchResult(resultId);
-            next();
-          } catch (error) {
-            console.error("Error fetching quiz result:", error);
-            next({ name: "error" });
-          }
-        },
       },
     ],
   },

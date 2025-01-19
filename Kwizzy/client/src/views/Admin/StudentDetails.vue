@@ -22,6 +22,7 @@ const getRecentActivity = async () => {
     recentQuizzes.value = await studentService.getRecentActivity(
       route.params.id
     );
+    console.log("Recent quizzes:", recentQuizzes.value);
   } catch (error) {
     console.error("Error:", error);
   } finally {
@@ -211,18 +212,28 @@ onMounted(() => {
               <tr
                 class="text-xs sm:text-sm"
                 v-for="quiz in recentQuizzes"
-                :key="quiz.id"
+                :key="quiz.quiz_id"
               >
                 <td class="p-2">{{ quiz.quiz_name }}</td>
                 <td class="p-2">{{ quiz.marks_scored }}</td>
                 <td class="p-2 sm:block hidden">{{ quiz.percentage }}%</td>
                 <td class="p-2">{{ formatDate(quiz.completed_at) }}</td>
                 <td class="text-right">
-                  <button
+                  <RouterLink
+                    :to="{
+                      name: 'user-quiz-details',
+                      params: {
+                        id: student.student_info.id,
+                        quizId: quiz.quiz_id,
+                      },
+                      query: {
+                        resultId: quiz.quiz_result_id,
+                      },
+                    }"
                     class="text-[#7F9CF5] hover:font-bold sm:text-sm text-xs sohne-mono bg-[#EBF4FF] sm:px-5 sm:py-1 py-[4px] rounded-md"
                   >
                     View Details
-                  </button>
+                  </RouterLink>
                 </td>
               </tr>
             </tbody>
@@ -237,7 +248,7 @@ onMounted(() => {
 
 <style scoped>
 .arame-mono {
-  font-family: Inter;
+  font-family: Inter, serif;
   font-weight: 600;
   font-size: 16px;
 }

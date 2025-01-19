@@ -1,7 +1,7 @@
 # quiz_result_api.py
 from flask_restful import Resource
 from ..models import QuizResult, UserAnswer
-from flask_jwt_extended import jwt_required, get_jwt_identity
+from flask_jwt_extended import jwt_required, get_jwt_identity, get_jwt
 from flask import request
 from .. import db
 from sqlalchemy.orm import joinedload
@@ -30,13 +30,16 @@ class QuizResultApi(Resource):
         try:
             user_id = get_jwt_identity()
             user_id = int(user_id)
+            claims = get_jwt()
+            user_role = claims.get("role")
 
             if result_id:
                 result = QuizResult.query.get_or_404(result_id)
-                # Ensure user can only access their own results
-                if int(result.user_id) != user_id:
-                    return {"message": "Unauthorized access"}, 403
-                return self.get_quiz_result_by_id(result_id)
+                # Ensure user and admin can only access the results
+                if result.user_id == user_id or user_role == "admin":
+                    return self.get_quiz_result_by_id(result_id)
+                else:
+                    return {"message": "Unauthorized to access this resource"}, 403
 
             return {"results": self.get_user_quiz_results(user_id)}
 

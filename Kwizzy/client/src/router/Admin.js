@@ -13,6 +13,8 @@ const Summary = () =>
   import(/* webpackPrefetch: true */ "@/views/Admin/Summary.vue");
 const Transactions = () =>
   import(/* webpackPrefetch: true */ "../views/Admin/Transactions.vue");
+const UserQuizDetails = () =>
+  import(/* webpackPrefetch: true */ "../views/Admin/UserQuizDetails.vue");
 
 const AdminRoutes = [
   {
@@ -122,6 +124,16 @@ const AdminRoutes = [
     meta: {
       requiresAuth: true,
       title: "Summary",
+      roles: ["admin"],
+    },
+  },
+  {
+    path: "/admin/student/:id/quizDetails/:quizId",
+    name: "user-quiz-details",
+    component: UserQuizDetails,
+    meta: {
+      requiresAuth: true,
+      title: "User Quiz Details",
       roles: ["admin"],
     },
   },
