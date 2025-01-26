@@ -90,6 +90,7 @@ def send_daily_reminders():
 
         successful_sends = 0
         failed_sends = 0
+        skipped_sends = 0
 
         for student in students:
             if not rate_limiter.can_send_email():
@@ -184,6 +185,7 @@ def generate_monthly_activity_report():
 
         successful_sends = 0
         failed_sends = 0
+        skipped_sends = 0
 
         for student in students:
             try:

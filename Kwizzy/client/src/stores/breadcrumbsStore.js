@@ -1,6 +1,5 @@
 // stores/breadcrumbsStore.js
 import { defineStore } from "pinia";
-import { createPersistedState } from "pinia-plugin-persistedstate";
 
 export const BreadcrumbsStore = defineStore("breadcrumb", {
   state: () => ({
