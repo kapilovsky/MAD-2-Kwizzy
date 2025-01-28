@@ -1,5 +1,5 @@
 <script setup>
-import { ref } from "vue";
+import { ref, onMounted, onUnmounted } from "vue";
 import axios from "axios";
 const API_URL = import.meta.env.VITE_API_URL;
 import CloseIcon from "../../assets/images/icons/close.svg";
@@ -73,6 +73,20 @@ const handleSubmit = async () => {
     }
   }
 };
+
+const handleEscKey = (event) => {
+  if (event.key === "Escape") {
+    emit("close");
+  }
+};
+
+onMounted(() => {
+  document.addEventListener("keydown", handleEscKey);
+});
+
+onUnmounted(() => {
+  document.removeEventListener("keydown", handleEscKey);
+});
 </script>
 
 <template>
@@ -98,9 +112,12 @@ const handleSubmit = async () => {
             </p>
             <button
               @click="$emit('close')"
-              class="p-1 text-gray-700 hover:bg-[#f0f0ff] rounded-md transition-colors duration-200 ease-linear"
+              class="p-1 text-black bg-[#f0f0f0] hover:bg-[#f0f0ff] rounded-md transition-colors duration-200 ease-linear flex items-center text-xs"
             >
-              <component :is="CloseIcon" class="w-6 h-6" />
+              <component :is="CloseIcon" class="w-4 mr-1" />[<span
+                class="sohne-mono"
+                >ESC</span
+              >]
             </button>
           </div>
 

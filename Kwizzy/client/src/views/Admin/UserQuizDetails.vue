@@ -300,7 +300,7 @@ watch(
 
 const backToDashboard = async () => {
   try {
-    await router.push(`/admin/dashboard`);
+    await router.push(`/admin/users`);
     window.location.reload();
   } catch (error) {
     console.error("Navigation error:", error);

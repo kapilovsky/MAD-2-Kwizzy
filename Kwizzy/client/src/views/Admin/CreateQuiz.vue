@@ -413,14 +413,14 @@ onMounted(() => {
           <button
             type="button"
             @click="router.back()"
-            class="px-6 py-2 border-2 border-black text-black rounded-lg hover:bg-gray-100"
+            class="px-6 py-2 border-2 border-black text-black rounded-lg hover:bg-gray-100 font-semibold"
           >
             Cancel
           </button>
           <button
             type="submit"
             :disabled="isLoading"
-            class="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50"
+            class="px-6 py-2 bg-black text-white rounded-lg hover:bg-gray-800 disabled:opacity-50 font-semibold"
           >
             {{ isLoading ? "Creating Quiz..." : "Create Quiz" }}
           </button>

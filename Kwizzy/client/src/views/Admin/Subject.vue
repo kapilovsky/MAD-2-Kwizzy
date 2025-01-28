@@ -260,9 +260,10 @@ const handleSearch = (query) => {
     </div>
     <!-- Chapters Table -->
     <div>
-      <!-- <p class="text-xl sohne font-bold mb-4">
-        Total Chapters: <span class="font-bold">{{ subject?.chapters }}</span>
-      </p> -->
+      <p class="text-xl sohne font-bold mb-4">
+        Total Chapters:
+        <span class="font-bold">{{ filteredChapters.length }}</span>
+      </p>
       <div class="px-2">
         <table class="w-full chapters">
           <thead>
