@@ -87,7 +87,12 @@
                 class="border-b text-sm sm:text-base border-black hover:bg-[#fff9f0]"
               >
                 <td class="py-2">
-                  ▞ &nbsp;<span>{{ chapter.name }}</span>
+                  <RouterLink
+                    :to="`${route.path}/chapter/${chapter.id}`"
+                    class="hover:text-[#0000ff] transition-all duration-200 ease-linear"
+                  >
+                    ▞ &nbsp;<span>{{ chapter.name }}</span>
+                  </RouterLink>
                 </td>
 
                 <td class="py-2 sm:block hidden">{{ chapter.description }}</td>

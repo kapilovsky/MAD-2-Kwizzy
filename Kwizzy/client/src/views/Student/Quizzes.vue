@@ -94,7 +94,16 @@
                 <td class="py-2 relative">
                   <span class="absolute top-[2px] left-[-10px]">&lhblk;</span>
                   <RouterLink
-                    :to="`/admin/subject/${subjectId}/chapter/${chapterId}/quiz/${quiz.id}`"
+                    :to="{
+                      name: 'quiz',
+
+                      params: {
+                        id: route.params.id,
+                        quizId: quiz.id,
+                        subjectId: subjectId,
+                        chapterId: chapterId,
+                      },
+                    }"
                   >
                     &nbsp;&nbsp;<span class="hover:text-[#0000ff]">{{
                       quiz.name
