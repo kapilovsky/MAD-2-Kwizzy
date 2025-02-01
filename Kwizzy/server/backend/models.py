@@ -102,6 +102,7 @@ class Quiz(db.Model):
         Integer, ForeignKey("chapters.id", ondelete="CASCADE"), nullable=False
     )
     time_duration = Column(Integer, nullable=False, default=0)
+    deadline = Column(DateTime, nullable=True)
 
     questions = relationship(
         "Question", back_populates="quiz", cascade="all, delete-orphan"
@@ -119,6 +120,22 @@ class Quiz(db.Model):
             ).first()
             is not None
         )
+
+    def is_available(self):
+        if not self.deadline:
+            return True
+        return datetime.now() < self.deadline
+
+    @staticmethod
+    def parse_deadline(deadline_str):
+        """Convert string deadline to datetime object"""
+        if not deadline_str:
+            return None
+        try:
+            return datetime.fromisoformat(deadline_str.replace("Z", "+00:00"))
+        except ValueError:
+            # For simpler format without timezone
+            return datetime.strptime(deadline_str, "%Y-%m-%dT%H:%M")
 
 
 class Question(db.Model):

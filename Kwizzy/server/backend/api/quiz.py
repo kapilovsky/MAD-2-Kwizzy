@@ -24,6 +24,11 @@ class QuizApi(Resource):
                     "price": quiz.price,
                     "chapter_id": quiz.chapter_id,
                     "time_duration": formatted_time,
+                    "deadline": (
+                        quiz.deadline.strftime("%Y-%m-%d %H:%M")
+                        if quiz.deadline
+                        else None
+                    ),
                     "questions": [
                         {
                             "id": q.id,
@@ -65,6 +70,11 @@ class QuizApi(Resource):
                             "price": quiz.price,
                             "chapter_id": quiz.chapter_id,
                             "time_duration": quiz.time_duration,
+                            "deadline": (
+                                quiz.deadline.strftime("%Y-%m-%d %H:%M")
+                                if quiz.deadline
+                                else None
+                            ),
                             "question_count": len(quiz.questions),
                         }
                         for quiz in quizzes
@@ -94,6 +104,11 @@ class QuizApi(Resource):
                         "description": quiz.description,
                         "price": quiz.price,
                         "chapter_id": quiz.chapter_id,
+                        "deadline": (
+                            quiz.deadline.strftime("%Y-%m-%d %H:%M")
+                            if quiz.deadline
+                            else None
+                        ),
                         "time_duration": quiz.time_duration,
                         "question_count": len(quiz.questions),
                     }
@@ -112,6 +127,7 @@ class QuizApi(Resource):
             data = request.get_json()
             if not data:
                 return {"message": "No input data provided"}, 400
+            deadline = Quiz.parse_deadline(data.get("deadline"))
 
             # Validate required fields
             required_fields = [
@@ -132,7 +148,7 @@ class QuizApi(Resource):
             if not chapter:
                 return {"message": "Chapter not found"}, 404
 
-            # conver time from hh:mm to seconds
+            # convert time from hh:mm to seconds
             try:
                 time_duration = data["time_duration"]
                 hours, minutes = map(int, time_duration.split(":"))
@@ -146,6 +162,7 @@ class QuizApi(Resource):
                 description=data["description"],
                 price=data.get("price", 0),
                 chapter_id=data["chapter_id"],
+                deadline=deadline,
                 time_duration=total_seconds,
             )
 
@@ -198,6 +215,8 @@ class QuizApi(Resource):
                 quiz.description = data["description"]
             if "price" in data:
                 quiz.price = data["price"]
+            if "deadline" in data:
+                quiz.deadline = Quiz.parse_deadline(data["deadline"])
             if "time_duration" in data:
                 try:
                     time_duration = data["time_duration"]
