@@ -143,6 +143,12 @@ onMounted(() => {
                     {{ quiz?.questions?.length || 0 }}
                   </p>
                 </div>
+                <div>
+                  <span class="text-gray-400 sohne-mono text-sm">Deadline</span>
+                  <p class="text-xl font-semibold">
+                    {{ quiz?.deadline ? `${quiz.deadline} IST` : "None" }}
+                  </p>
+                </div>
               </div>
             </div>
             <div class="text-[160px] mt-[-40px] mb-[-40px] arrow">🡽</div>

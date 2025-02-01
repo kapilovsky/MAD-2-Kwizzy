@@ -208,6 +208,8 @@ class QuizApi(Resource):
             if not data:
                 return {"message": "No input data provided"}, 400
 
+            db.session.begin_nested()
+
             # Update basic quiz info
             if "name" in data:
                 quiz.name = data["name"]
@@ -231,28 +233,67 @@ class QuizApi(Resource):
                 quiz.chapter_id = data["chapter_id"]
 
             if "questions" in data:
+                old_questions = {q.id: q for q in quiz.questions}
                 # Delete all existing questions and their options
-                for question in quiz.questions:
-                    db.session.delete(question)
-
-                # Add new questions
+                new_question_ids = {q.get("id") for q in data["questions"] if "id" in q}
+                for q_id, question in old_questions.items():
+                    if q_id not in new_question_ids:
+                        db.session.delete(question)
+                # Update or create questions
                 for q_data in data["questions"]:
-                    question = Question(
-                        title=q_data.get("title"), text=q_data["text"], quiz=quiz
-                    )
-                    db.session.add(question)
+                    if "id" in q_data and q_data["id"] in old_questions:
+                        # Update existing question
+                        question = old_questions[q_data["id"]]
+                        question.title = q_data.get("title")
+                        question.text = q_data["text"]
 
-                    # Add options for this question
-                    has_correct = False
-                    for opt_data in q_data["options"]:
-                        option = Option(
-                            text=opt_data["text"],
-                            is_correct=opt_data["is_correct"],
-                            question=question,
+                        # Update options
+                        existing_options = {opt.id: opt for opt in question.options}
+                        new_option_ids = {
+                            opt.get("id") for opt in q_data["options"] if "id" in opt
+                        }
+
+                        # Delete removed options
+                        for opt_id, option in existing_options.items():
+                            if opt_id not in new_option_ids:
+                                db.session.delete(option)
+
+                        # Update or create options
+                        has_correct = False
+                        for opt_data in q_data["options"]:
+                            if "id" in opt_data and opt_data["id"] in existing_options:
+                                # Update existing option
+                                option = existing_options[opt_data["id"]]
+                                option.text = opt_data["text"]
+                                option.is_correct = opt_data["is_correct"]
+                            else:
+                                # Create new option
+                                option = Option(
+                                    text=opt_data["text"],
+                                    is_correct=opt_data["is_correct"],
+                                    question=question,
+                                )
+                                db.session.add(option)
+                            if option.is_correct:
+                                has_correct = True
+                    else:
+                        # Create new question
+                        question = Question(
+                            title=q_data.get("title"), text=q_data["text"], quiz=quiz
                         )
-                        db.session.add(option)
-                        if option.is_correct:
-                            has_correct = True
+                        db.session.add(question)
+
+                        # Add options for new question
+                        has_correct = False
+                        for opt_data in q_data["options"]:
+                            option = Option(
+                                text=opt_data["text"],
+                                is_correct=opt_data["is_correct"],
+                                question=question,
+                            )
+                            db.session.add(option)
+                            if option.is_correct:
+                                has_correct = True
 
                     if not has_correct:
                         db.session.rollback()

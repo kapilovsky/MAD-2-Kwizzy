@@ -47,7 +47,6 @@ const fetchData = async () => {
     chapter.value = chapterRes.data;
     subject.value = subjectRes.data;
     quizzes.value = quizzesRes.data.quizzes;
-    console.log("Quizzes:", quizzes.value);
   } catch (error) {
     console.error("Error fetching data:", error);
   } finally {
@@ -177,8 +176,9 @@ onMounted(async () => {
               <th>SNo.</th>
               <th>Quiz Name</th>
               <th class="px-2">Questions</th>
-              <th class="sm:block hidden">Time Limit［HH:MM］</th>
+              <th class="sm:table-cell hidden">Time Limit［HH:MM］</th>
               <th class="px-2">Price</th>
+              <th class="px-2 sm:table-cell hidden">Deadline</th>
               <th class="text-right px-2">Actions</th>
             </tr>
           </thead>
@@ -188,7 +188,7 @@ onMounted(async () => {
               :key="quiz.id"
               class="border-b-2 border-black text-xs sm:text-sm"
             >
-            <td>{{ index + 1 }}</td>
+              <td>{{ index + 1 }}</td>
               <td class="py-2 relative">
                 <span class="absolute top-[5px] left-[-18px] sm:block hidden"
                   >&lhblk;</span
@@ -200,13 +200,16 @@ onMounted(async () => {
                 </RouterLink>
               </td>
               <td class="py-2 px-2">
-                <span class="font-medium">{{ quiz.question_count }}</span>
+                {{ quiz.question_count }}
               </td>
-              <td class="py-2 sm:block hidden">
-                <span class="font-medium">{{ quiz.time_duration }}</span>
+              <td class="py-2 sm:table-cell hidden">
+                {{ quiz.time_duration }}
               </td>
               <td class="py-2 px-2">
-                <span class="font-medium">{{ quiz.price || "Free" }}</span>
+                {{ quiz?.price ? `₹${quiz.price}` : "Free" }}
+              </td>
+              <td class="py-2 px-2 sm:table-cell hidden">
+                {{ quiz?.deadline ? `${quiz.deadline} IST` : "None" }}
               </td>
 
               <td class="py-2">

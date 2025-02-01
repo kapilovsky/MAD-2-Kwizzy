@@ -52,6 +52,7 @@ const quizData = reactive({
   description: "",
   time_duration: "",
   price: 0,
+  deadline: "",
   questions: [
     {
       title: "",
@@ -283,6 +284,16 @@ onMounted(() => {
                   type="number"
                   min="0"
                   class="mt-1 block w-full border-b-2 border-[#fdfcfc] outline-none bg-transparent font-semibold"
+                />
+              </div>
+              <div class="mt-2 flex flex-col gap-1">
+                <label class="block sohne-mono font-medium"
+                  >Deadline (Optional)</label
+                >
+                <input
+                  v-model="quizData.deadline"
+                  type="datetime-local"
+                  class="mt-1 block w-full border-b-2 bg-transparent border-[#fdfcfc] outline-none font-semibold"
                 />
               </div>
             </div>

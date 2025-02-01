@@ -16,9 +16,8 @@ const getUserRole = () => {
   if (!token) return null;
 
   try {
-    // Assuming your token is JWT and contains role information
     const payload = JSON.parse(atob(token.split(".")[1]));
-    return payload.role; // or however your role is stored in the token
+    return payload.role;
   } catch (error) {
     console.error("Error parsing token:", error);
     return null;
@@ -89,7 +88,7 @@ function getUserId() {
 
   try {
     const payload = JSON.parse(atob(token.split(".")[1]));
-    return payload.sub || payload.id; // adjust according to your token structure
+    return payload.sub || payload.id;
   } catch (error) {
     console.error("Error parsing token:", error);
     return null;

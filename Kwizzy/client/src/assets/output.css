@@ -939,10 +939,6 @@ video {
   display: block;
 }
 
-.inline-block {
-  display: inline-block;
-}
-
 .flex {
   display: flex;
 }
@@ -1369,10 +1365,6 @@ video {
 
 .justify-between {
   justify-content: space-between;
-}
-
-.justify-evenly {
-  justify-content: space-evenly;
 }
 
 .gap-1 {
@@ -3189,6 +3181,14 @@ button:focus {
 
   .sm\:flex {
     display: flex;
+  }
+
+  .sm\:table {
+    display: table;
+  }
+
+  .sm\:table-cell {
+    display: table-cell;
   }
 
   .sm\:grid {

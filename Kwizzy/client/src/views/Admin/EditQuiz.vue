@@ -30,6 +30,7 @@ const quizData = reactive({
   name: "",
   description: "",
   time_duration: "",
+  deadline: "",
   price: 0,
   questions: [],
 });
@@ -59,6 +60,7 @@ const fetchData = async () => {
     quizData.description = quizRes.data.description;
     quizData.time_duration = quizRes.data.time_duration;
     quizData.price = quizRes.data.price;
+    quizData.deadline = quizRes.data.deadline;
     quizData.questions = quizRes.data.questions.map((q) => ({
       id: q.id,
       title: q.title,
@@ -298,6 +300,17 @@ onMounted(() => {
                   class="mt-1 block w-full border-b-2 border-[#fdfcfc] outline-none bg-transparent font-semibold"
                 />
               </div>
+
+              <div class="mt-2 flex flex-col gap-1">
+                <label class="block sohne-mono font-medium"
+                  >Deadline (Optional)</label
+                >
+                <input
+                  v-model="quizData.deadline"
+                  type="datetime-local"
+                  class="mt-1 block w-full border-b-2 bg-transparent border-[#fdfcfc] outline-none font-semibold"
+                />
+              </div>
             </div>
           </div>
           <div class="text-[200px] mt-[-40px] mb-[-40px] arrow">🡽</div>
@@ -347,7 +360,7 @@ onMounted(() => {
             </div>
 
             <div>
-              <label class="block text-sm font-medium sohne-mono "
+              <label class="block text-sm font-medium sohne-mono"
                 >Question Title (Optional)</label
               >
               <input
@@ -358,7 +371,7 @@ onMounted(() => {
             </div>
 
             <div>
-              <label class="block text-sm font-medium sohne-mono "
+              <label class="block text-sm font-medium sohne-mono"
                 >Question Text *</label
               >
               <textarea
