@@ -25,7 +25,7 @@ class QuizApi(Resource):
                     "chapter_id": quiz.chapter_id,
                     "time_duration": formatted_time,
                     "deadline": (
-                        quiz.deadline.strftime("%Y-%m-%d %H:%M")
+                        quiz.deadline.strftime("%d-%m-%Y %H:%M")
                         if quiz.deadline
                         else None
                     ),
@@ -71,7 +71,7 @@ class QuizApi(Resource):
                             "chapter_id": quiz.chapter_id,
                             "time_duration": quiz.time_duration,
                             "deadline": (
-                                quiz.deadline.strftime("%Y-%m-%d %H:%M")
+                                quiz.deadline.strftime("%d-%m-%Y %H:%M")
                                 if quiz.deadline
                                 else None
                             ),
@@ -105,7 +105,7 @@ class QuizApi(Resource):
                         "price": quiz.price,
                         "chapter_id": quiz.chapter_id,
                         "deadline": (
-                            quiz.deadline.strftime("%Y-%m-%d %H:%M")
+                            quiz.deadline.strftime("%d-%m-%Y %H:%M")
                             if quiz.deadline
                             else None
                         ),

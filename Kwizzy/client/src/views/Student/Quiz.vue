@@ -105,6 +105,11 @@
           </ul>
         </div>
 
+        <div class="deadline-status" :class="deadlineStatusClass">
+          <span class="deadline-icon">{{ deadlineIcon }}</span>
+          {{ deadlineMessage }}
+        </div>
+
         <button
           v-if="quiz?.price > 0 && !hasPaid"
           @click="showPaymentModal"
@@ -126,13 +131,14 @@
         <button
           v-else
           @click="showStartDialog"
-          class="w-full bg-[#fdfcfc] py-3 rounded-lg transition-colors disabled:bg-gray-400 mt-8 sm:text-right relative group overflow-hidden"
-          :disabled="isStarting"
+          class="w-full bg-[#fdfcfc] py-3 rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-none mt-8 sm:text-right relative group overflow-hidden"
+          :disabled="isStarting || isExpired"
         >
-          <span
-            class="arame sm:text-5xl text-2xl sm:mr-20 cursor-pointer text-[#192227]"
-            >Start Quiz</span
+          <span class="arame sm:text-5xl text-2xl sm:mr-20 text-[#192227]">{{
+            isExpired ? "Deadline Passed" : "Start Quiz"
+          }}</span
           ><span
+            v-if="!isExpired"
             class="absolute sm:text-5xl text-2xl right-7 top-1/2 transform -translate-y-1/2 text-[#192227] opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all"
           >
             🡲
@@ -193,7 +199,7 @@
 </template>
 
 <script setup>
-import { ref, onMounted, onUnmounted } from "vue";
+import { ref, onMounted, onUnmounted, watch, computed } from "vue";
 import { storeToRefs } from "pinia";
 import { useRouter, useRoute } from "vue-router";
 import axios from "axios";
@@ -331,8 +337,54 @@ const showStartDialog = () => {
   isDialogOpen.value = true;
 };
 
+const isExpired = computed(() => {
+  if (!quiz.value || !quiz.value.deadline) return false;
+  console.log("deadline", quiz.value.deadline);
+  return new Date(quiz.value.deadline) < new Date();
+});
+
+const deadlineMessage = computed(() => {
+  if (!quiz.value || !quiz.value.deadline) return "No deadline set";
+  const deadline = new Date(quiz.value.deadline);
+  const now = new Date();
+
+  if (deadline < now) {
+    return `Deadline passed on ${deadline}`;
+  }
+  return `Available until ${deadline}`;
+});
+
+const deadlineStatusClass = computed(() => ({
+  "text-red-500": isExpired.value,
+  "text-green-500": !isExpired.value && quiz.value.deadline,
+  "text-gray-500": !quiz.value.deadline,
+}));
+
+const deadlineIcon = computed(() => {
+  if (isExpired.value) return "⏰";
+  if (!quiz.value.deadline) return "∞";
+  return "✓";
+});
+
+const formatDate = (date) => {
+  return new Date(date).toLocaleString("en-IN", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZoneName: "short",
+  });
+};
+
 const startQuiz = async () => {
   try {
+    if (isExpired.value) {
+      toast.error(
+        "This quiz is no longer available as the deadline has passed"
+      );
+      return;
+    }
     isStarting.value = true;
     isDialogOpen.value = false;
 

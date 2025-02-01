@@ -36,6 +36,17 @@ class UserAnswerApi(Resource):
                 return {"message": "Invalid request format"}, 400
 
             quiz = Quiz.query.get_or_404(data["quiz_id"])
+            if not quiz.is_available():
+                return (
+                    {
+                        "message": "Quiz is not available",
+                        "deadline": (
+                            quiz.deadline.strftime("%Y-%m-%d %H:%M")
+                            if quiz.deadline
+                            else None
+                        ),
+                    }
+                ), 403
 
             # Calculate results
             total_questions = len(quiz.questions)

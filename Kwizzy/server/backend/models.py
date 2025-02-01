@@ -122,9 +122,18 @@ class Quiz(db.Model):
         )
 
     def is_available(self):
+        """Check if quiz is available based on deadline"""
         if not self.deadline:
             return True
-        return datetime.now() < self.deadline
+        return datetime.utcnow() < self.deadline
+
+    def get_status_message(self):
+        """Get appropriate message based on quiz availability"""
+        if not self.deadline:
+            return "Available"
+        if self.is_available():
+            return f"Available until {self.deadline.strftime('%Y-%m-%d %H:%M')} IST"
+        return f"Deadline passed on {self.deadline.strftime('%Y-%m-%d %H:%M')} IST"
 
     @staticmethod
     def parse_deadline(deadline_str):
@@ -135,7 +144,7 @@ class Quiz(db.Model):
             return datetime.fromisoformat(deadline_str.replace("Z", "+00:00"))
         except ValueError:
             # For simpler format without timezone
-            return datetime.strptime(deadline_str, "%Y-%m-%dT%H:%M")
+            return datetime.strptime(deadline_str, "%d-%m-%YT%H:%M")
 
 
 class Question(db.Model):

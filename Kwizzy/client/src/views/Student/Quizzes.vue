@@ -80,8 +80,9 @@
               <tr class="text-left sm:text-sm text-xs border-b-2 border-black">
                 <th>Quiz Name</th>
                 <th>Questions</th>
-                <th class="sm:block hidden">Time Limit［HH:MM］</th>
+                <th class="sm:table-cell hidden">Time Limit［HH:MM］</th>
                 <th>Price</th>
+                <th class="sm:table-cell hidden">Deadline</th>
                 <th class="text-right px-2">Action</th>
               </tr>
             </thead>
@@ -111,13 +112,22 @@
                   </RouterLink>
                 </td>
                 <td class="py-2">
-                  <span class="font-medium">{{ quiz.question_count }}</span>
+                  {{ quiz.question_count }}
                 </td>
-                <td class="py-2 sm:block hidden">
-                  <span class="font-medium">{{ quiz.time_duration }}</span>
+                <td class="py-2 sm:table-cell hidden">
+                  {{ quiz.time_duration }}
                 </td>
                 <td class="py-2">
-                  <span class="font-medium">₹{{ quiz.price || "Free" }}</span>
+                  {{ quiz?.price ? `₹${quiz.price}` : "Free" }}
+                </td>
+                <td class="py-2 sm:table-cell hidden">
+                  <div class="flex items-center gap-2 font-mono">
+                    <span
+                      class="w-2 h-2 rounded-full"
+                      :class="getDeadlineStatusClass(quiz)"
+                    ></span>
+                    {{ quiz?.deadline ? `${quiz.deadline} IST` : "None" }}
+                  </div>
                 </td>
 
                 <td class="p-2 text-right">
@@ -236,7 +246,33 @@ const handleNavigation = () => {
   console.log(chapterName.value, subjectName.value, "before navigation ");
 };
 
+const getDeadlineStatusClass = (quiz) => {
+  if (!quiz.deadline) return "bg-green-400";
+
+  const deadline = new Date(quiz.deadline);
+  const now = new Date();
+
+  return deadline < now
+    ? "bg-red-500" // Expired
+    : "bg-green-500"; // Active
+};
+
 onMounted(async () => {
   await fetchData();
 });
 </script>
+
+<style scoped>
+/* Add these classes if not already present in your global styles */
+.bg-red-500 {
+  background-color: #ef4444;
+}
+
+.bg-green-500 {
+  background-color: #10b981;
+}
+
+.bg-gray-400 {
+  background-color: #9ca3af;
+}
+</style>
