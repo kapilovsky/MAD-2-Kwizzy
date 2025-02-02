@@ -201,14 +201,12 @@
 import { onMounted, computed, ref, watch, onUnmounted } from "vue";
 import { useRouter, useRoute } from "vue-router";
 import { storeToRefs } from "pinia";
-import axios from "axios";
 import { useToast } from "@/composables/useToast";
 import Loader from "@/components/Loader.vue";
 import { useQuizResultStore } from "@/stores/quizResultStore";
 import Check from "../../assets/images/icons/check.svg";
 import Cross from "../../assets/images/icons/x-circle.svg";
 
-const API_URL = import.meta.env.VITE_API_URL;
 const router = useRouter();
 const route = useRoute();
 const toast = useToast();
@@ -221,10 +219,6 @@ const quizResult = ref(null);
 const error = ref(null);
 const isInitialLoad = ref(true);
 
-const quizId = route.params.quizId;
-const studentId = route.params.id;
-const quiz_result_id = route.query.resultId;
-
 const percentage = computed(() => {
   if (!quizResult.value) return 0;
   return Math.round(
@@ -232,20 +226,22 @@ const percentage = computed(() => {
   );
 });
 
+const props = defineProps({
+  student: {
+    type: Object,
+    required: true,
+  },
+});
+
 const fetchQuizResult = async () => {
   try {
     error.value = null;
     quizResultStore.isLoading = true;
-
     const resultId = route.query.resultId;
     if (!resultId) {
       throw new Error("No result ID provided");
     }
 
-    const token = localStorage.getItem("access_token");
-    if (!token) throw new Error("No access token available");
-
-    // Always fetch fresh data
     const result = await quizResultStore.fetchResult(resultId);
     quizResult.value = result;
   } catch (err) {
@@ -282,15 +278,14 @@ watch(
 const backToDashboard = async () => {
   try {
     await router.push(`/student/${route.params.id}`);
-    window.location.reload();
   } catch (error) {
     console.error("Navigation error:", error);
     toast.error("Error returning to dashboard");
   }
 };
 
-onMounted(() => async () => {
+onMounted(() => {
   window.onbeforeunload = null;
-  await fetchQuizResult();
+  fetchQuizResult();
 });
 </script>

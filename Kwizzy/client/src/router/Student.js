@@ -109,7 +109,6 @@ const StudentRoutes = [
         meta: {
           requiresAuth: true,
           title: "Quiz Results",
-          preventRefresh: true,
         },
       },
     ],
