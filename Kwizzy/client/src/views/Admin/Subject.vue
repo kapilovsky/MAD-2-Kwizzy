@@ -214,11 +214,13 @@ const handleSearch = (query) => {
     </div>
 
     <!-- Subject Header -->
-    <div class="flex items-start flex-col sm:flex-row sm:gap-8 gap-4 mb-8">
+    <div
+      class="flex items-start flex-col sm:flex-row sm:gap-8 gap-4 mb-8 sm:px-0 px-2"
+    >
       <img
         :src="subject?.image"
         :alt="subject?.name"
-        class="sm:w-[180px] sm:h-[180px] rounded-xl object-cover"
+        class="sm:w-[180px] sm:h-[180px] w-screen h-[150px] rounded-xl object-cover"
       />
       <div>
         <h1 class="text-4xl font-bold mb-2 magnetic">{{ subject?.name }}</h1>
@@ -269,7 +271,7 @@ const handleSearch = (query) => {
           <thead>
             <tr class="text-left sm:text-sm text-xs border-b-2 border-black">
               <th>Chapter Name</th>
-              <th>Description</th>
+              <th class="sm:table-cell hidden">Description</th>
               <th class="sm:block hidden">Quizzes</th>
               <th class="text-right px-2">Actions</th>
             </tr>
@@ -295,7 +297,9 @@ const handleSearch = (query) => {
                 </td>
               </RouterLink>
 
-              <td class="py-2">{{ chapter.description }}</td>
+              <td class="py-2 sm:table-cell hidden">
+                {{ chapter.description }}
+              </td>
               <td class="py-2 sm:block hidden">
                 {{ chapter.total_quizzes || 0 }}
               </td>

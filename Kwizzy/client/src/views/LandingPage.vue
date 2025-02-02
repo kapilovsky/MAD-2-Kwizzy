@@ -69,7 +69,7 @@ const handleScroll = (sectionId) => {
   <main class="max-w-full mx-auto">
     <div class="container">
       <div>
-        <div class="py-2 text-center banner">
+        <div id="home" class="py-2 text-center banner">
           <div class="container">
             <p class="font-medium flex justify-center items-center gap-2">
               <span class="hidden sm:inline">

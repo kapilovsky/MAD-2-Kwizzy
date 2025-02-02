@@ -190,6 +190,9 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
+  .cursor-wrapper {
+    display: none;
+  }
   .cursor-dot {
     display: none;
   }

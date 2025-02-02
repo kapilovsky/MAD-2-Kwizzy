@@ -33,7 +33,7 @@ onUnmounted(() => {
 
 <template>
   <div
-    class="relative px-5 py-10 text-center border border-white/30 rounded-xl sm:flex-1"
+    class="relative px-5 py-10 text-center border-2 border-white/20 rounded-xl sm:flex-1 bg-black/60"
   >
     <div
       v-motion

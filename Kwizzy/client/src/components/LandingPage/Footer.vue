@@ -6,12 +6,12 @@ const footerLinks = {
   product: {
     title: "Product",
     links: [
-      { name: "Home", id: "#" },
-      { name: "Features", id: "#features" },
-      { name: "Product Showcase", id: "#product" },
-      { name: "Pricing", id: "#pricing" },
-      { name: "Testimonials", id: "#testimonials" },
-      { name: "FAQs", id: "#faqs" },
+      { name: "Home", id: "home" },
+      { name: "Features", id: "features" },
+      { name: "Product Showcase", id: "product" },
+      { name: "Pricing", id: "pricing" },
+      { name: "Testimonials", id: "testimonials" },
+      { name: "FAQs", id: "faqs" },
     ],
   },
   social: {
@@ -31,6 +31,19 @@ const footerLinks = {
       },
     ],
   },
+};
+
+const handleScroll = (sectionId) => {
+  const element = document.getElementById(sectionId);
+  console.log(element);
+  if (element) {
+    const offset = element.offsetTop - 20;
+    window.scrollTo({
+      top: offset,
+      behavior: "smooth",
+    });
+    activeSection.value = sectionId;
+  }
 };
 </script>
 
@@ -64,9 +77,8 @@ const footerLinks = {
               <h4 class="font-bold text-lg">{{ section.title }}</h4>
               <ul class="space-y-4">
                 <li v-for="link in section.links" :key="link.name">
-                  <a
-                    :href="link.id"
-                    target="_blank"
+                  <button
+                    @click="handleScroll(link.id)"
                     class="text-white/70 hover:text-white flex items-center gap-2 transition-colors group"
                   >
                     <ion-icon
@@ -75,7 +87,7 @@ const footerLinks = {
                       class="text-xl group-hover:scale-110 transition-transform"
                     ></ion-icon>
                     {{ link.name }}
-                  </a>
+                  </button>
                 </li>
               </ul>
             </div>
@@ -157,13 +169,13 @@ img {
 }
 
 /* Hover Effects */
-a {
+button {
   position: relative;
   width: fit-content;
   cursor: none;
 }
 
-a::after {
+button::after {
   content: "";
   position: absolute;
   width: 0;
@@ -174,7 +186,7 @@ a::after {
   transition: width 0.3s ease;
 }
 
-a:hover::after {
+button:hover::after {
   width: 100%;
 }
 

@@ -203,7 +203,7 @@ const handleLogout = () => {
               alt="User avatar"
               class="w-8 h-8 rounded-full mix-blend-difference"
             />
-            <span class="text-sm font-semibold text-gray-700"
+            <span class="text-sm font-semibold text-gray-700 sm:block hidden"
               >Welcome Back, {{ student_name }}</span
             >
           </div>

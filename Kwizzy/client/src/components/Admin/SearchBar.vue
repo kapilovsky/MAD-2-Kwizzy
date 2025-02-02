@@ -20,7 +20,7 @@ const handleSearch = () => {
 </script>
 
 <template>
-  <div class="relative">
+  <div class="relative sm:ml-0 ml-12">
     <component
       :is="SearchIcon"
       class="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400"
@@ -29,7 +29,7 @@ const handleSearch = () => {
       v-model="searchQuery"
       type="text"
       :placeholder="placeholder"
-      class="w-full pl-10 pr-4 py-2 bg-gray-100 text-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
+      class="sm:w-full w-[220px] pl-10 sm:pr-4 py-2 bg-gray-100 text-gray-800 rounded-lg focus:outline-none focus:ring-2 focus:ring-gray-500"
       @input="handleSearch"
     />
   </div>

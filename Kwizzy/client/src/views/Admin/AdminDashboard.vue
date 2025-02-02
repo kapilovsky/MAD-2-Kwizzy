@@ -39,7 +39,9 @@ onMounted(() => {
 <template>
   <div>
     <Sidebar>
-      <header class="h-16 bg-white flex items-center justify-between gap-6">
+      <header
+        class="h-16 bg-white flex items-center justify-between sm:pr-0 pr-3"
+      >
         <div class="flex items-center flex-1">
           <div class="flex-1 max-w-lg">
             <div class="relative">
@@ -63,7 +65,7 @@ onMounted(() => {
           </div>
         </div>
       </header>
-      <div class="mb-6 mt-4">
+      <div class="mb-6 mt-4 sm:px-0 px-3">
         <h1 class="text-4xl font-bold">Subjects</h1>
         <p>Manage and organize the subjects</p>
       </div>

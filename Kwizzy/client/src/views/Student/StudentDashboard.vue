@@ -320,8 +320,8 @@ onMounted(() => {
           >
             <th class="p-2">Quiz Title</th>
             <th class="p-2">Score</th>
-            <th class="p-2 sm:block hidden">Accuracy</th>
-            <th class="p-2">Completion Date</th>
+            <th class="p-2 sm:table-cell hidden">Accuracy</th>
+            <th class="p-2 sm:table-cell hidden">Completion Date</th>
             <th class="text-right p-2">Action</th>
           </tr>
         </thead>
@@ -333,9 +333,11 @@ onMounted(() => {
           >
             <td class="p-2">{{ quiz.quiz_name }}</td>
             <td class="p-2">{{ quiz.marks_scored }}</td>
-            <td class="p-2 sm:block hidden">{{ quiz.percentage }}%</td>
-            <td class="p-2">{{ formatDate(quiz.completed_at) }}</td>
-            <td class="text-right">
+            <td class="p-2 sm:table-cell hidden">{{ quiz.percentage }}%</td>
+            <td class="p-2 sm:table-cell hidden">
+              {{ formatDate(quiz.completed_at) }}
+            </td>
+            <td class="text-right p-2">
               <RouterLink
                 :to="{
                   name: 'quiz-results',
@@ -347,7 +349,7 @@ onMounted(() => {
                     resultId: quiz.quiz_result_id,
                   },
                 }"
-                class="text-orange-500 hover:font-bold sm:text-sm text-xs sohne-mono bg-orange-200 sm:px-5 sm:py-1 py-[4px] rounded-md"
+                class="text-orange-500 hover:font-bold sm:text-sm text-xs sohne-mono bg-orange-200 sm:px-5 px-[6px] py-1 rounded-md text-nowrap"
               >
                 View Details
               </RouterLink>

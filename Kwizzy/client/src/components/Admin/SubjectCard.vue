@@ -14,7 +14,6 @@ const props = defineProps({
     required: true,
   },
 });
-
 </script>
 
 <template>
@@ -26,7 +25,7 @@ const props = defineProps({
     <Transition name="fade">
       <div
         v-show="!loading"
-        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6"
+        class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6 sm:p-0 p-3"
       >
         <div
           v-for="subject in subjects"

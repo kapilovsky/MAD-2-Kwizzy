@@ -1,7 +1,5 @@
 <script setup>
 import Feature from "./Feature.vue";
-import { useMotion } from "@vueuse/motion";
-// Data for features
 const features = [
   {
     emoji: "📚",
@@ -13,7 +11,7 @@ const features = [
     emoji: "👩‍🏫",
     title: "Admin Superpowers",
     description:
-      "Teachers get their own superhero dashboard. Create quizzes, track progress, and resist the urge to make all answers 'C' just to mess with students.",
+      "Admin gets their own dashboard. Create quizzes, track progress, and resist the urge to make all answers 'C' just to mess with students.",
   },
   {
     emoji: "📉",
@@ -26,7 +24,7 @@ const features = [
 
 <template>
   <div id="features" class="text-white bg-black py-[72px] sm:py-24">
-    <div class="container">
+    <div class="container relative overflow-hidden">
       <h2
         class="text-5xl font-bold tracking-tighter text-center sm:text-4xl"
         v-motion
@@ -60,7 +58,13 @@ const features = [
           Here's how Kwizzy turns exam preparation from a chore into a choice.
         </p>
       </div>
-      <div class="flex flex-col gap-4 mt-16 sm:flex-row px-10">
+      <div
+        class="absolute -rotate-[50deg] w-[250px] h-[400px] left-16 bottom-0 bg-[#ddff0061] blur-[75px] rounded-[400px] pointer-events-none"
+      ></div>
+      <div
+        class="absolute rotate-[50deg] w-[250px] h-[400px] right-16 bottom-0 bg-[#ddff0061] blur-[75px] rounded-[400px] pointer-events-none"
+      ></div>
+      <div class="flex flex-col gap-4 mt-16 sm:flex-row px-10 z-10 static">
         <Feature
           v-for="feature in features"
           :key="feature.title"

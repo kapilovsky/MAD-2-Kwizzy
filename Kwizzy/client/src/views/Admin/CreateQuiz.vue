@@ -262,7 +262,7 @@ onMounted(() => {
               ></textarea>
             </div>
 
-            <div class="grid grid-cols-2 gap-4">
+            <div class="grid sm:grid-cols-3 grid-cols-1 gap-4">
               <div class="mt-2 flex flex-col gap-1">
                 <label class="block sohne-mono font-medium"
                   >Time Duration (hh:mm) *</label
@@ -298,7 +298,9 @@ onMounted(() => {
               </div>
             </div>
           </div>
-          <div class="text-[300px] mt-[-40px] mb-[-60px]">🡽</div>
+          <div class="text-[300px] mt-[-40px] mb-[-60px] hidden sm:block">
+            🡽
+          </div>
         </div>
 
         <!-- Questions Section -->
@@ -459,5 +461,9 @@ label {
 
 .option-input::placeholder {
   font-size: 16px;
+}
+
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(1); /* Inverts black to white */
 }
 </style>
