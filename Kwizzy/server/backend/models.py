@@ -203,6 +203,11 @@ class UserAnswer(db.Model):
 
     def to_dict(self):
         try:
+            # Get Question text
+            question_text = None
+            if self.question:
+                question_text = self.question.text
+
             # Get selected option text
             selected_option_text = None
             if self.selected_option:
@@ -221,7 +226,9 @@ class UserAnswer(db.Model):
             return {
                 "id": self.id,
                 "result_id": self.result_id,
-                "question_id": self.question_id,
+                "question_text": (
+                    self.question.text if self.question else "Error loading question"
+                ),
                 "selected_option": self.selected_option,
                 "selected_option_text": selected_option_text or "No answer selected",
                 "correct_option_text": correct_option_text,

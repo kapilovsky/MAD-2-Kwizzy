@@ -98,7 +98,7 @@
 
         <div class="space-y-6">
           <div
-            v-for="answer in quizResult.user_answers"
+            v-for="(answer, index) in quizResult.user_answers"
             :key="answer.id"
             class="border rounded-2xl overflow-hidden transition-all duration-200 hover:shadow-md"
           >
@@ -130,7 +130,7 @@
                         answer.is_correct ? 'text-white' : 'text-gray-900'
                       "
                     >
-                      Question {{ answer.question_id }}
+                      Question {{ index + 1 }}
                     </p>
                     <p
                       class="text-sm"
@@ -152,11 +152,15 @@
             <div class="p-6 bg-white">
               <div class="space-y-4">
                 <div>
+                  <p>Question</p>
+                  <p class="font-medium">{{ answer.question_text }}</p>
+                </div>
+                <div>
                   <p class="text-sm text-gray-500 font-mono uppercase mb-2">
                     Your Answer
                   </p>
                   <p v-if="answer.selected_option_text" class="font-medium">
-                    Option: {{ answer.selected_option_text }}
+                    🡲 {{ answer.selected_option_text }}
                   </p>
                   <p v-else class="text-gray-400 italic">Loading...</p>
                 </div>
@@ -168,7 +172,7 @@
                     v-if="answer.correct_option_text"
                     class="font-medium text-green-600"
                   >
-                    Option: {{ answer.correct_option_text }}
+                    🡲 {{ answer.correct_option_text }}
                   </p>
                   <p v-else class="text-gray-400 italic">Loading...</p>
                 </div>
@@ -184,7 +188,7 @@
           @click="backToDashboard"
           class="px-6 py-3 bg-[#192227] text-white rounded-xl hover:bg-[#2a3b44] transition-colors sohne-mono"
         >
-          ← Back to Dashboard
+          🡸 Back to Dashboard
         </button>
       </div>
     </div>
@@ -244,6 +248,7 @@ const fetchQuizResult = async () => {
 
     const result = await quizResultStore.fetchResult(resultId);
     quizResult.value = result;
+    console.log("Quiz result:", result);
   } catch (err) {
     console.error("Error fetching quiz result:", err);
     error.value = err.message || "Failed to load quiz results";
