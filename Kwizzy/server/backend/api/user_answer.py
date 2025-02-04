@@ -48,6 +48,13 @@ class UserAnswerApi(Resource):
                     }
                 ), 403
 
+            if quiz.one_attempt_only and quiz.has_attempted(user_id):
+                return (
+                    {
+                        "message": "Quiz can be attempted only once",
+                    }
+                ), 403
+
             # Calculate results
             total_questions = len(quiz.questions)
             correct_answers = 0

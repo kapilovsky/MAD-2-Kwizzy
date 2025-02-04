@@ -31,6 +31,7 @@ const quizData = reactive({
   description: "",
   time_duration: "",
   deadline: "",
+  one_attempt_only: false,
   price: 0,
   questions: [],
 });
@@ -60,7 +61,8 @@ const fetchData = async () => {
     quizData.description = quizRes.data.description;
     quizData.time_duration = quizRes.data.time_duration;
     quizData.price = quizRes.data.price;
-    quizData.deadline = quizRes.data.deadline;
+    quizData.deadline = formatDateForInput(quizRes.data.deadline);
+    quizData.one_attempt_only = quizRes.data.one_attempt_only;
     quizData.questions = quizRes.data.questions.map((q) => ({
       id: q.id,
       title: q.title,
@@ -181,6 +183,17 @@ const handleSubmit = async () => {
   }
 };
 
+const formatDateForInput = (dateString) => {
+  if (!dateString) return "";
+
+  // Parse the date string (DD-MM-YYYY HH:mm)
+  const [datePart, timePart] = dateString.split(" ");
+  const [day, month, year] = datePart.split("-");
+
+  // Create the formatted string (YYYY-MM-DDThh:mm)
+  return `${year}-${month}-${day}T${timePart}`;
+};
+
 onMounted(() => {
   fetchData();
 });
@@ -274,7 +287,7 @@ onMounted(() => {
               ></textarea>
             </div>
 
-            <div class="sm:grid sm:grid-cols-2 flex flex-col gap-8 sm:gap-4">
+            <div class="sm:grid sm:grid-cols-3 flex flex-col gap-8 sm:gap-4">
               <div class="mt-2 flex flex-col gap-1">
                 <label class="block sohne-mono font-medium"
                   >Time Duration［HH:MM］</label
@@ -310,6 +323,17 @@ onMounted(() => {
                   type="datetime-local"
                   class="mt-1 block w-full border-b-2 bg-transparent border-[#fdfcfc] outline-none font-semibold"
                 />
+              </div>
+
+              <div class="mt-2 flex gap-2 items-center justify-start">
+                <input
+                  v-model="quizData.one_attempt_only"
+                  type="checkbox"
+                  class="w-4 h-4"
+                />
+                <label class="sohne-mono font-medium"
+                  >Single Attempt Only</label
+                >
               </div>
             </div>
           </div>
@@ -479,6 +503,10 @@ label {
 
 .option-input::placeholder {
   font-size: 16px;
+}
+
+input[type="datetime-local"]::-webkit-calendar-picker-indicator {
+  filter: invert(1); /* Inverts black to white */
 }
 
 @media (max-width: 768px) {

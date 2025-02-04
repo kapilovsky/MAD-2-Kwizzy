@@ -24,6 +24,7 @@ class QuizApi(Resource):
                     "price": quiz.price,
                     "chapter_id": quiz.chapter_id,
                     "time_duration": formatted_time,
+                    "one_attempt_only": quiz.one_attempt_only,
                     "deadline": (
                         quiz.deadline.strftime("%d-%m-%Y %H:%M")
                         if quiz.deadline
@@ -70,6 +71,7 @@ class QuizApi(Resource):
                             "price": quiz.price,
                             "chapter_id": quiz.chapter_id,
                             "time_duration": quiz.time_duration,
+                            "one_attempt_only": quiz.one_attempt_only,
                             "deadline": (
                                 quiz.deadline.strftime("%d-%m-%Y %H:%M")
                                 if quiz.deadline
@@ -104,6 +106,7 @@ class QuizApi(Resource):
                         "description": quiz.description,
                         "price": quiz.price,
                         "chapter_id": quiz.chapter_id,
+                        "one_attempt_only": quiz.one_attempt_only,
                         "deadline": (
                             quiz.deadline.strftime("%d-%m-%Y %H:%M")
                             if quiz.deadline
@@ -163,6 +166,7 @@ class QuizApi(Resource):
                 price=data.get("price", 0),
                 chapter_id=data["chapter_id"],
                 deadline=deadline,
+                one_attempt_only=data.get("one_attempt_only", True),
                 time_duration=total_seconds,
             )
 
@@ -219,6 +223,8 @@ class QuizApi(Resource):
                 quiz.price = data["price"]
             if "deadline" in data:
                 quiz.deadline = Quiz.parse_deadline(data["deadline"])
+            if "one_attempt_only" in data:
+                quiz.one_attempt_only = data["one_attempt_only"]
             if "time_duration" in data:
                 try:
                     time_duration = data["time_duration"]

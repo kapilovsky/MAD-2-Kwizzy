@@ -85,6 +85,13 @@
                   {{ quiz?.questions?.length || 0 }}
                 </p>
               </div>
+
+              <div>
+                <span class="text-gray-400 sohne-mono text-sm"
+                  >Single Attempt Only</span
+                >
+                <p class="text-xl font-semibold">{{ quiz.one_attempt_only }}</p>
+              </div>
             </div>
           </div>
           <div
@@ -111,7 +118,7 @@
         </div>
 
         <button
-          v-if="quiz?.price > 0 && !hasPaid"
+          v-if="quiz?.price > 0 && !hasPaid && !isExpired"
           @click="showPaymentModal"
           class="w-full bg-[#fdfcfc] py-3 rounded-lg transition-colors disabled:bg-gray-400 mt-8 sm:text-right relative group overflow-hidden"
           :disabled="isProcessing"
@@ -337,21 +344,32 @@ const showStartDialog = () => {
   isDialogOpen.value = true;
 };
 
+const formatDateForInput = (dateString) => {
+  if (!dateString) return "";
+
+  // Parse the date string (DD-MM-YYYY HH:mm)
+  const [datePart, timePart] = dateString.split(" ");
+  const [day, month, year] = datePart.split("-");
+
+  // Create the formatted string (YYYY-MM-DDThh:mm)
+  return `${year}-${month}-${day}T${timePart}`;
+};
+
 const isExpired = computed(() => {
   if (!quiz.value || !quiz.value.deadline) return false;
-  console.log("deadline", quiz.value.deadline);
-  return new Date(quiz.value.deadline) < new Date();
+  const deadline = formatDateForInput(quiz.value.deadline);
+  return new Date(deadline) < new Date();
 });
 
 const deadlineMessage = computed(() => {
-  if (!quiz.value || !quiz.value.deadline) return "No deadline set";
-  const deadline = new Date(quiz.value.deadline);
+  if (!quiz.value || !quiz.value.deadline) return "No deadline ";
   const now = new Date();
+  const deadline = formatDateForInput(quiz.value.deadline);
 
-  if (deadline < now) {
-    return `Deadline passed on ${deadline}`;
+  if (new Date(deadline) < now) {
+    return `Deadline passed on ${quiz.value.deadline}`;
   }
-  return `Available until ${deadline}`;
+  return `Available until ${quiz.value.deadline}`;
 });
 
 const deadlineStatusClass = computed(() => ({
@@ -362,20 +380,9 @@ const deadlineStatusClass = computed(() => ({
 
 const deadlineIcon = computed(() => {
   if (isExpired.value) return "⏰";
-  if (!quiz.value.deadline) return "∞";
+  if (!quiz.value.deadline) return "🕒";
   return "✓";
 });
-
-const formatDate = (date) => {
-  return new Date(date).toLocaleString("en-IN", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-    hour: "2-digit",
-    minute: "2-digit",
-    timeZoneName: "short",
-  });
-};
 
 const startQuiz = async () => {
   try {

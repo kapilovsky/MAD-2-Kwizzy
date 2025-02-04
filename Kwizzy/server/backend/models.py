@@ -103,6 +103,7 @@ class Quiz(db.Model):
     )
     time_duration = Column(Integer, nullable=False, default=0)
     deadline = Column(DateTime, nullable=True)
+    one_attempt_only = Column(Boolean, default=True)
 
     questions = relationship(
         "Question", back_populates="quiz", cascade="all, delete-orphan"
@@ -125,7 +126,14 @@ class Quiz(db.Model):
         """Check if quiz is available based on deadline"""
         if not self.deadline:
             return True
-        return datetime.utcnow() < self.deadline
+        return datetime.now(tz=IndianTimeZone()) < self.deadline
+
+    def has_attempted(self, user_id):
+        """Check if user has already attempted this quiz"""
+        return (
+            QuizResult.query.filter_by(user_id=user_id, quiz_id=self.id).first()
+            is not None
+        )
 
     def get_status_message(self):
         """Get appropriate message based on quiz availability"""

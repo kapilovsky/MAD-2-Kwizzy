@@ -53,6 +53,7 @@ const quizData = reactive({
   time_duration: "",
   price: 0,
   deadline: "",
+  one_attempt_only: false,
   questions: [
     {
       title: "",
@@ -295,6 +296,17 @@ onMounted(() => {
                   type="datetime-local"
                   class="mt-1 block w-full border-b-2 bg-transparent border-[#fdfcfc] outline-none font-semibold"
                 />
+              </div>
+
+              <div class="mt-2 flex gap-2 items-center justify-start">
+                <input
+                  v-model="quizData.one_attempt_only"
+                  type="checkbox"
+                  class="w-4 h-4"
+                />
+                <label class="sohne-mono font-medium"
+                  >Single Attempt Only</label
+                >
               </div>
             </div>
           </div>

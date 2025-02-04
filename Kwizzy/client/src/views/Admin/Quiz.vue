@@ -149,6 +149,16 @@ onMounted(() => {
                     {{ quiz?.deadline ? `${quiz.deadline} IST` : "None" }}
                   </p>
                 </div>
+                <div>
+                  <span class="text-gray-400 sohne-mono text-sm"
+                    >Single Attempt Only</span
+                  >
+                  <p class="text-xl font-semibold">
+                    {{
+                      quiz?.one_attempt_only ? `${quiz.one_attempt_only}` : "No"
+                    }}
+                  </p>
+                </div>
               </div>
             </div>
             <div class="text-[160px] mt-[-40px] mb-[-40px] arrow">🡽</div>

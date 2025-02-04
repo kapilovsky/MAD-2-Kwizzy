@@ -83,6 +83,7 @@
                 <th class="sm:table-cell hidden">Time Limit［HH:MM］</th>
                 <th>Price</th>
                 <th class="sm:table-cell hidden">Deadline</th>
+                <th class="sm:table-cell hidden">Single Attempt Only</th>
                 <th class="text-right px-2">Action</th>
               </tr>
             </thead>
@@ -128,6 +129,10 @@
                     ></span>
                     {{ quiz?.deadline ? `${quiz.deadline} IST` : "None" }}
                   </div>
+                </td>
+
+                <td class="py-2 sm:table-cell hidden">
+                  {{ quiz.one_attempt_only }}
                 </td>
 
                 <td class="p-2 text-right">
@@ -246,13 +251,24 @@ const handleNavigation = () => {
   console.log(chapterName.value, subjectName.value, "before navigation ");
 };
 
+const formatDateForInput = (dateString) => {
+  if (!dateString) return "";
+
+  // Parse the date string (DD-MM-YYYY HH:mm)
+  const [datePart, timePart] = dateString.split(" ");
+  const [day, month, year] = datePart.split("-");
+
+  // Create the formatted string (YYYY-MM-DDThh:mm)
+  return `${year}-${month}-${day}T${timePart}`;
+};
+
 const getDeadlineStatusClass = (quiz) => {
   if (!quiz.deadline) return "bg-green-400";
 
-  const deadline = new Date(quiz.deadline);
+  const deadline = formatDateForInput(quiz.deadline);
   const now = new Date();
 
-  return deadline < now
+  return new Date(deadline) < now
     ? "bg-red-500" // Expired
     : "bg-green-500"; // Active
 };
