@@ -117,6 +117,19 @@
           {{ deadlineMessage }}
         </div>
 
+        <!-- <div
+          v-if="hasAttempted && quiz.one_attempt_only"
+          class="mt-4 bg-red-500/10 text-red-500 p-4 rounded-xl"
+        >
+          <div class="flex items-center gap-2">
+            <span class="text-2xl">⚠️</span>
+            <div>
+              <p class="font-bold">Quiz Already Attempted</p>
+              <p class="text-sm">This quiz allows only one attempt</p>
+            </div>
+          </div>
+        </div> -->
+
         <button
           v-if="quiz?.price > 0 && !hasPaid && !isExpired"
           @click="showPaymentModal"
@@ -139,13 +152,14 @@
           v-else
           @click="showStartDialog"
           class="w-full bg-[#fdfcfc] py-3 rounded-lg transition-colors disabled:bg-gray-400 disabled:cursor-none mt-8 sm:text-right relative group overflow-hidden"
-          :disabled="isStarting || isExpired"
+          :disabled="
+            isStarting || isExpired || (hasAttempted && quiz.one_attempt_only)
+          "
         >
-          <span class="arame sm:text-5xl text-2xl sm:mr-20 text-[#192227]">{{
-            isExpired ? "Deadline Passed" : "Start Quiz"
-          }}</span
+          <span class="arame sm:text-5xl text-2xl sm:mr-20 text-[#192227]">
+            {{ getButtonText }}</span
           ><span
-            v-if="!isExpired"
+            v-if="!isExpired && (!hasAttempted || !quiz.one_attempt_only)"
             class="absolute sm:text-5xl text-2xl right-7 top-1/2 transform -translate-y-1/2 text-[#192227] opacity-0 group-hover:opacity-100 group-hover:translate-x-2 transition-all"
           >
             🡲
@@ -361,6 +375,21 @@ const isExpired = computed(() => {
   return new Date(deadline) < new Date();
 });
 
+const hasAttempted = computed(() => quiz.value?.has_attempted);
+
+const getButtonText = computed(() => {
+  if (quiz.value?.has_attempted && quiz.value?.one_attempt_only) {
+    return "Already Attempted";
+  }
+  if (quiz.value?.has_attempted && !quiz.value?.one_attempt_only) {
+    return "Attempt Again";
+  }
+  if (isExpired.value) {
+    return "Deadline Passed";
+  }
+  return "Start Quiz";
+});
+
 const deadlineMessage = computed(() => {
   if (!quiz.value || !quiz.value.deadline) return "No deadline ";
   const now = new Date();
@@ -386,12 +415,18 @@ const deadlineIcon = computed(() => {
 
 const startQuiz = async () => {
   try {
+    if (hasAttempted.value && quiz.value?.one_attempt_only) {
+      toast.error("This quiz allows only one attempt");
+      return;
+    }
+
     if (isExpired.value) {
       toast.error(
         "This quiz is no longer available as the deadline has passed"
       );
       return;
     }
+
     isStarting.value = true;
     isDialogOpen.value = false;
 

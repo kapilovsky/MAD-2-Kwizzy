@@ -1,6 +1,6 @@
 from flask_restful import Resource
 from ..models import Quiz, Chapter, Question, Option
-from flask_jwt_extended import jwt_required
+from flask_jwt_extended import jwt_required, get_jwt_identity
 from ..utils import role_required
 from flask import request
 from .. import db
@@ -12,7 +12,10 @@ class QuizApi(Resource):
         try:
             # Get specific quiz
             if quiz_id:
+                user_id = get_jwt_identity()
                 quiz = Quiz.query.get_or_404(quiz_id)
+                has_attempted = quiz.has_attempted(user_id)
+                
                 time_in_seconds = quiz.time_duration
                 hours = time_in_seconds // 3600
                 minutes = (time_in_seconds % 3600) // 60
@@ -25,6 +28,7 @@ class QuizApi(Resource):
                     "chapter_id": quiz.chapter_id,
                     "time_duration": formatted_time,
                     "one_attempt_only": quiz.one_attempt_only,
+                    "has_attempted": has_attempted,
                     "deadline": (
                         quiz.deadline.strftime("%d-%m-%Y %H:%M")
                         if quiz.deadline
