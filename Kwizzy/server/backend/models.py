@@ -112,7 +112,9 @@ class Quiz(db.Model):
         "QuizResult", back_populates="quiz", cascade="all, delete-orphan"
     )
     chapter = relationship("Chapter", back_populates="quizzes")
-    payments = relationship("PaymentHistory", backref="quiz")
+    payments = relationship(
+        "PaymentHistory", backref="quiz", cascade="all, delete-orphan"
+    )
 
     def has_user_paid(self, user_id):
         return (
@@ -126,7 +128,7 @@ class Quiz(db.Model):
         """Check if quiz is available based on deadline"""
         if not self.deadline:
             return True
-        return datetime.now(tz=IndianTimeZone()) < self.deadline
+        return datetime.now() < self.deadline
 
     def has_attempted(self, user_id):
         """Check if user has already attempted this quiz"""

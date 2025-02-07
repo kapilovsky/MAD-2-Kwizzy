@@ -59,6 +59,9 @@ class UserAnswerApi(Resource):
             total_questions = len(quiz.questions)
             correct_answers = 0
             user_answers = []
+            completed = IndianTimeZone()
+            print("Completed at:", completed)
+            print("hi")
 
             # Process each answer
             for answer in data["answers"]:
@@ -151,6 +154,7 @@ class UserAnswerApi(Resource):
 
         except Exception as e:
             db.session.rollback()
+            print("Error:", str(e))
             return {"message": f"Error submitting quiz: {str(e)}"}, 500
 
     @jwt_required()

@@ -1,5 +1,5 @@
 <template>
-  <div class="min-h-screen bg-[#fafafa] p-8">
+  <div class="min-h-screen bg-[#ffffff] p-3">
     <!-- Loading State -->
     <div
       v-if="quizResultStore.isLoading"
@@ -22,7 +22,7 @@
     </div>
 
     <!-- Results Content -->
-    <div v-else-if="quizResult" class="max-w-4xl mx-auto">
+    <div v-else-if="quizResult" class="max-w-6xl mx-auto">
       <!-- Quiz Header -->
       <div class="bg-[#192227] rounded-3xl p-8 mb-8 text-white">
         <div
@@ -91,8 +91,10 @@
       </div>
 
       <!-- Answer Review -->
-      <div class="bg-white rounded-3xl shadow-sm p-8">
-        <h2 class="text-3xl sohne-mono font-bold mb-8 text-center md:text-left">
+      <div class="bg-white rounded-3xl shadow-sm p-2">
+        <h2
+          class="text-3xl sohne font-bold mb-8 text-center md:text-left tracking-tighter"
+        >
           Answer Review
         </h2>
 
@@ -152,7 +154,6 @@
             <div class="p-6 bg-white">
               <div class="space-y-4">
                 <div>
-                  <p>Question</p>
                   <p class="font-medium">{{ answer.question_text }}</p>
                 </div>
                 <div>

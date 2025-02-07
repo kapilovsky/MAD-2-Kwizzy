@@ -70,17 +70,6 @@ const selectOption = (questionId, optionId) => {
   setAnswer(questionId, optionId);
 };
 
-const getQuestionButtonClass = (index) => {
-  if (!quiz.value) return "";
-
-  if (index === quizStore.currentQuestionIndex) {
-    return "btn-primary";
-  }
-  return userAnswers.value.has(quiz.value.questions[index].id)
-    ? "btn-success"
-    : "btn-outline-secondary";
-};
-
 const handleSubmit = async () => {
   if (isSubmitting.value) return;
 

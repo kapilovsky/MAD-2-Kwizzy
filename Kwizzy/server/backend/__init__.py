@@ -55,13 +55,13 @@ def create_app():
             "daily-reminder": {
                 "task": "backend.tasks.celery_tasks.send_daily_reminders",
                 "schedule": crontab(
-                    hour=17,
-                    minute=6,
+                    hour=22,
+                    minute=57,
                 ),
             },
             "monthly-report": {
                 "task": "backend.tasks.celery_tasks.generate_monthly_activity_report",
-                "schedule": crontab(0, 0, day_of_month="1"),
+                "schedule": crontab(hour=22, minute=57, day_of_month="4"),
             },
             "cleanup-old-exports": {
                 "task": "backend.api.csv.cleanup_old_exports",

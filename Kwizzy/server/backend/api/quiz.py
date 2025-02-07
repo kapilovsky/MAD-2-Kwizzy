@@ -15,7 +15,7 @@ class QuizApi(Resource):
                 user_id = get_jwt_identity()
                 quiz = Quiz.query.get_or_404(quiz_id)
                 has_attempted = quiz.has_attempted(user_id)
-                
+
                 time_in_seconds = quiz.time_duration
                 hours = time_in_seconds // 3600
                 minutes = (time_in_seconds % 3600) // 60
