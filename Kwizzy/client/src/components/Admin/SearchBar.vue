@@ -1,4 +1,3 @@
-<!-- components/Admin/Search.vue -->
 <script setup>
 import { ref } from "vue";
 import SearchIcon from "../../assets/images/icons/search.svg";

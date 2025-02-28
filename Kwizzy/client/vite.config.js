@@ -11,7 +11,6 @@ export default defineConfig({
   plugins: [
     vue(),
     vueJsx(),
-    vueDevTools(),
     svgLoader({
       defaultImport: "component",
     }),
