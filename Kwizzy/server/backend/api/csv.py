@@ -13,7 +13,9 @@ from ..tasks.celery_tasks import send_export_notification
 logger = logging.getLogger(__name__)
 
 # Create CSV directory if it doesn't exist
-CSV_FOLDER = os.path.join(os.getenv("UPLOAD_FOLDER"), "csv")
+app_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+relative_path = os.getenv("UPLOAD_FOLDER").lstrip("./")
+CSV_FOLDER = os.path.join(app_root, relative_path, "csv")
 os.makedirs(CSV_FOLDER, exist_ok=True)
 
 
