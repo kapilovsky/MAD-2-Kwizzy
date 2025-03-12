@@ -11,6 +11,12 @@ from sqlalchemy import or_
 from .. import cache
 from time import perf_counter_ns
 
+# create an image folder if it doesn't exists
+app_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+relative_path = os.getenv("UPLOAD_FOLDER").lstrip("./")
+IMAGE_FOLDER = os.path.join(app_root, relative_path)
+os.makedirs(IMAGE_FOLDER, exist_ok=True)
+
 
 class SubjectApi(Resource):
 
@@ -81,11 +87,8 @@ class SubjectApi(Resource):
                 return {"message": "A subject with this name already exists"}, 400
 
             if image and allowed_file(image.filename):
-                upload_folder = app.config["UPLOAD_FOLDER"]
-                if not os.path.exists(upload_folder):
-                    os.makedirs(upload_folder)
                 filename = secure_filename(image.filename)
-                filepath = os.path.join(upload_folder, filename)
+                filepath = os.path.join(IMAGE_FOLDER, filename)
                 image.save(filepath)
             else:
                 filename = None
@@ -128,8 +131,7 @@ class SubjectApi(Resource):
             if subject.subject_image:
                 try:
                     image_path = os.path.join(
-                        app.config["UPLOAD_FOLDER"],
-                        "subjects",  # Add subjects subfolder
+                        IMAGE_FOLDER,
                         subject.subject_image,
                     )
                     if os.path.exists(image_path):
@@ -190,8 +192,7 @@ class SubjectApi(Resource):
                 if subject.subject_image:
                     try:
                         old_image_path = os.path.join(
-                            app.config["UPLOAD_FOLDER"],
-                            "subjects",
+                            IMAGE_FOLDER,
                             subject.subject_image,
                         )
                         if os.path.exists(old_image_path):
@@ -200,11 +201,11 @@ class SubjectApi(Resource):
                         print(f"Error removing old image: {e}")
 
                 # Save new image
-                upload_folder = app.config["UPLOAD_FOLDER"]
-                if not os.path.exists(upload_folder):
-                    os.makedirs(upload_folder)
+                # upload_folder = app.config["UPLOAD_FOLDER"]
+                # if not os.path.exists(upload_folder):
+                #     os.makedirs(upload_folder)
                 filename = secure_filename(file.filename)
-                filepath = os.path.join(upload_folder, filename)
+                filepath = os.path.join(IMAGE_FOLDER, filename)
                 file.save(filepath)
                 # Update subject image filename
                 subject.subject_image = filename
@@ -213,8 +214,7 @@ class SubjectApi(Resource):
                 if subject.subject_image:
                     try:
                         old_image_path = os.path.join(
-                            app.config["UPLOAD_FOLDER"],
-                            "subjects",
+                            IMAGE_FOLDER,
                             subject.subject_image,
                         )
                         if os.path.exists(old_image_path):

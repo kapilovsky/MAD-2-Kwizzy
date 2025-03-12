@@ -1,12 +1,18 @@
 from flask_restful import Resource
 from flask_jwt_extended import jwt_required
-from ..utils import role_required, allowed_file
+from ..utils import allowed_file
 from ..models import User
 from flask import request
 from .. import db
 import os
 from flask import current_app as app
 from werkzeug.utils import secure_filename
+
+# create an profile picture folder if it doesn't exists
+app_root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+relative_path = os.getenv("UPLOAD_FOLDER").lstrip("./")
+IMAGE_FOLDER = os.path.join(app_root, relative_path, "students")
+os.makedirs(IMAGE_FOLDER, exist_ok=True)
 
 
 class UserApi(Resource):
@@ -44,8 +50,7 @@ class UserApi(Resource):
                     if user.profile_pic:
                         try:
                             old_image_path = os.path.join(
-                                app.config["UPLOAD_FOLDER"],
-                                "students",
+                                IMAGE_FOLDER,
                                 user.profile_pic,
                             )
                             if os.path.exists(old_image_path):
@@ -53,17 +58,10 @@ class UserApi(Resource):
                         except Exception as e:
                             print(f"Error removing old profile picture: {e}")
 
-                    # Save new profile picture
-                    upload_folder = os.path.join(
-                        app.config["UPLOAD_FOLDER"], "students"
-                    )
-                    if not os.path.exists(upload_folder):
-                        os.makedirs(upload_folder)
-
                     # Generate unique filename
                     filename = secure_filename(file.filename)
                     unique_filename = f"{user_id}_{filename}"
-                    filepath = os.path.join(upload_folder, unique_filename)
+                    filepath = os.path.join(IMAGE_FOLDER, unique_filename)
                     file.save(filepath)
 
                     # Update user profile picture filename
@@ -74,8 +72,7 @@ class UserApi(Resource):
                 if user.profile_pic:
                     try:
                         old_image_path = os.path.join(
-                            app.config["UPLOAD_FOLDER"],
-                            "students",
+                            IMAGE_FOLDER,
                             user.profile_pic,
                         )
                         if os.path.exists(old_image_path):
@@ -95,7 +92,6 @@ class UserApi(Resource):
                     "email": user.email,
                     "qualification": user.qualification,
                     "profile_pic": user.profile_pic,
-                    # Add any other user fields you want to return
                 },
             }
 
