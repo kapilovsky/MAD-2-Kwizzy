@@ -7,24 +7,39 @@
   padding: 0;
   box-sizing: border-box;
   font-family: Inter;
+  transition: all 0.3s ease;
 }
 
 body {
-  /* background-color: #151515; */
-  cursor: none;
+  background-color: #fafafa;
+  cursor: default;
+}
+
+button {
+  cursor: pointer;
 }
 
 button:focus {
   outline: none;
+  box-shadow: 0 0 0 2px #4f46e5;
 }
 
 ::selection {
-  background-color: #151515;
-  color: #eeeeee;
+  background-color: #4f46e5;
+  color: #ffffff;
 }
 
 /* For Firefox */
 ::-moz-selection {
-  background-color: #151515;
-  color: #eeeeee;
+  background-color: #4f46e5;
+  color: #ffffff;
+}
+
+/* Add smooth hover effects */
+.hover-transform {
+  transition: transform 0.2s ease;
+}
+
+.hover-transform:hover {
+  transform: translateY(-2px);
 }
